@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GKI Salatiga Plus</string>
+    <string name="title_activity_main">GKI Salatiga+</string>
+
+    <!-- Constant strings for ScreenMain and FragmentMain. -->
+    <string name="bottomnav_menu_1">Home</string>
+    <string name="bottomnav_menu_2">Services</string>
+    <string name="bottomnav_menu_3">News</string>
+    <string name="bottomnav_menu_4">Events</string>
+
+    <!-- Constant strings for ScreenAbout and its related fragments. -->
+    <string name="screenabout_title">About</string>
+</resources>
