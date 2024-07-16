@@ -32,15 +32,21 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -94,19 +100,23 @@ class FragmentHome : ComponentActivity() {
             ) {
                 /* Displaying the welcome banner in the main menu. */
                 Surface (
-                    shape = RoundedCornerShape(0.dp, 0.dp, 40.dp, 40.dp)
+                    shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.sample_welcome_banner),
                         contentDescription = "Some name",
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
                     )
                 }
 
                 /* Displaying the "main menu" options. */
-                LazyRow {
+                LazyRow ( modifier = Modifier.padding(vertical = 10.dp).padding(horizontal = 0.dp) ) {
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
+                    // The main menu "main" content.
                     items (4) { index ->
-                        Button(onClick = {}, modifier = Modifier.wrapContentWidth(), shape = RoundedCornerShape(10.dp)) {
+                        Button(onClick = {}, modifier = Modifier.padding(horizontal = 5.dp).wrapContentWidth(), shape = RoundedCornerShape(10.dp)) {
                             Column (horizontalAlignment = Alignment.CenterHorizontally) {
                                 Image(
                                     painter = painterResource(mainMenuIcon[index]),
@@ -117,31 +127,41 @@ class FragmentHome : ComponentActivity() {
                             }
                         }
                     }
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
 
                 /* Displaying the daily Bible verses. */
-                Text("Inspirasi Harian", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Row {
-                    Text("Mazmur 203:1-1002", fontWeight = FontWeight.Bold)
-                    Text("TB1")
-                    Text("Senin, 32 Juli 2024")
+                Column ( modifier = Modifier.padding(10.dp) ) {
+                    Text("Inspirasi Harian", fontWeight = FontWeight.Bold, fontSize = 26.sp, modifier = Modifier.padding(bottom = 5.dp))
+                    Row {
+                        Text("Mazmur 203:1-1002", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text("[TB1]")
+                        Text("Senin, 32 Juli 2024", fontStyle = FontStyle.Italic, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+                    }
+                    Text("Sungguh alangkah baiknya, sungguh alangkah indahnya, bila saudara semua hidup rukun bersama." +
+                            "Seperti minyak di kepala Harun yang ke janggut dan jubahnya turun." +
+                            "Seperti embun yang dari Hermon mengalir ke bukit Sion.")
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
-                Text("Sungguh alangkah baiknya, sungguh alangkah indahnya, bila saudara semua hidup rukun bersama." +
-                        "Seperti minyak di kepala Harun yang ke janggut dan jubahnya turun." +
-                        "Seperti embun yang dari Hermon mengalir ke bukit Sion.")
 
                 /* Displaying the daily morning devotion. */
-                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text("Sapaan dan Renungan Pagi", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Sapaan dan Renungan Pagi", fontWeight = FontWeight.Bold, fontSize = 26.sp)
                     // SOURCE: https://stackoverflow.com/a/69278397
                     Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Text("Lihat Semua") }
+                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
                 }
                 LazyRow {
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
+                    // The actual content.
                     items (5) {
                         Card (
                             onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(top = 10.dp),
+                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
                                 Image(
@@ -149,25 +169,33 @@ class FragmentHome : ComponentActivity() {
                                     contentDescription = "Some name",
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                Text("Title of the menu.", fontWeight = FontWeight.Bold)
-                                Text("Description runs here. Lorem Ipsum DOlor Sit Maet. Consecttur adipsicing elit.")
+                                Column (modifier = Modifier.padding(5.dp)) {
+                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
+                                    Text("14 Juli 2024")
+                                }
                             }
                         }
                     }
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
                 }
+                Spacer(modifier = Modifier.height(20.dp))
 
                 /* Displaying the choir production videos. */
-                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text("GKI Salatiga Choir", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    Text("GKI Salatiga Choir", fontWeight = FontWeight.Bold, fontSize = 26.sp)
                     // SOURCE: https://stackoverflow.com/a/69278397
                     Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Text("Lihat Semua") }
+                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
                 }
                 LazyRow {
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
+                    // The actual content.
                     items (5) {
                         Card (
                             onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(top = 10.dp),
+                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
                                 Image(
@@ -175,25 +203,33 @@ class FragmentHome : ComponentActivity() {
                                     contentDescription = "Some name",
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                Text("Title of the menu.", fontWeight = FontWeight.Bold)
-                                Text("Description runs here. Lorem Ipsum DOlor Sit Maet. Consecttur adipsicing elit.")
+                                Column (modifier = Modifier.padding(5.dp)) {
+                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
+                                    Text("14 Juli 2024")
+                                }
                             }
                         }
                     }
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
                 }
+                Spacer(modifier = Modifier.height(20.dp))
 
                 /* Displaying the music videos produced by Komisi Musik dan Liturgi (KML). */
-                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text("KML Production", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    Text("KML Production", fontWeight = FontWeight.Bold, fontSize = 26.sp)
                     // SOURCE: https://stackoverflow.com/a/69278397
                     Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Text("Lihat Semua") }
+                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
                 }
                 LazyRow {
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
+                    // The actual content.
                     items (5) {
                         Card (
                             onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(top = 10.dp),
+                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
                                 Image(
@@ -201,12 +237,21 @@ class FragmentHome : ComponentActivity() {
                                     contentDescription = "Some name",
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                Text("Title of the menu.", fontWeight = FontWeight.Bold)
-                                Text("Description runs here. Lorem Ipsum DOlor Sit Maet. Consecttur adipsicing elit.")
+                                Column (modifier = Modifier.padding(5.dp)) {
+                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
+                                    Text("14 Juli 2024")
+                                }
                             }
                         }
                     }
+                    // Left-right padding.
+                    item { Spacer(modifier = Modifier.width(5.dp)) }
                 }
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Below spacer needs to be added a little bit more,
+                // to mitigate bottom FAB.
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }

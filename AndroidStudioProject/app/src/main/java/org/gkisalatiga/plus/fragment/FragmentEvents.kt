@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -71,42 +72,49 @@ class FragmentEvents : ComponentActivity() {
         ) {
             // Show the current screen's main title.
             val fragmentName = fragmentController.currentDestination?.route
-            Text("Senin, 15 Juli 2024", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+            Text("Senin", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+
+            // Sample text.
+            val sampleText = listOf(
+                "Latihan paduan suara",
+                "Kebaktian I",
+                "Kebaktian Berbahasa Arab"
+            )
 
             // Show each individual event
             LazyColumn {
                 items (3) {
                     Card (
                         onClick = { },
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp).padding(horizontal = 10.dp)
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp).padding(horizontal = 5.dp)
                     ) {
-                        Column {
-                            Text("Latihan Paduan Suara", fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
-                            Row {
+                        Column (modifier = Modifier.padding(10.dp)) {
+                            Text(sampleText[it], fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(5.dp), textAlign = TextAlign.Center)
+                            Row (verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(R.drawable.baseline_groups_24),
                                     contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxHeight(),
+                                    modifier = Modifier.fillMaxHeight().padding(horizontal = 5.dp).width(40.dp),
                                     alignment = Alignment.Center,
                                     contentScale = ContentScale.FillHeight
                                 )
                                 Text("Komisi Musik dan Liturgi")
                             }
-                            Row {
+                            Row (verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(R.drawable.baseline_location_on_24),
                                     contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxHeight(),
+                                    modifier = Modifier.fillMaxHeight().padding(horizontal = 5.dp).width(40.dp),
                                     alignment = Alignment.Center,
                                     contentScale = ContentScale.FillHeight
                                 )
                                 Text("d'Emmerick Hotel")
                             }
-                            Row {
+                            Row (verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(R.drawable.baseline_access_time_24),
                                     contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxHeight(),
+                                    modifier = Modifier.fillMaxHeight().padding(horizontal = 5.dp).width(40.dp),
                                     alignment = Alignment.Center,
                                     contentScale = ContentScale.FillHeight
                                 )

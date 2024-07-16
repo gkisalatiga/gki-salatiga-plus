@@ -22,8 +22,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -32,8 +35,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +53,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,19 +72,19 @@ class FragmentServices : ComponentActivity() {
 
     // The state of the currently selected chip.
     // (The default is to set the first chip as the one initially selected.)
-    var selectedChip = listOf(
+    private var selectedChip = listOf(
         mutableStateOf(true),
         mutableStateOf(false)
     )
 
     // The names of the chips.
-    var nameOfChip = listOf(
+    private var nameOfChip = listOf(
         "Kebaktian Umum",
         "English Service"
     )
 
     // The icons of the chips.
-    var iconOfChip = listOf (
+    private var iconOfChip = listOf (
         Icons.Filled.Done,
         Icons.Filled.Call
     )
@@ -134,6 +141,8 @@ class FragmentServices : ComponentActivity() {
                     getRegularService(screenController, fragmentController, context)
                 } else if (selectedChip[1].value) {
                     getEnglishService(screenController, fragmentController, context)
+                } else {
+                    Text("It's gone!")
                 }
             }
         }
@@ -141,6 +150,28 @@ class FragmentServices : ComponentActivity() {
 
     @Composable
     private fun getEnglishService(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+        // Display the service liturgy.
+        Card (
+            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
+        ) {
+            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
+                Image(
+                    painter = painterResource(R.drawable.baseline_book_24),
+                    contentDescription = "Some name",
+                    alignment = Alignment.Center,
+                )
+                Column {
+                    Text("English Service Liturgy", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
+                    Text("July 2nd, 2024", modifier = Modifier.padding(horizontal = 10.dp))
+                    Text("Overturning the Temple Table", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+            }
+        }
+
+        /* Add divider between contents. */
+        HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), thickness = DividerDefaults.Thickness, color = DividerDefaults.color)
+
         // Get the application's JSON object
         val db = AppDatabase().loadRaw(context).getMainData()
 
@@ -178,7 +209,7 @@ class FragmentServices : ComponentActivity() {
 
             Card (
                 onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
             ) {
                 Column {
                     // Displaying the image
@@ -205,9 +236,10 @@ class FragmentServices : ComponentActivity() {
                         // SOURCE: https://stackoverflow.com/a/76274718
                         contentScale = ContentScale.FillWidth
                     )
-                    // Text("This is a sample bar", modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center )
-                    Text(title, fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
-                    Text(desc)
+                    Column (modifier = Modifier.padding(10.dp)) {
+                        Text(title, fontWeight = FontWeight.Bold)
+                        Text("21 Juli 2003")
+                    }
                 }
             }
         }
@@ -215,6 +247,47 @@ class FragmentServices : ComponentActivity() {
 
     @Composable
     private fun getRegularService(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+        // Display the service liturgy.
+        Card (
+            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
+        ) {
+            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
+                Image(
+                    painter = painterResource(R.drawable.baseline_book_24),
+                    contentDescription = "Some name",
+                    alignment = Alignment.Center
+                )
+                Column {
+                    Text("Liturgi Kebaktian Umum", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
+                    Text("14 Juli 2024", modifier = Modifier.padding(horizontal = 10.dp))
+                    Text("Bela Rasa Sang Gembala", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+            }
+        }
+
+        // Display the official church news.
+        Card (
+            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
+        ) {
+            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
+                Image(
+                    painter = painterResource(R.drawable.baseline_newspaper_24),
+                    contentDescription = "Some name",
+                    alignment = Alignment.Center,
+                )
+                Column {
+                    Text("Warta Jemaat", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
+                    Text("14 Juli 2024", modifier = Modifier.padding(horizontal = 10.dp))
+                    Text("Bela Rasa Sang Gembala", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+            }
+        }
+
+        /* Add divider between contents. */
+        HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), thickness = DividerDefaults.Thickness, color = DividerDefaults.color)
+
         // Get the application's JSON object
         val db = AppDatabase().loadRaw(context).getMainData()
 
@@ -257,7 +330,7 @@ class FragmentServices : ComponentActivity() {
 
             Card (
                 onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
             ) {
                 Column {
                     // Displaying the image
@@ -284,8 +357,10 @@ class FragmentServices : ComponentActivity() {
                         // SOURCE: https://stackoverflow.com/a/76274718
                         contentScale = ContentScale.FillWidth
                     )
-                    Text(title, fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
-                    Text(desc)
+                    Column (modifier = Modifier.padding(10.dp)) {
+                        Text(title, fontWeight = FontWeight.Bold)
+                        Text("21 Juli 2003")
+                    }
                 }
             }
         }
