@@ -15,6 +15,9 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
@@ -40,8 +44,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -70,6 +76,12 @@ class FragmentServices : ComponentActivity() {
         "English Service"
     )
 
+    // The icons of the chips.
+    var iconOfChip = listOf (
+        Icons.Filled.Done,
+        Icons.Filled.Call
+    )
+
     /**
      * Navigation between screens
      * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
@@ -81,7 +93,7 @@ class FragmentServices : ComponentActivity() {
             // SOURCE: https://developer.android.com/develop/ui/compose/components/chip
             Row (
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(5.dp)
                     ) {
                 nameOfChip.forEachIndexed { index, item ->
                     FilterChip(
@@ -95,7 +107,7 @@ class FragmentServices : ComponentActivity() {
                         selected = selectedChip[index].value,
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Filled.Done,
+                                imageVector = iconOfChip[index],
                                 contentDescription = "Done icon",
                                 modifier = Modifier.size(FilterChipDefaults.IconSize)
                             )
@@ -186,8 +198,15 @@ class FragmentServices : ComponentActivity() {
 
                     DownloadAndSaveImageTask(context).execute(imgSrc)
 
-                    Text("This is a sample bar", modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center )
-                    Text(title)
+                    Image(
+                        painter = painterResource(R.drawable.sample_thumbnail_youtube_5),
+                        contentDescription = "Some name",
+                        modifier = Modifier.fillMaxWidth(),
+                        // SOURCE: https://stackoverflow.com/a/76274718
+                        contentScale = ContentScale.FillWidth
+                    )
+                    // Text("This is a sample bar", modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center )
+                    Text(title, fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
                     Text(desc)
                 }
             }
@@ -258,8 +277,14 @@ class FragmentServices : ComponentActivity() {
 
                     DownloadAndSaveImageTask(context).execute(imgSrc)
 
-                    Text("This is a sample bar", modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center )
-                    Text(title)
+                    Image(
+                        painter = painterResource(R.drawable.sample_thumbnail_youtube_4),
+                        contentDescription = "Some name",
+                        modifier = Modifier.fillMaxWidth(),
+                        // SOURCE: https://stackoverflow.com/a/76274718
+                        contentScale = ContentScale.FillWidth
+                    )
+                    Text(title, fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
                     Text(desc)
                 }
             }
