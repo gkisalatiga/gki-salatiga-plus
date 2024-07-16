@@ -1,0 +1,579 @@
+{
+  "_comment": "All metadata are stored in the 'meta' node. This should only be altered programmatically. Any content that can be added, changed, or deleted by human admin should reside under the 'main-data' node. (The '_comment' key should be ignored by the JSON parser that will later be used.)",
+  "meta": {
+    "_comment": "The back-end metadata of the schema (programmatically managed and controlled).",
+    "last-update": 1720855825,
+    "last-update-admin": "groaking",
+    "update-count": 1,
+    "schema-version": "0.0.1",
+    "sha": "02715a46f3de376818acce5cb81f47dcc92eb794"
+  },
+  "main-data": {
+    "_comment": "The admin-controlled section of the schema.",
+    "home": {
+      "_comment": "The home menu of the GKI Salatiga app.",
+      "welcome-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+      "info-cards": {
+        "_comment": "Info card that shows relevant church-related information.",
+        "data": [
+          {
+            "title": "Profil GKI Salatiga",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "Visi",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Misi",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Sejarah GKI Salatiga",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Fondasi Pelayanan",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Perubahan Nama dari ABC menjadi DEF",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Tantangan, Hambatan, dan Arah Perkembangan",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          },
+          {
+            "title": "Kependetaan",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "Pdt. Andi",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Pdt. Budi",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Pdt. Em. Cika",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Pdt. Em. Dika",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          },
+          {
+            "title": "Kemajelisan",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "BPH-MJ",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Bidang I",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Bidang II",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Bidang III",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          },
+          {
+            "title": "Badan Pelayanan dan Komisi",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "Komisi Usia Lanjut (KUL)",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Komisi Hubungan Internasional (KHI)",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Komisi Multimedia dan Sarana-Prasarana",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Tim Samaria",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          },
+          {
+            "title": "Panitia Kegiatan Gerejawi",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "Panitia Masa Raya Paskah 2024",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Panitia Bulan Keluarga 2024",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Panitia Natal 2024",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          },
+          {
+            "title": "Ibadah dan Kebaktian Reguler",
+            "last-content-update": 1720855825,
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "sections": [
+              {
+                "title": "Kebaktian Umum I",
+                "has-logo": true,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Kebaktian Umum II",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": true,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              },
+              {
+                "title": "Persekutuan Sobat Muda (SODA)",
+                "has-logo": false,
+                "url-logo": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+                "has-banner": false,
+                "url-banner": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+                "paragraph": "<b>Lorem Ipsum</b> dolor sit amet, consectetur adipiscing elit. <i>Sed rutrum dui nec neque consequat laoreet. In mattis lacus odio.</i> <big>Praesent vehicula malesuada fringilla. Cras congue fermentum eros sed iaculis.</big> <pre>Aliquam faucibus lacus eu nulla malesuada, quis sollicitudin urna vehicula.</pre> <u>Aliquam erat volutpat.</u> <s>Vivamus <sup>ac</sup> <sub>mattis</sub> neque.</s>"
+              }
+            ]
+          }
+        ]
+      },
+      "cta": {
+        "_comment": "Link to GKI Salatiga social media pages 'Call-to-Action' (CTA).",
+        "data": [
+          {
+            "title": "Instagram",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "url": "https://example.com/",
+            "toast": "Kunjungi tautan Lorem Ipsum GKI Salatiga"
+          },
+          {
+            "title": "Facebook",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "url": "https://example.com/",
+            "toast": "Kunjungi tautan Lorem Ipsum GKI Salatiga"
+          },
+          {
+            "title": "YouTube",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "url": "https://example.com/",
+            "toast": "Kunjungi tautan Lorem Ipsum GKI Salatiga"
+          },
+          {
+            "title": "Spotify",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff",
+            "url": "https://example.com/",
+            "toast": "Kunjungi tautan Lorem Ipsum GKI Salatiga"
+          }
+        ]
+      },
+      "bank": {
+        "_comment": "Information related to GKI Salatiga's bank address for offertories.",
+        "data": [
+          {
+            "title": "Persembahan Perpuluhan",
+            "bank": "BCA",
+            "holder": "GKI Salatiga",
+            "qris": "https://cdn.pixabay.com/photo/2022/01/26/17/00/qr-code-6969330_960_720.jpg",
+            "account-id": "123.45.678.90",
+            "unique-digit-code": "06"
+          },
+          {
+            "title": "Persembahan Membeli Jenset",
+            "bank": "Mandiri",
+            "holder": "GKI Salatiga",
+            "qris": "https://cdn.pixabay.com/photo/2022/01/26/17/00/qr-code-6969330_960_720.jpg",
+            "account-id": "123.45.678.90",
+            "unique-digit-code": "06"
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "_comment": "TODO"
+    },
+    "articles": {
+      "_comment": "This section stores contents about regularly updated articles, documents, and PDF files provided by GKI Salatiga admins.",
+      "wj": {
+        "_comment": "'WJ' stands for 'Warta Jemaat'.",
+        "title": "Warta Jemaat",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Diberikati untuk Menjadi Berkat",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-1.html"
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Pelayan yang bijak",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-2.html"
+          }
+        ]
+      },
+      "ykb-yfc": {
+        "_comment": "'YFC' stands for 'Youth For Christ' which is provided by www.ykb-wasiat.org.",
+        "title": "Youth For Christ",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Diberikati untuk Menjadi Berkat",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-1.html"
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Pelayan yang bijak",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-2.html"
+          }
+        ]
+      },
+      "ykb-wasiat": {
+        "_comment": "Renungan Wasiat provided by www.ykb-wasiat.org.",
+        "title": "Renungan WASIAT",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Diberikati untuk Menjadi Berkat",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-1.html"
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Pelayan yang bijak",
+            "date-upload": 1720855825,
+            "url": "https://example.com/article-2.html"
+          }
+        ]
+      },
+      "liturgi": {
+        "title": "Liturgi Kebaktian Umum",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Liturgi - Minggu, 14 April 2024",
+            "date-upload": 1720855825,
+            "url": "https://example.com/liturgy-1.pdf"
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Liturgi - Minggu, 28 April 2024",
+            "date-upload": 1720855825,
+            "url": "https://example.com/liturgy-2.pdf"
+          }
+        ]
+      },
+      "liturgi-es": {
+        "_comment": "The service liturgy for the monthly English Service (ES) of GKI Salatiga.",
+        "title": "English Service Liturgy",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "ES Liturgy - March 3rd, 2024",
+            "date-upload": 1720855825,
+            "url": "https://example.com/liturgy-1.pdf"
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "ES Liturgy - March 10th, 2024",
+            "date-upload": 1720855825,
+            "url": "https://example.com/liturgy-2.pdf"
+          }
+        ]
+      }
+    },
+    "broadcast": {
+      "_comment": "This section stores YouTube links for live streaming and other audio-visual resources.",
+      "ibadah-umum": {
+        "title": "[LIVE] Kebaktian Minggu GKI Salatiga",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Kebaktian Umum I | 14 Juli 2024 | Diberkati untuk Menjadi Berkat | Pdt. Anton",
+            "date": 1720855825,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Kebaktian Umum II | 28 Juli 2024 | Diberkati untuk Menjadi Berkat | Pdt. Anton",
+            "date": 1720855825,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          }
+        ]
+      },
+      "es": {
+        "_comment": "YouTube links for the monthly English Service (ES) of Komisi Hubungan Internasional (KHI) GKI Salatiga.",
+        "title": "[LIVE] GKI Salatiga Monthly English Service",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "Overturning the Temple Table | Pdt. Anton",
+            "date": 1720855825,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "He is Risen | Pdt. Jefferson",
+            "date": 1720855825,
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          }
+        ]
+      },
+      "saren": {
+        "_comment": "'Sapaan Renungan Pagi' GKI Salatiga.",
+        "title": "SaRen Pagi GKI Salatiga",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-upload": 1720855825,
+        "content": [
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "SaRen 24 Juli 2024",
+            "date": 1720855825,
+            "description": "Dibawakan oleh Pnt. Andi",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          },
+          {
+            "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+            "title": "SaRen 31 Juli 2024",
+            "date": 1720855825,
+            "description": "Dibawakan oleh Pnt. Budiono",
+            "url": "https://example.com/youtube?q=123456",
+            "duration": 3600
+          }
+        ]
+      }
+    },
+    "pastoral": {
+      "_comment": "Pastoral and congregant-related features and forms.",
+      "katek-sidi-dewasa": {
+        "title": "Katekisasi, SIDI, dan Baptis Dewasa",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Katekisasi adalah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-update": 1720855825,
+        "content": [
+          {
+            "title": "Formulir Pendaftaran Katekisasi",
+            "url": "https://example.com/form-1",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          }
+        ]
+      },
+      "baptis-anak": {
+        "title": "Baptis Anak",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Baptis adalah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-update": 1720855825,
+        "content": [
+          {
+            "title": "Formulir Pendaftaran Baptis Anak",
+            "url": "https://example.com/form-1",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          }
+        ]
+      },
+      "bina-pranikah": {
+        "title": "Kelas Bina Pranikah",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Kelas adalah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-update": 1720855825,
+        "content": [
+          {
+            "title": "Formulir Pendaftaran Kelas Pranikah",
+            "url": "https://example.com/form-1",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          }
+        ]
+      },
+      "pemberkatan-nikah": {
+        "title": "Pemberkatan Pernikahan",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Pernikahan adalah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-update": 1720855825,
+        "content": [
+          {
+            "title": "Formulir Pendaftaran Pernikahan",
+            "url": "https://example.com/form-1",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          }
+        ]
+      },
+      "kejemaatan": {
+        "title": "Kejemaatan: Atestasi Keluar/Masuk dan Sensus Anggota/Simpatisan",
+        "thumbnail": "https://cdn.pixabay.com/photo/2024/07/07/10/06/london-8878733_960_720.jpg",
+        "description": "Katekisasi adalah ... Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "last-content-update": 1720855825,
+        "content": [
+          {
+            "title": "Formulir Pendaftaran Atestasi",
+            "url": "https://example.com/form-1",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          },
+          {
+            "title": "Formulir Sensus GKI Salatiga",
+            "url": "https://example.com/form-2",
+            "toast": "You opened ABC form!",
+            "icon": "https://v1.icons.run/64/tabler/brand-android.png?color=000000&bg=ffffff"
+          }
+        ]
+      }
+    }
+  }
+}

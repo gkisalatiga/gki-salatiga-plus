@@ -22,4 +22,5 @@ class NavigationRoutes {
     public final val FRAG_MAIN_NEWS: String = "nav_frag_news"
     public final val FRAG_MAIN_EVENTS: String = "nav_frag_events"
     public final val FRAG_ABOUT: String = "nav_frag_about"
+    public final val FRAG_BLANK: String = "nav_frag_blank"
 }

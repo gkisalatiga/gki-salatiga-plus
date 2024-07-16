@@ -10,4 +10,8 @@
 
     <!-- Constant strings for ScreenAbout and its related fragments. -->
     <string name="screenabout_title">About</string>
+
+    <!-- DEBUG -->
+    <string name="top_bar_height_in_dp">75</string>
+    <string name="empty_string"></string>
 </resources>

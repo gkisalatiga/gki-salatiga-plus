@@ -25,22 +25,30 @@
 package org.gkisalatiga.plus
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.gkisalatiga.plus.fragment.FragmentAbout
+import org.gkisalatiga.plus.fragment.FragmentBlank
 import org.gkisalatiga.plus.fragment.FragmentEvents
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentNews
@@ -56,6 +64,11 @@ class ActivityLauncher : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val screenController = rememberNavController()
+            // fragmentController is deprecated and will not be used in the future.
+            // It is replaced with AnimatedVisibility that controls fragment visibility, because
+            // for some reason, Composable does not support nested NavHosts.
+            // ---
+            // fragmentController continues to be passed to functions to ensure backward compatibility.
             val fragmentController = rememberNavController()
             val context = this
 
@@ -80,59 +93,13 @@ class ActivityLauncher : ComponentActivity() {
      */
     @Composable
     private fun initComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+        // This will manage the application's main "screens" (i.e., primary activities)
         NavHost(navController = screenController, startDestination = NavigationRoutes().SCREEN_MAIN) {
-            // This will manage the application's main "screens" (i.e., primary activities)
             composable(NavigationRoutes().SCREEN_MAIN) {
                 ScreenMain().getComposable(screenController, fragmentController, context)
             }
             composable(NavigationRoutes().SCREEN_ABOUT) {
                 ScreenAbout().getComposable(screenController, fragmentController, context)
-            }
-        }
-
-        // This will manage and navigate the main screen's Composable "fragment" contents.
-        NavHost(navController = fragmentController, startDestination = NavigationRoutes().FRAG_MAIN_HOME) {
-            composable(NavigationRoutes().FRAG_MAIN_HOME) {
-                FragmentHome().getComposable(screenController, fragmentController, context)
-            }
-            composable(NavigationRoutes().FRAG_MAIN_SERVICES) {
-                FragmentServices().getComposable(screenController, fragmentController, context)
-            }
-            composable(NavigationRoutes().FRAG_MAIN_NEWS) {
-                FragmentNews().getComposable(screenController, fragmentController, context)
-            }
-            composable(NavigationRoutes().FRAG_MAIN_EVENTS) {
-                FragmentEvents().getComposable(screenController, fragmentController, context)
-            }
-            composable(NavigationRoutes().FRAG_ABOUT) {
-                FragmentAbout().getComposable(screenController, fragmentController, context)
-            }
-        }
-
-
-
-        // Ensure that when we are at the first screen upon clicking "back",
-        // the app is exited instead of continuing to navigate back to the previous screens
-        // SOURCE: https://stackoverflow.com/a/69151539
-        BackHandler {
-            val curRoute = fragmentController.currentDestination?.route
-            if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
-                Toast.makeText(context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
-
-                // Exit the application
-                // SOURCE: https://stackoverflow.com/a/67402808
-                this.finish()
-            } else if (
-                curRoute == NavigationRoutes().FRAG_MAIN_EVENTS ||
-                curRoute == NavigationRoutes().FRAG_MAIN_NEWS ||
-                curRoute == NavigationRoutes().FRAG_MAIN_SERVICES
-            ) {
-                // If we are in the main screen but not at fragment one, navigate the app to fragment one
-                fragmentController.navigate(NavigationRoutes().FRAG_MAIN_HOME)
-            } else {
-                // By default, do press "back" as usual
-                fragmentController.popBackStack()
-                screenController.popBackStack()
             }
         }
     }
