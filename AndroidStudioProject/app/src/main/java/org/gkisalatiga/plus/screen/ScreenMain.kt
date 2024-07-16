@@ -20,12 +20,20 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -52,20 +60,54 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
+import org.gkisalatiga.plus.fragment.FragmentAbout
+import org.gkisalatiga.plus.fragment.FragmentBlank
+import org.gkisalatiga.plus.fragment.FragmentEvents
+import org.gkisalatiga.plus.fragment.FragmentHome
+import org.gkisalatiga.plus.fragment.FragmentNews
+import org.gkisalatiga.plus.fragment.FragmentServices
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
 class ScreenMain : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
+
+    // Enlists all of the fragments that will be displayed in this particular screen.
+    private val fragRoutes = listOf(
+        NavigationRoutes().FRAG_MAIN_HOME,
+        NavigationRoutes().FRAG_MAIN_SERVICES,
+        NavigationRoutes().FRAG_BLANK,
+        NavigationRoutes().FRAG_MAIN_NEWS,
+        NavigationRoutes().FRAG_MAIN_EVENTS
+    )
+
+    // Ensures that we don't manually create each and every one of the navigation bar item.
+    // We save the state of the index of the currently selected fragment in this screen.
+    private var selectedFragItem = mutableStateOf(0)
+
+    // This is the control variable for showing/hiding the screen's fragments.
+    // We use this in place of NavHost navigation because, somehow, nested NavHosts isn't yet supported in Composable.
+    private var fragmentVisibility = listOf(
+        // Default value, display the first fragment upon first load.
+        mutableStateOf(true),
+        mutableStateOf(false),
+        mutableStateOf(false),
+        mutableStateOf(false),
+        mutableStateOf(false)
+    )
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
@@ -80,6 +122,51 @@ class ScreenMain : ComponentActivity() {
             // This bottom sheet displays all features and menus of the app.
             // It will only be shown when the FAB is clicked.
             this.getBottomSheet(screenController, fragmentController, context)
+
+            // Setting up the layout of all of the fragments.
+            // Then wrapping each fragment in AnimatedVisibility so that we can manually control their visibility.
+            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
+                AnimatedVisibility(visible = fragmentVisibility[0].value) {
+                    FragmentHome().getComposable(screenController, fragmentController, context)
+                }
+                AnimatedVisibility(visible = fragmentVisibility[1].value) {
+                    FragmentServices().getComposable(screenController, fragmentController, context)
+                }
+                AnimatedVisibility(visible = fragmentVisibility[3].value) {
+                    FragmentNews().getComposable(screenController, fragmentController, context)
+                }
+                AnimatedVisibility(visible = fragmentVisibility[4].value) {
+                    FragmentEvents().getComposable(screenController, fragmentController, context)
+                }
+            }
+
+            // Ensure that when we are at the first screen upon clicking "back",
+            // the app is exited instead of continuing to navigate back to the previous screens.
+            // SOURCE: https://stackoverflow.com/a/69151539
+            BackHandler {
+                val curRoute = fragRoutes[selectedFragItem.value]
+                if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
+                    Toast.makeText(context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
+
+                    // Exit the application.
+                    // SOURCE: https://stackoverflow.com/a/67402808
+                    (context as ComponentActivity).finish()
+                } else if (
+                    curRoute == NavigationRoutes().FRAG_MAIN_EVENTS ||
+                    curRoute == NavigationRoutes().FRAG_MAIN_NEWS ||
+                    curRoute == NavigationRoutes().FRAG_MAIN_SERVICES
+                ) {
+                    // If we are in the main screen but not at fragment one, navigate the app to fragment one.
+                    selectedFragItem.value = 0
+
+                    // After selecting the value of the destination fragment,
+                    // show the destination fragment and hide the rest of other fragments in the current screen.
+                    fragmentVisibility.forEach { it.value = false }
+                    fragmentVisibility[selectedFragItem.value].value = true
+                } else {
+                    // Do nothing.
+                }
+            }
         }
 
         // Ensure that when we click "back" to a certain screen (or when the screen is arbitrarily changed),
@@ -91,16 +178,6 @@ class ScreenMain : ComponentActivity() {
         })
     }
 
-    // Ensures that we don't manually create each and every one of the navigation bar item
-    private var selectedFragItem = mutableStateOf(0)
-    private val fragRoutes = listOf(
-        NavigationRoutes().FRAG_MAIN_HOME,
-        NavigationRoutes().FRAG_MAIN_SERVICES,
-        "",
-        NavigationRoutes().FRAG_MAIN_NEWS,
-        NavigationRoutes().FRAG_MAIN_EVENTS
-    )
-
     @Composable
     private fun getBottomBar(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
 
@@ -108,7 +185,7 @@ class ScreenMain : ComponentActivity() {
         val navItems = listOf(
             stringResource(R.string.bottomnav_menu_1),
             stringResource(R.string.bottomnav_menu_2),
-            "",
+            stringResource(R.string.empty_string),
             stringResource(R.string.bottomnav_menu_3),
             stringResource(R.string.bottomnav_menu_4)
         )
@@ -136,8 +213,9 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 selectedFragItem.value = index
 
-                                // Navigate between screens when the nav item is clicked
-                                fragmentController.navigate(fragRoutes[index])
+                                // Navigate between fragments when the nav item is clicked
+                                fragmentVisibility.forEach { it.value = false }
+                                fragmentVisibility[index].value = true
                             }
                         )
                     }
@@ -214,7 +292,6 @@ class ScreenMain : ComponentActivity() {
                 }
                 IconButton(onClick = {
                     screenController.navigate(NavigationRoutes().SCREEN_ABOUT)
-                    fragmentController.navigate(NavigationRoutes().FRAG_ABOUT)
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Info,

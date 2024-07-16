@@ -23,35 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import org.gkisalatiga.plus.lib.AppDatabase
 
-class FragmentAbout : ComponentActivity() {
+class FragmentBlank : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
     }
 
-    /**
-     * Navigation between screens
-     * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
-     */
     @Composable
     public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        // Setting the layout to center both vertically and horizontally
-        // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
-        // ---
-        // Enabling vertical scrolling
-        // SOURCE: https://stackoverflow.com/a/72769561
-        val scrollState = rememberScrollState()
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(state = scrollState)
-        ) {
-            val fragmentName = fragmentController.currentDestination?.route
-            Text("This fragment is called: $fragmentName")
-
-            val jsonData = AppDatabase().loadRaw(context).getMainData().getJSONObject("home").getString("welcome-banner")
-            Text("Your JSON data: " + jsonData)
-        }
+        // Just an empty fragment without any composable element.
     }
 }
