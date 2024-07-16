@@ -23,24 +23,47 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.widget.GridView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.layout.LazyLayout
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -48,24 +71,38 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.FontScaling
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -242,25 +279,432 @@ class ScreenMain : ComponentActivity() {
     @ExperimentalMaterial3Api
     @OptIn(ExperimentalMaterial3Api::class)
     private fun getBottomSheet(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        // SOURCE: https://developer.android.com/develop/ui/compose/components/bottom-sheets
+
+        // Enable the bottom sheet that scrolls overflown content upon full expansion.
+        // SOURCE: https://stackoverflow.com/q/78756531/8101395
         val scope = rememberCoroutineScope()
         val sheetState = rememberModalBottomSheetState()
         if (showBottomSheet.value) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet.value = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                modifier = Modifier.fillMaxHeight(),
             ) {
-                Button (
-                    onClick = {
-                        // Hides the modal sheet
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet.value = false
+                // This determines the span size of the following scrollable container.
+                val spanSize = 3
+
+                LazyVerticalGrid( columns = GridCells.Fixed(spanSize), modifier = Modifier.padding(20.dp), horizontalArrangement = Arrangement.Center) {
+                    /* Archival action menu section. */
+                    item(span = { GridItemSpan(spanSize) }) {
+                        Text("Arsip", fontSize = 28.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 20.dp).padding(top = 30.dp), textAlign = TextAlign.Center)
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_newspaper_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Arsip Warta Jemaat", textAlign = TextAlign.Center)
                             }
                         }
                     }
-                ) {
-                    Text("Close the modal sheet")
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_book_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Arsip Liturgi Umum", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_book_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("English Service Liturgy Archive", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+
+                    /* Textual devotion action menu section. */
+                    item(span = { GridItemSpan(spanSize) }) {
+                        Text("Renungan YKB", fontSize = 28.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 20.dp).padding(top = 30.dp), textAlign = TextAlign.Center)
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_child_care_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Renungan Kiddy", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_face_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Teens for Christ", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_person_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Youth for Christ", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_family_restroom_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Renungan Wasiat", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton (onClick = {
+                            // Hides the modal sheet.
+                            scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                        }, modifier = Modifier.padding(5.dp).height(125.dp), shape = RoundedCornerShape(10.dp), contentPadding = PaddingValues(5.dp)) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_elderly_woman_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Renungan Usia Indah", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+
+                    /* Church form action menu section. */
+                    item(span = { GridItemSpan(spanSize) }) {
+                        Text("Formulir", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 10.dp).padding(top = 20.dp), textAlign = TextAlign.Center)
+                    }
+                    item() {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_water_drop_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Baptis Anak", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_water_drop_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Baptis Dewasa dan Sidi", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_group_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Bina Pranikah", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_favorite_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Pemberkatan Nikah", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.baseline_person_add_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Atestasi", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+
+                    /* External links and social media channels. */
+                    item(span = { GridItemSpan(spanSize) }) {
+                        Text("Tautan Luar", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 10.dp).padding(top = 20.dp), textAlign = TextAlign.Center)
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_at_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("E-Surat", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_wordpress_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Situs Web", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_youtube_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("YouTube", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_facebook_box_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Facebook", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_instagram_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Instagram", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                    item {
+                        OutlinedButton(
+                            onClick = {
+                                // Hides the modal sheet.
+                                scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+                            },
+                            modifier = Modifier.padding(5.dp).height(125.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.remixicon_whatsapp_fill_48),
+                                    contentDescription = "Some name",
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("WhatsApp", textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
                 }
             }
         }

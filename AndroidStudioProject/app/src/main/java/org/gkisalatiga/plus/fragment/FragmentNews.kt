@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,19 +57,18 @@ class FragmentNews : ComponentActivity() {
                 items (10) {
                     Card (
                         onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp).padding(horizontal = 10.dp)
+                        modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
                     ) {
-                        Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp) ) {
+                        Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
                             Image(
                                 painter = painterResource(R.drawable.baseline_article_24),
                                 contentDescription = "Some name",
-                                modifier = Modifier.fillMaxHeight(),
                                 alignment = Alignment.Center,
-                                contentScale = ContentScale.FillHeight
                             )
                             Column {
-                                Text("GKI Salatiga Membeli 5 Kamera PTZ Baru", fontWeight = FontWeight.Bold, modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center)
-                                Text("32 April 2024 sebelum masehi")
+                                Text("McDonalds, Tong Tji, dan Saloka menjadi sponsor Bulan Keluarga 2024 GKI Salatiga", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp))
+                                Text("32 April 2012 sebelum masehi", modifier = Modifier.padding(horizontal = 10.dp))
+                                Text("Komisi Pelayanan dan Pekabaran Injil", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
                             }
                         }
                     }
