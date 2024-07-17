@@ -59,6 +59,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
@@ -74,9 +75,11 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -103,6 +106,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.FontScaling
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -111,6 +116,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
+import org.gkisalatiga.plus.abstract.ParameterSchema
 import org.gkisalatiga.plus.fragment.FragmentAbout
 import org.gkisalatiga.plus.fragment.FragmentBlank
 import org.gkisalatiga.plus.fragment.FragmentEvents
@@ -206,6 +212,9 @@ class ScreenMain : ComponentActivity() {
             }
         }
 
+        // The link confirmation dialog.
+        this.getLinkConfirmationDialog(screenController, fragmentController, context)
+
         // Ensure that when we click "back" to a certain screen (or when the screen is arbitrarily changed),
         // the bottom navigation menu item is highlighted
         // SOURCE: https://stackoverflow.com/a/77403140
@@ -269,6 +278,52 @@ class ScreenMain : ComponentActivity() {
             modifier = Modifier.scale(1.5f).offset(0.dp, 30.dp)
         ) {
             Icon(Icons.Filled.Favorite, contentDescription = "Add FAB")
+        }
+    }
+
+    // Controls, from an outside composable, whether to display the link confirmation dialog.
+    private var showLinkConfirmationDialog = mutableStateOf(false)
+
+    // This becomes the "parameters" of the link confirmation dialog.
+    private var paramLinkConfirmationDialog = mutableStateOf<ParameterSchema>(ParameterSchema("", ""))
+
+    /**
+     * This function displays the confirmation dialog that asks the user
+     * whether the user wants to proceed opening a certain link.
+     * SOURCE: https://www.composables.com/tutorials/dialogs
+     * SOURCE: https://developer.android.com/develop/ui/compose/components/dialog
+     */
+    @Composable
+    private fun getLinkConfirmationDialog(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+        if (showLinkConfirmationDialog.value) {
+            AlertDialog(
+                onDismissRequest = { showLinkConfirmationDialog.value = false },
+                title = { Text(paramLinkConfirmationDialog.value.title) },
+                text = {
+                    Column {
+                        Text("Do you want to open the following link?")
+                        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = paramLinkConfirmationDialog.value.url,
+                                onValueChange = { /* NOTHING */ },
+                                label = { Text("-") },
+                                enabled = false
+                            )
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
+                        Text("Proceed".uppercase())
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
+                        Text("Back".uppercase())
+                    }
+                }
+            )
         }
     }
 
@@ -566,6 +621,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -590,6 +650,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -614,6 +679,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -638,6 +708,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -662,6 +737,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -686,6 +766,11 @@ class ScreenMain : ComponentActivity() {
                             onClick = {
                                 // Hides the modal sheet.
                                 scope.launch { sheetState.hide() }.invokeOnCompletion { if (!sheetState.isVisible) { showBottomSheet.value = false } }
+
+                                // Invoke the link confirmation dialog, to open the specific external link.
+                                paramLinkConfirmationDialog.value.title = "Membangun Koloni"
+                                paramLinkConfirmationDialog.value.url = "mailto:giga@purbalingga.com"
+                                showLinkConfirmationDialog.value = true
                             },
                             modifier = Modifier.padding(5.dp).height(125.dp),
                             shape = RoundedCornerShape(10.dp),

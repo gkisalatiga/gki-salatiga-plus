@@ -7,9 +7,8 @@
 package org.gkisalatiga.plus.fragment
 
 import android.content.Context
-import android.graphics.Paint.Align
-import android.os.Bundle
-import android.os.PersistableBundle
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -22,19 +21,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -43,42 +37,40 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastForEachIndexed
-import androidx.constraintlayout.solver.widgets.Rectangle
-import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.NavHostController
 import org.gkisalatiga.plus.R
-import org.gkisalatiga.plus.lib.DownloadAndSaveImageTask
-import org.gkisalatiga.plus.lib.FileManager
+import org.gkisalatiga.plus.lib.NavigationRoutes
 
 class FragmentHome : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
-
-    // The string text used in the main menu items.
-    val mainMenuText = listOf (
+    // The string text used in the profile items.
+    private val profileItemText = listOf (
         "Profil Gereja",
         "Kependetaan",
         "Kemajelisan",
         "Badan Pelayanan"
     )
 
-    // The icons used in the main menu items.
-    val mainMenuIcon = listOf (
-        R.drawable.baseline_compost_24,
-        R.drawable.baseline_compost_24,
-        R.drawable.baseline_compost_24,
-        R.drawable.baseline_compost_24
+    // The icons used in the profile items.
+    private val profileItemIcon = listOf (
+        R.drawable.baseline_article_24,
+        R.drawable.baseline_newspaper_24,
+        R.drawable.baseline_access_time_24,
+        R.drawable.baseline_location_on_24
+    )
+
+    // The destination fragments of the profile items.
+    private val profileItemDestination = listOf (
+        NavigationRoutes().FRAG_PROFILE_CHURCH,
+        NavigationRoutes().FRAG_PROFILE_PASTOR,
+        NavigationRoutes().FRAG_PROFILE_ASSEMBLY,
+        NavigationRoutes().FRAG_PROFILE_MINISTRY
     )
 
     /**
@@ -116,14 +108,20 @@ class FragmentHome : ComponentActivity() {
                     item { Spacer(modifier = Modifier.width(5.dp)) }
                     // The main menu "main" content.
                     items (4) { index ->
-                        Button(onClick = {}, modifier = Modifier.padding(horizontal = 5.dp).wrapContentWidth(), shape = RoundedCornerShape(10.dp)) {
+                        Button(onClick = {
+                            screenController.navigate("${NavigationRoutes().SCREEN_PROFILE}/${profileItemDestination[index]}")
+                        }, modifier = Modifier.padding(horizontal = 5.dp).wrapContentWidth(), shape = RoundedCornerShape(10.dp)) {
                             Column (horizontalAlignment = Alignment.CenterHorizontally) {
+                                // Ensures that the drawable image to be used matches with theme accent color.
+                                // SOURCE: https://stackoverflow.com/a/15266893
+                                // getDrawable(profileItemIcon[index])?.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC)
+
                                 Image(
-                                    painter = painterResource(mainMenuIcon[index]),
+                                    painter = painterResource(profileItemIcon[index]),
                                     contentDescription = "Some name",
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                Text(mainMenuText[index])
+                                Text(profileItemText[index])
                             }
                         }
                     }
