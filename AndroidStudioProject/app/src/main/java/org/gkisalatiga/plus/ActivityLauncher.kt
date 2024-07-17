@@ -32,6 +32,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -44,9 +45,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import org.gkisalatiga.plus.fragment.FragmentAbout
 import org.gkisalatiga.plus.fragment.FragmentBlank
 import org.gkisalatiga.plus.fragment.FragmentEvents
@@ -57,10 +60,15 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenMain
+import org.gkisalatiga.plus.screen.ScreenProfile
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 
 class ActivityLauncher : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable on-the-fly edit of drawable SVG vectors.
+        // SOURCE: https://stackoverflow.com/a/38418049
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+
         super.onCreate(savedInstanceState)
         setContent {
             val screenController = rememberNavController()
@@ -100,6 +108,15 @@ class ActivityLauncher : ComponentActivity() {
             }
             composable(NavigationRoutes().SCREEN_ABOUT) {
                 ScreenAbout().getComposable(screenController, fragmentController, context)
+            }
+            composable(
+                "${NavigationRoutes().SCREEN_PROFILE}/{frag}",
+                arguments = listOf(navArgument("frag") {
+                    type = NavType.StringType
+                })
+            ) {
+                val frag = requireNotNull(it.arguments).getString("frag")
+                ScreenProfile(frag).getComposable(screenController, fragmentController, context)
             }
         }
     }
