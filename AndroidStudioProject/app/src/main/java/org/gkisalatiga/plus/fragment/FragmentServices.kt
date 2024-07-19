@@ -2,15 +2,17 @@
  * AGPL-3.0-licensed
  * Copyright (C) GKI Salatiga 2024
  * Written by Samarthya Lykamanuella (github.com/groaking)
+ * ---
+ *
+ * AsyncImage.
+ * SOURCE: https://coil-kt.github.io/coil/compose/
  */
 
 package org.gkisalatiga.plus.fragment
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,11 +38,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.StringFormatter
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.json.JSONArray
+import org.json.JSONObject
 
 class FragmentServices() : ComponentActivity() {
 
@@ -120,9 +126,9 @@ class FragmentServices() : ComponentActivity() {
             ) {
                 // Displaying a particular service section.
                 if (selectedChip[0].value) {
-                    getRegularService()
+                    getServicesUI("umum")
                 } else if (selectedChip[1].value) {
-                    getEnglishService()
+                    getServicesUI("es")
                 } else {
                     Text("It's gone!")
                 }
@@ -130,512 +136,91 @@ class FragmentServices() : ComponentActivity() {
         }
 
     }
-
-    @Composable
-    private fun getEnglishService() {
-
-        // Get the application's JSON object
-        val db = AppDatabase().loadDebug(GlobalSchema.context).getMainData()
-
-        // Enlist the cards to be shown in this fragment
-        val cardsList = listOf(
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es")
-        )
-
-        // Display the cards
-        cardsList.forEach {
-            val title = it.getString("title")
-            val desc = it.getString("description")
-            val imgSrc = it.getString("thumbnail")
-
-            // Downloading the thumbnail and converting it to bitmap
-            // val downloadedStream = mutableStateOf(InputStream.nullInputStream())
-            // val bmp = BitmapFactory.decodeStream(downloadedStream.value)
-
-            Card (
-                onClick = {
-                    Toast.makeText(GlobalSchema.context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                    val destination = "streaming_youtube"
-                    // screenController.navigate("${NavigationRoutes().SCREEN_LIVE}/${destination}?${NavigationRoutes().SUB_KEBAKTIAN_ES}")
-                },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
-            ) {
-                Column {
-                    // Displaying the image
-                    // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/loading
-                    // SOURCE: https://stackoverflow.com/a/69689287
-                    // Image(
-                    // bitmap = bmp.asImageBitmap(),
-                    // contentDescription = "Desc here"
-                    // )
-
-                    /*
-                    AsyncImage(
-                        model = imgSrc,
-                        contentDescription = null,
-                    )
-                     */
-
-                    // DownloadAndSaveImageTask(schema.value["context"] as Context).execute(imgSrc)
-
-                    Image(
-                        painter = painterResource(R.drawable.sample_thumbnail_youtube_5),
-                        contentDescription = "Some name",
-                        modifier = Modifier.fillMaxWidth(),
-                        // SOURCE: https://stackoverflow.com/a/76274718
-                        contentScale = ContentScale.FillWidth
-                    )
-                    Column (modifier = Modifier.padding(10.dp)) {
-                        Text(title, fontWeight = FontWeight.Bold)
-                        Text("21 Juli 2003")
-                    }
-                }
-            }
-        }
-
-    }
-
-    @Composable
-    private fun getRegularService() {
-
-        // Get the application's JSON object
-        val db = AppDatabase().loadDebug(GlobalSchema.context).getMainData()
-
-        // Enlist the cards to be shown in this fragment
-        val cardsList = listOf(
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum")
-        )
-
-        // Display the cards
-        cardsList.forEach {
-            val title = it.getString("title")
-            val desc = it.getString("description")
-            val imgSrc = it.getString("thumbnail")
-
-            // Downloading the thumbnail and converting it to bitmap
-            // val downloadedStream = mutableStateOf(InputStream.nullInputStream())
-            // val bmp = BitmapFactory.decodeStream(downloadedStream.value)
-
-            Card (
-                onClick = {
-                    Toast.makeText(GlobalSchema.context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                    val destination = "streaming_youtube"
-                    Log.d("Groaker", "Opening YouTube stream on regular service.")
-                    // Prevents random switching of screens when the user opens a different fragment or screen.
-                    // screenController.saveState()
-                    // screenController.clearBackStack(NavigationRoutes().SCREEN_MAIN)
-                    // SOURCE: https://stackoverflow.com/a/76423168
-                    //onFinish()
-                    //screenController.popBackStack("", true)
-                    /*
-                    val navDestination = "${NavigationRoutes().SCREEN_LIVE}/${destination}?${NavigationRoutes().SUB_KEBAKTIAN_UMUM}"
-                    screenController.navigate(navDestination) {
-                        // Removes the previous back state and prevents random jiggling of screens before navigating.
-                        // SOURCE: https://stackoverflow.com/a/68304038
-                        popUpTo(navDestination) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }*/
-                },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
-            ) {
-                Column {
-                    // Displaying the image
-                    // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/loading
-                    // SOURCE: https://stackoverflow.com/a/69689287
-                    // Image(
-                    // bitmap = bmp.asImageBitmap(),
-                    // contentDescription = "Desc here"
-                    // )
-
-                    /*
-                    AsyncImage(
-                        model = imgSrc,
-                        contentDescription = null,
-                    )
-                     */
-
-                    // DownloadAndSaveImageTask(context).execute(imgSrc)
-
-                    Image(
-                        painter = painterResource(R.drawable.sample_thumbnail_youtube_4),
-                        contentDescription = "Some name",
-                        modifier = Modifier.fillMaxWidth(),
-                        // SOURCE: https://stackoverflow.com/a/76274718
-                        contentScale = ContentScale.FillWidth
-                    )
-                    Column (modifier = Modifier.padding(10.dp)) {
-                        Text(title, fontWeight = FontWeight.Bold)
-                        Text("21 Juli 2003")
-                    }
-                }
-            }
-        }
-
-    }
-
-    /*
-    private val submenu = submenu
-    private val onFinish = onFinish
-
-    // The state of the currently selected chip.
-    // (The default is to set the first chip as the one initially selected.)
-    private var selectedChip = listOf(
-        mutableStateOf(submenu == null || submenu == NavigationRoutes().SUB_KEBAKTIAN_UMUM),
-        mutableStateOf(submenu != null && submenu == NavigationRoutes().SUB_KEBAKTIAN_ES)
-    )
-
-    // The names of the chips.
-    private var nameOfChip = listOf(
-        "Kebaktian Umum",
-        "English Service"
-    )
-
-    // The icons of the chips.
-    private var iconOfChip = listOf (
-        Icons.Filled.Done,
-        Icons.Filled.Call
-    )
 
     /**
-     * Navigation between screens
-     * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
+     * Obtains the composable UI of the "list of services".
+     * The data displayed is based on the arguments supplied.
+     * @param nodeName the name of the JSON metadata node that represents the desired service section.
      */
     @Composable
-    public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        Column {
-            // Display the top chips for selecting between different services.
-            // SOURCE: https://developer.android.com/develop/ui/compose/components/chip
-            Row (
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(5.dp)
-                    ) {
-                nameOfChip.forEachIndexed { index, item ->
-                    FilterChip(
-                        modifier = Modifier.padding(horizontal = 10.dp),
-                        onClick = {
-                            // Set the current chip as selected and the rest of the other chips unselected.
-                            selectedChip.forEach{ it.value = false }
-                            selectedChip[index].value = true
-                        },
-                        label = { Text(item) },
-                        selected = selectedChip[index].value,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = iconOfChip[index],
-                                contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        },
-                    )
-                }
-            }
+    private fun getServicesUI(nodeName: String) {
 
-            // Setting the layout to center both vertically and horizontally
-            // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
-            // ---
-            // Enabling vertical scrolling
-            // SOURCE: https://stackoverflow.com/a/72769561
-            val scrollState = rememberScrollState()
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = scrollState)
-                    .padding(20.dp)
-            ) {
-                Log.d("Groaker", "What submenu did you choose? [$submenu]")
-                if (selectedChip[0].value) {
-                    getRegularService(screenController, fragmentController, context)
-                } else if (selectedChip[1].value) {
-                    getEnglishService(screenController, fragmentController, context)
-                } else {
-                    Text("It's gone!")
-                }
-            }
-        }
-    }
+        // Get the application's JSON object.
+        val json: JSONObject = AppDatabase().getMainData()
 
-    @Composable
-    private fun getEnglishService(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        // Display the service liturgy.
-        Card (
-            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
-        ) {
-            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
-                Image(
-                    painter = painterResource(R.drawable.baseline_book_24),
-                    contentDescription = "Some name",
-                    alignment = Alignment.Center,
-                )
-                Column {
-                    Text("English Service Liturgy", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
-                    Text("July 2nd, 2024", modifier = Modifier.padding(horizontal = 10.dp))
-                    Text("Overturning the Temple Table", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
-                }
-            }
+        // Navigate to this fragment's particular JSON node, and retrieve its array.
+        val array: JSONArray = json.getJSONObject("yt-live").getJSONArray(nodeName)
+
+        // Enlist the cards to be shown in this fragment.
+        // This is equivalent to this fragment's particular JSON node.
+        var cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
+        for (i in 0 until array.length()) {
+            val curNode = array[i] as JSONObject
+            cardsList.add(mapOf(
+                "title" to curNode.getString("title"),
+                "date" to curNode.getString("date"),
+                "link" to curNode.getString("link"),
+                "thumbnail" to curNode.getString("thumbnail")
+            ))
         }
 
-        /* Add divider between contents. */
-        HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), thickness = DividerDefaults.Thickness, color = DividerDefaults.color)
+        // For some reason, we must pop the 0-th item in cardsList
+        // because JSONArray iterates from 1, not 0.
+        cardsList.removeAt(0)
 
-        // Get the application's JSON object
-        val db = AppDatabase().loadRaw(context).getMainData()
+        // Testing.
+        Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${cardsList.size}")
+        cardsList.forEachIndexed { index, map ->
+            Log.d("Groaker-Test", "[$index] ${map["title"]}")
+            Log.d("Groaker-Test", "[$index] ${map["date"]}")
+            Log.d("Groaker-Test", "[$index] ${map["link"]}")
+            Log.d("Groaker-Test", "[$index] ${map["thumbnail"]}")
+        }
 
-        // Enlist the cards to be shown in this fragment
-        val cardsList = listOf(
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es"),
-            db.getJSONObject("broadcast").getJSONObject("es")
-        )
-
-        // Display the cards
+        // Display the cards.
         cardsList.forEach {
-            val title = it.getString("title")
-            val desc = it.getString("description")
-            val imgSrc = it.getString("thumbnail")
 
-            // Downloading the thumbnail and converting it to bitmap
-            // val downloadedStream = mutableStateOf(InputStream.nullInputStream())
-            // val bmp = BitmapFactory.decodeStream(downloadedStream.value)
+            // Preparing the arguments.
+            val title = it["title"]
+            val url = it["link"]
+
+            // Format the date.
+            val date = StringFormatter().convertDateFromJSON(it["date"]!!)
+
+            // Retrieving the video thumbnail.
+            val imgSrc = StringFormatter().getYouTubeThumbnailFromUrl(url!!)
 
             Card (
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                 onClick = {
-                    Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                    val destination = "streaming_youtube"
-                    screenController.navigate("${NavigationRoutes().SCREEN_LIVE}/${destination}?${NavigationRoutes().SUB_KEBAKTIAN_ES}")
-                          },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
+                    Toast.makeText(GlobalSchema.context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+
+                    // Trying to switch to the YouTube viewer and open the stream.
+                    Log.d("Groaker", "Opening YouTube stream: $url.")
+                    GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url!!)
+                    GlobalSchema.ytViewerParameters["title"] = title!!
+                    GlobalSchema.ytViewerParameters["date"] = date
+                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
+                }
             ) {
                 Column {
-                    // Displaying the image
-                    // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/loading
-                    // SOURCE: https://stackoverflow.com/a/69689287
-                    // Image(
-                    // bitmap = bmp.asImageBitmap(),
-                    // contentDescription = "Desc here"
-                    // )
-
-                    /*
+                    // Displaying the image.
                     AsyncImage(
                         model = imgSrc,
-                        contentDescription = null,
-                    )
-                     */
-
-                    DownloadAndSaveImageTask(context).execute(imgSrc)
-
-                    Image(
-                        painter = painterResource(R.drawable.sample_thumbnail_youtube_5),
-                        contentDescription = "Some name",
+                        contentDescription = title,
+                        error = painterResource(R.drawable.thumbnail_loading),
                         modifier = Modifier.fillMaxWidth(),
-                        // SOURCE: https://stackoverflow.com/a/76274718
                         contentScale = ContentScale.FillWidth
-                    )
+                        )
+                    // Displaying the content description of the card.
                     Column (modifier = Modifier.padding(10.dp)) {
-                        Text(title, fontWeight = FontWeight.Bold)
-                        Text("21 Juli 2003")
+                        Text(title!!, fontWeight = FontWeight.Bold)
+                        Text(date)
                     }
                 }
             }
         }
+
     }
 
-    @Composable
-    private fun getRegularService(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        // Display the service liturgy.
-        Card (
-            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
-        ) {
-            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
-                Image(
-                    painter = painterResource(R.drawable.baseline_book_24),
-                    contentDescription = "Some name",
-                    alignment = Alignment.Center
-                )
-                Column {
-                    Text("Liturgi Kebaktian Umum", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
-                    Text("14 Juli 2024", modifier = Modifier.padding(horizontal = 10.dp))
-                    Text("Bela Rasa Sang Gembala", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
-                }
-            }
-        }
-
-        // Display the official church news.
-        Card (
-            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
-            modifier = Modifier.fillMaxWidth().padding(top = 5.dp).padding(horizontal = 5.dp)
-        ) {
-            Row ( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp) ) {
-                Image(
-                    painter = painterResource(R.drawable.baseline_newspaper_24),
-                    contentDescription = "Some name",
-                    alignment = Alignment.Center,
-                )
-                Column {
-                    Text("Warta Jemaat", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 10.dp), textAlign = TextAlign.Center)
-                    Text("14 Juli 2024", modifier = Modifier.padding(horizontal = 10.dp))
-                    Text("Bela Rasa Sang Gembala", fontStyle = FontStyle.Italic, modifier = Modifier.padding(horizontal = 10.dp))
-                }
-            }
-        }
-
-        /* Add divider between contents. */
-        HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), thickness = DividerDefaults.Thickness, color = DividerDefaults.color)
-
-        // Get the application's JSON object
-        val db = AppDatabase().loadRaw(context).getMainData()
-
-        // Enlist the cards to be shown in this fragment
-        val cardsList = listOf(
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum"),
-            db.getJSONObject("broadcast").getJSONObject("ibadah-umum")
-        )
-
-        // Display the cards
-        cardsList.forEach {
-            val title = it.getString("title")
-            val desc = it.getString("description")
-            val imgSrc = it.getString("thumbnail")
-
-            // Downloading the thumbnail and converting it to bitmap
-            // val downloadedStream = mutableStateOf(InputStream.nullInputStream())
-            // val bmp = BitmapFactory.decodeStream(downloadedStream.value)
-
-            Card (
-                onClick = {
-                    Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                    val destination = "streaming_youtube"
-                    Log.d("Groaker", "Opening YouTube stream on regular service.")
-                    // Prevents random switching of screens when the user opens a different fragment or screen.
-                    // screenController.saveState()
-                    // screenController.clearBackStack(NavigationRoutes().SCREEN_MAIN)
-                    // SOURCE: https://stackoverflow.com/a/76423168
-                    //onFinish()
-                    //screenController.popBackStack("", true)
-                    val navDestination = "${NavigationRoutes().SCREEN_LIVE}/${destination}?${NavigationRoutes().SUB_KEBAKTIAN_UMUM}"
-                    screenController.navigate(navDestination) {
-                        // Removes the previous back state and prevents random jiggling of screens before navigating.
-                        // SOURCE: https://stackoverflow.com/a/68304038
-                        popUpTo(navDestination) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                          },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
-            ) {
-                Column {
-                    // Displaying the image
-                    // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/loading
-                    // SOURCE: https://stackoverflow.com/a/69689287
-                    // Image(
-                    // bitmap = bmp.asImageBitmap(),
-                    // contentDescription = "Desc here"
-                    // )
-
-                    /*
-                    AsyncImage(
-                        model = imgSrc,
-                        contentDescription = null,
-                    )
-                     */
-
-                    DownloadAndSaveImageTask(context).execute(imgSrc)
-
-                    Image(
-                        painter = painterResource(R.drawable.sample_thumbnail_youtube_4),
-                        contentDescription = "Some name",
-                        modifier = Modifier.fillMaxWidth(),
-                        // SOURCE: https://stackoverflow.com/a/76274718
-                        contentScale = ContentScale.FillWidth
-                    )
-                    Column (modifier = Modifier.padding(10.dp)) {
-                        Text(title, fontWeight = FontWeight.Bold)
-                        Text("21 Juli 2003")
-                    }
-                }
-            }
-        }
-    }
-     */
 }

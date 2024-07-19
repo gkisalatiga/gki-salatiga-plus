@@ -81,15 +81,11 @@ class GlobalSchema : Application() {
         /* Initializing the global schema that does not directly trigger recomposition. */
 
         @SuppressLint("MutableCollectionMutableState")
-        val norender = mutableMapOf<String, String>(
-            /* These parameters are required for displaying the right content. */
+        val ytViewerParameters = mutableMapOf<String, String>(
+            /* These parameters are required for displaying the right content in the YouTube viewer. */
             "date" to "",
             "title" to "",
-            "url" to "",
-
-            /* These parameters are used in displaying a link confirmation dialog in the home screen. */
-            "linkConfirmURL" to "",
-            "linkConfirmTitle" to "",
+            "yt-id" to "",
         )
 
         /* This parameter is required for  manipulating the composition and the app's view. */

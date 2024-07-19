@@ -60,6 +60,10 @@ import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenMain
+import org.gkisalatiga.plus.screen.ScreenVideoLive
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
 // import org.gkisalatiga.plus.screen.ScreenMain
 
 class ActivityLauncher : ComponentActivity() {
@@ -162,6 +166,7 @@ class ActivityLauncher : ComponentActivity() {
             when(GlobalSchema.pushScreen.value) {
                 NavigationRoutes().SCREEN_MAIN -> { ScreenMain().getComposable() }
                 NavigationRoutes().SCREEN_ABOUT -> { ScreenAbout().getComposable() }
+                NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
             }
         }
     }
@@ -173,22 +178,43 @@ class ActivityLauncher : ComponentActivity() {
      * This function does not need to become a composable function since it requires no UI.
      */
     private fun initMetaData() {
-        Downloader().initMetaData()
 
         // Upon successful metadata download, we manage the app's internal variable storage
         // according to the downloaded JSON file's schema.
         // We also make any appropriate settings accordingly.
-        while (true) {
-            if (GlobalSchema.isJSONMetaDataInitialized.value) {
-                // Let's read the metadata and assign the global JSONObject for others to read.
-                val appDB = AppDatabase()
-                appDB.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
-                GlobalSchema.globalJSONObject = appDB.getMainData()
+        // ---
+        // This is all done in a multi-thread so that we do not interrupt the main GUI.
+        val executor = Executors.newSingleThreadExecutor()
+        executor.execute {
+            // Create the JSON manager object.
+            val appDB = AppDatabase()
 
-                // It is finally set-up. Let's break free from this loop.
-                break
-            } else {
-                continue
+            // Let's apply the fallback JSON data until the actual, update JSON metadata is downloaded.
+            Log.d("Groaker", "Loading the fallback JSON metadata ...")
+            GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
+
+            // Set the flag to "false" to signal that we need to have the new data now.
+            GlobalSchema.isJSONMetaDataInitialized.value = false
+
+            while (true) {
+
+                // Make the attempt to download the JSON file.
+                Downloader().initMetaData()
+
+                if (GlobalSchema.isJSONMetaDataInitialized.value) {
+                    // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
+                    GlobalSchema.globalJSONObject = appDB.getMainData()
+                    Log.d("Groaker", "Successfully refreshed the JSON data!")
+
+                    // It is finally set-up. Let's break free from this loop.
+                    break
+                } else {
+                    // Sleep for a couple of milliseconds before continuing.
+                    // SOURCE: http://stackoverflow.com/questions/24104313/ddg#24104427
+                    TimeUnit.SECONDS.sleep(1);
+                    continue
+                }
+
             }
         }
     }

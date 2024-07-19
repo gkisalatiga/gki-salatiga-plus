@@ -50,7 +50,6 @@ import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenProfile
 import org.gkisalatiga.plus.screen.ScreenVideo
-import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 
@@ -122,10 +121,10 @@ class ActivitySingleLauncher : ComponentActivity() {
                     submenu = submenu.toString().split("&")[1]
                 }
 
-                ScreenMain(menu, submenu).getComposable(screenController, fragmentController, context)
+                //ScreenMain(menu, submenu).getComposable(screenController, fragmentController, context)
             }
             composable(NavigationRoutes().SCREEN_ABOUT) {
-                ScreenAbout().getComposable(screenController, fragmentController, context)
+                //ScreenAbout().getComposable(screenController, fragmentController, context)
             }
             composable(
                 "${NavigationRoutes().SCREEN_PROFILE}/{frag}",
@@ -167,7 +166,7 @@ class ActivitySingleLauncher : ComponentActivity() {
             ) {
                 val dest = requireNotNull(it.arguments).getString("dest")
                 val submenu = requireNotNull(it.arguments).getString("submenu")
-                ScreenVideoLive(dest, submenu).getComposable(screenController, fragmentController, context)
+                // ScreenVideoLive(dest, submenu).getComposable(screenController, fragmentController, context)
             }
         }
     }

@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -29,47 +30,73 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.gkisalatiga.plus.R
+import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-/**
- * @param destination the destination live video URL that needs to be displayed.
- */
-class ScreenVideoLive(destination: String?, submenu: String?) : ComponentActivity() {
-    private val destination = destination
-    private val submenu = submenu
+
+class ScreenVideoLive() : ComponentActivity() {
+
+    // The YouTube video viewer object.
+    var view: YouTubePlayerView? = null
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    public fun getComposable() {
         Scaffold (
-            topBar = { this.getTopBar(screenController, fragmentController, context) }
+            topBar = { this.getTopBar() }
                 ) {
-            // Hiding/displaying a certain fragment based on the passed argument.
-            Toast.makeText(context, "Called fragment: $destination", Toast.LENGTH_SHORT).show()
-            if (destination != null) {
-            }
 
             // Display the necessary content.
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
-                Text("Let us watch this streaming: $destination")
+                Column {
+
+                    // Embedding the YouTube video into the composable.
+                    // SOURCE: https://dev.to/mozeago/jetpack-compose-loadinghow-to-load-a-youtube-video-or-youtube-livestream-channel-to-your-android-application-4ffc
+                    val youtubeVideoID = GlobalSchema.ytViewerParameters["yt-id"]
+                    val ctx = LocalContext.current
+                    AndroidView(factory = {
+                        view = YouTubePlayerView(it)
+                        val fragment = view!!.addYouTubePlayerListener(
+                            object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    super.onReady(youTubePlayer)
+                                    youTubePlayer.loadVideo(youtubeVideoID!!, 0f)
+                                }
+                            }
+                        )
+                        view!!
+                    })
+
+                    Text(GlobalSchema.ytViewerParameters["title"]!!, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
+                    Text(GlobalSchema.ytViewerParameters["date"]!!)
+
+                }
             }
+
         }
 
         // Ensures that we always land where we started.
         BackHandler {
-            // When the user clicks "back", we navigate to the "services" tab instead of the "home" tab
-            screenController.navigate("${NavigationRoutes().SCREEN_MAIN}?${NavigationRoutes().FRAG_MAIN_SERVICES}&${submenu}")
+            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
+            view!!.release()
         }
     }
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
-    private fun getTopBar(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    private fun getTopBar() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -78,24 +105,20 @@ class ScreenVideoLive(destination: String?, submenu: String?) : ComponentActivit
             ),
             title = {
                 Text(
-                    stringResource(R.string.screenvideo_title),
+                    stringResource(R.string.screenlive_title),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    // When the user clicks "back", we navigate to the "services" tab instead of the "home" tab
-                    screenController.navigate("${NavigationRoutes().SCREEN_MAIN}?${NavigationRoutes().FRAG_MAIN_SERVICES}&${submenu}")
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Localiszes desc"
-                    )
-                }
+                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
+                    view!!.release()
+                }) { Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "") }
             },
             actions = { },
             scrollBehavior = scrollBehavior
         )
     }
+
 }

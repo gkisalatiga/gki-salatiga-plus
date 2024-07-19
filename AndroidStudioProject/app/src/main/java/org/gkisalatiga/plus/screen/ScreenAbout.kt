@@ -97,7 +97,6 @@ class ScreenAbout() : ComponentActivity() {
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    // GlobalSchema.schema.value["pushScreen"] = NavigationRoutes().SCREEN_MAIN
                     GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
                 }) {
                     Icon(

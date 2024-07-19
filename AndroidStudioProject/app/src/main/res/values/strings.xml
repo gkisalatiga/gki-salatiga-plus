@@ -15,6 +15,7 @@
     <string name="screenprofile_title">Profil</string>
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
+    <string name="screenlive_title">Live-buoy</string>
 
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>

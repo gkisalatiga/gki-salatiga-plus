@@ -94,7 +94,6 @@ class Downloader() {
 
         // Fetching the data
         Log.d("Groaker", "Attempting to download the JSON metadata file ...")
-        GlobalSchema.isJSONMetaDataInitialized.value = false
         executor.execute {
 
             try {
