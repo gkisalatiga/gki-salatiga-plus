@@ -3,7 +3,7 @@ The developmental project of GKI Salatiga's mobile church application
 
 ## To-Do
 
-- [ ] Add splash screen at launch
+- [X] Add splash screen at launch
 - [ ] Add change log to the "About" screen
 - [ ] Change SVG resources color according to theme [(reference)](https://stackoverflow.com/questions/33126904/change-fillcolor-of-a-vector-in-android-programmatically)
 - [ ] Replace hard-coded strings, values, and dimensions with Android resource XML values
