@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -165,6 +166,13 @@ class FragmentHome() : ComponentActivity() {
                     }
                 }
             }
+
+            // Experimental!
+            // SOURCE: https://coil-kt.github.io/coil/compose/
+            AsyncImage(
+                model = "https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/yt_sample_thumbnail_2.jpg",
+                contentDescription = null
+            )
 
         }
     }

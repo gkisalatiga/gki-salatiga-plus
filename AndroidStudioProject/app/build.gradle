@@ -35,20 +35,26 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
 
-        // SOURCE: https://stackoverflow.com/a/66051026
-        /*
+        // SOURCE: https://stackoverflow.com/q/65545018
         freeCompilerArgs += [
-                "-Xallow-jvm-ir-dependencies",
                 "-P",
                 "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
         ]
-         */
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.3.2'
+        // The default version.
+        // kotlinCompilerExtensionVersion '1.3.2'
+
+        // Newer version that can be used.
+        // kotlinCompilerExtensionVersion = '1.5.14'
+
+        // You need a compatible Kotlin compiler version to use Jetpack Compose.
+        // The table of compatibility list is listed below.
+        // SOURCE: https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+        kotlinCompilerExtensionVersion = '1.4.6'
     }
     packagingOptions {
         resources {
@@ -88,7 +94,8 @@ dependencies {
     // Enable loading async images from the internet
     // SOURCE: https://github.com/coil-kt/coil#jetpack-compose
     // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/loading
-    // implementation("io.coil-kt:coil-compose:2.6.0")
+    // SOURCE: https://coil-kt.github.io/coil/compose/
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Enable global storing, accessing, and writing of variables inside composable elements.
     // SOURCE: https://github.com/GuyMichael/Reactdroid
