@@ -14,7 +14,9 @@ package org.gkisalatiga.plus.global
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
+import org.json.JSONObject
 
 class GlobalSchema : Application() {
     override fun onCreate() { super.onCreate() }
@@ -23,6 +25,24 @@ class GlobalSchema : Application() {
     // and that will course the navigation of screens.
     companion object {
 
+        /* ------------------------------------------------------------------------------------ */
+        /* The following parameter determines which JSON API source to look up to in order to update the application content.
+         * It cannot and should not be changed arbitrarily within the app code. */
+        val JSONSource = "https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/gkisplus.json"
+
+        // This is the filename which will save the above JSON source.
+        val JSONSavedFilename = "gkisplus.json"
+
+        // Stores the absolute path of the downloaded (into internal app storage) JSON metadata
+        var absolutePathToJSONMetaData = ""
+
+        // The state of the initialization of the JSON metadata.
+        var isJSONMetaDataInitialized = mutableStateOf(false)
+
+        // The JSONObject that can be globally accessed by any function and class in the app.
+        var globalJSONObject: JSONObject? = null
+
+        /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
          * These parameters must be individually a mutable state object.
          * Changing any of the following parameters would directly and immediately trigger recomposition. */
@@ -43,29 +63,39 @@ class GlobalSchema : Application() {
         // Stores globally the state of the last opened main menu fragment.
         var lastMainScreenPagerPage = mutableStateOf("")
 
-        /* The donwload status of the lib.Downloader's multithread. */
+        /* The download status of the lib.Downloader's multithread. */
         var isPrivateDownloadComplete = mutableStateOf(false)
 
         /* Stores the path to the downloaded private file; used in lib.Downloader. */
         var pathToDownloadedPrivateFile = mutableStateOf("")
 
         /* ------------------------------------------------------------------------------------ */
+        /* The following mutable variables are associated with internet downloads.
+         * Their contents change dynamically according to a given download state. */
 
+        val downloadedPathOf = mutableListOf(
+            ""
+        )
+
+        /* ------------------------------------------------------------------------------------ */
         /* Initializing the global schema that does not directly trigger recomposition. */
+
         @SuppressLint("MutableCollectionMutableState")
-        val norender = mutableMapOf<String, Any>(
+        val norender = mutableMapOf<String, String>(
             /* These parameters are required for displaying the right content. */
-            "date" to 0,  // --- UNIX-style.
+            "date" to "",
             "title" to "",
             "url" to "",
 
             /* These parameters are used in displaying a link confirmation dialog in the home screen. */
             "linkConfirmURL" to "",
             "linkConfirmTitle" to "",
-
-            /* These parameters are required for  manipulating the composition and the app's view. */
-            "context" to "",  // --- must be converted to an Android Context later on.
         )
+
+        /* This parameter is required for  manipulating the composition and the app's view. */
+        // TODO: Find a way to use the app's context across functions without memory leak.
+        @SuppressLint("StaticFieldLeak")
+        var context: Context = AppCompatActivity()
 
     }
 }

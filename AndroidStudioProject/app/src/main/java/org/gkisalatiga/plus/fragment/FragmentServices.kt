@@ -6,28 +6,16 @@
 
 package org.gkisalatiga.plus.fragment
 
-import android.app.DownloadManager
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.os.Build
-import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -36,41 +24,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import java.io.InputStream
-import java.net.URL
-import java.util.concurrent.Executors
 
 class FragmentServices() : ComponentActivity() {
 
@@ -89,8 +59,8 @@ class FragmentServices() : ComponentActivity() {
 
     // The names of the chips.
     private var nameOfChip = listOf(
-        (GlobalSchema.norender["context"] as Context).resources.getString(R.string.submenu_services_umum),
-        (GlobalSchema.norender["context"] as Context).resources.getString(R.string.submenu_services_es),
+        (GlobalSchema.context).resources.getString(R.string.submenu_services_umum),
+        (GlobalSchema.context).resources.getString(R.string.submenu_services_es),
     )
 
     // The icons of the chips.
@@ -165,7 +135,7 @@ class FragmentServices() : ComponentActivity() {
     private fun getEnglishService() {
 
         // Get the application's JSON object
-        val db = AppDatabase().loadRaw(GlobalSchema.norender["context"] as Context).getMainData()
+        val db = AppDatabase().loadDebug(GlobalSchema.context).getMainData()
 
         // Enlist the cards to be shown in this fragment
         val cardsList = listOf(
@@ -201,7 +171,7 @@ class FragmentServices() : ComponentActivity() {
 
             Card (
                 onClick = {
-                    Toast.makeText(GlobalSchema.norender["context"] as Context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(GlobalSchema.context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
                     val destination = "streaming_youtube"
                     // screenController.navigate("${NavigationRoutes().SCREEN_LIVE}/${destination}?${NavigationRoutes().SUB_KEBAKTIAN_ES}")
                 },
@@ -246,7 +216,7 @@ class FragmentServices() : ComponentActivity() {
     private fun getRegularService() {
 
         // Get the application's JSON object
-        val db = AppDatabase().loadRaw(GlobalSchema.norender["context"] as Context).getMainData()
+        val db = AppDatabase().loadDebug(GlobalSchema.context).getMainData()
 
         // Enlist the cards to be shown in this fragment
         val cardsList = listOf(
@@ -287,7 +257,7 @@ class FragmentServices() : ComponentActivity() {
 
             Card (
                 onClick = {
-                    Toast.makeText(GlobalSchema.norender["context"] as Context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(GlobalSchema.context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
                     val destination = "streaming_youtube"
                     Log.d("Groaker", "Opening YouTube stream on regular service.")
                     // Prevents random switching of screens when the user opens a different fragment or screen.

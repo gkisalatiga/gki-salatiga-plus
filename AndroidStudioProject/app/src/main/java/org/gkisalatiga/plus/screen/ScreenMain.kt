@@ -20,93 +20,53 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.node.GlobalPositionAwareModifierNode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
-import org.gkisalatiga.plus.fragment.FragmentEvents
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentInfo
 import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.Downloader
-import org.gkisalatiga.plus.lib.FileManager
+import org.gkisalatiga.plus.lib.ImagePainterFromFile
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.lib.ResetSchema
-import java.io.File
-import java.io.FileInputStream
 
 class ScreenMain() : ComponentActivity() {
 
@@ -121,7 +81,7 @@ class ScreenMain() : ComponentActivity() {
     private var bottomNavPagerScrollTo = mutableStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
 
     // Determines the top bar title.
-    private var topBarTitle = mutableStateOf((GlobalSchema.norender["context"] as Context).resources.getString(R.string.app_name_alias))
+    private var topBarTitle = mutableStateOf((GlobalSchema.context).resources.getString(R.string.app_name_alias))
 
     // Controls the horizontal scrolling of the pager.
     private lateinit var horizontalPagerState: PagerState
@@ -177,11 +137,11 @@ class ScreenMain() : ComponentActivity() {
             BackHandler {
                 val curRoute = GlobalSchema.lastMainScreenPagerPage.value
                 if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
-                    Toast.makeText(GlobalSchema.norender["context"] as Context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(GlobalSchema.context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
 
                     // Exit the application.
                     // SOURCE: https://stackoverflow.com/a/67402808
-                    (GlobalSchema.norender["context"] as ComponentActivity).finish()
+                    (GlobalSchema.context as ComponentActivity).finish()
                 } else if (
                     curRoute == NavigationRoutes().FRAG_MAIN_INFO ||
                     curRoute == NavigationRoutes().FRAG_MAIN_SERVICES
@@ -203,14 +163,35 @@ class ScreenMain() : ComponentActivity() {
 
                 // Reading the data.
                 // SOURCE: https://stackoverflow.com/a/45202002
-                val file = File(downloadedPath)
-                val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
-                Log.d("Groaker-Dump", inputAsString)
+                // val file = File(downloadedPath)
+                // val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
+                // Log.d("Groaker-Dump", inputAsString)
+
+                /* Displaying the image. */
+                showLinkConfirmationDialog.value = true
+                if (showLinkConfirmationDialog.value) {
+                    AlertDialog(
+                        onDismissRequest = { showLinkConfirmationDialog.value = false },
+                        title = { "Test" },
+                        text = {
+                            Image(
+                                painter = ImagePainterFromFile(downloadedPath),
+                                contentDescription = ""
+                            )
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
+                                Text("Keluar".uppercase())
+                            }
+                        },
+                        confirmButton = { }
+                    )
+                }
             }
         }
 
         // The link confirmation dialog.
-        getLinkConfirmationDialog()
+        // getLinkConfirmationDialog()
     }
 
     @Composable
@@ -218,9 +199,9 @@ class ScreenMain() : ComponentActivity() {
 
         // Defines the bottom nav tab names.
         val navItems = listOf(
-            stringResource(R.string.bottomnav_menu_1),
-            stringResource(R.string.bottomnav_menu_2),
-            stringResource(R.string.bottomnav_menu_3),
+            stringResource(R.string.bottomnav_menu_home),
+            stringResource(R.string.bottomnav_menu_services),
+            stringResource(R.string.bottomnav_menu_info),
         )
 
         BottomAppBar() {
@@ -268,7 +249,7 @@ class ScreenMain() : ComponentActivity() {
      * SOURCE: https://www.composables.com/tutorials/dialogs
      * SOURCE: https://developer.android.com/develop/ui/compose/components/dialog
      */
-    @Composable
+    /*@Composable
     private fun getLinkConfirmationDialog() {
         if (showLinkConfirmationDialog.value) {
             AlertDialog(
@@ -300,7 +281,7 @@ class ScreenMain() : ComponentActivity() {
                 }
             )
         }
-    }
+    }*/
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
@@ -322,10 +303,20 @@ class ScreenMain() : ComponentActivity() {
             actions = {
                 IconButton(
                     onClick = {
-                        Toast.makeText(GlobalSchema.norender["context"] as Context, "NavIcon cliked", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(GlobalSchema.context, "NavIcon cliked", Toast.LENGTH_SHORT).show()
 
-                        // Attempt to download
-                        Downloader().asPrivateFile("https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/ewarta.json", "sample.json")
+                        /* TODO */
+                        // Attempt to download.
+                        // ---
+                        // Get filename.
+                        // SOURCE: https://stackoverflow.com/a/26570321
+                        val fileToDownload = "https://ewarta.gkiserpong.org/wp-content/ewarta/eWarta-20240630.jpg"
+                        val filename = fileToDownload.substring(fileToDownload.lastIndexOf("/") + 1)
+                        Log.d("Groaker", "We want to download: $fileToDownload")
+                        Log.d("Groaker", "It will be saved as: $filename")
+                        // Downloader().asPrivateFile("https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/ewarta.json", "sample.json")
+                        // Downloader().asPrivateFile("https://ewarta.gkiserpong.org/wp-content/ewarta/eWarta-20240630.jpg", "sampleimage.jpg")
+                        Downloader().asPrivateFile(fileToDownload, filename)
                     }
                 ) {
                     Icon(
@@ -511,11 +502,11 @@ class ScreenMain2(menu: String?, submenu: String?) : ComponentActivity() {
 
         // Leave the third (n = 2) element empty, because it is FAB's place.
         val navItems = listOf(
-            stringResource(R.string.bottomnav_menu_1),
-            stringResource(R.string.bottomnav_menu_2),
+            stringResource(R.string.bottomnav_menu_home),
+            stringResource(R.string.bottomnav_menu_services),
             stringResource(R.string.empty_string),
             stringResource(R.string.bottomnav_menu_3),
-            stringResource(R.string.bottomnav_menu_4)
+            stringResource(R.string.bottomnav_menu_events)
         )
 
         BottomAppBar() {

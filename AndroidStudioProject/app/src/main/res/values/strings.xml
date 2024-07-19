@@ -1,13 +1,14 @@
 <resources>
+    <!-- Constant strings for app-related names -->
     <string name="app_name">GKI Salatiga Plus</string>
     <string name="app_name_alias">GKI Salatiga+</string>
     <string name="title_activity_main">GKI Salatiga+</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
-    <string name="bottomnav_menu_1">Home</string>
-    <string name="bottomnav_menu_2">Services</string>
-    <string name="bottomnav_menu_3">Info</string>
-    <string name="bottomnav_menu_4">Events</string>
+    <string name="bottomnav_menu_home">Home</string>
+    <string name="bottomnav_menu_services">Services</string>
+    <string name="bottomnav_menu_info">Info</string>
+    <string name="bottomnav_menu_events">Events</string>
 
     <!-- Constant strings for screen titles. -->
     <string name="screenabout_title">About</string>
@@ -15,9 +16,46 @@
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
 
-    <!-- String constants used in submenus. -->
+    <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>
     <string name="submenu_services_es">English Service</string>
+
+    <!-- Constant strings for the main menu's action buttons -->
+    <string name="btn_mainmenu_wj">Warta Jemaat</string>
+    <string name="btn_mainmenu_liturgi">Liturgi</string>
+    <string name="btn_mainmenu_agenda">Agenda Sepekan</string>
+    <string name="btn_mainmenu_saren">SaRen Pagi</string>
+    <string name="btn_mainmenu_ykb">Renungan YKB</string>
+    <string name="btn_mainmenu_kml">Lagu Pujian</string>
+    <string name="btn_mainmenu_offertory">Persembahan</string>
+    <string name="btn_mainmenu_form">Formulir</string>
+
+    <!-- Constant strings for image description of the main menu's action buttons -->
+    <string name="btn_desc_mainmenu_wj">Buka menu warta jemaat</string>
+    <string name="btn_desc_mainmenu_liturgi">Buka menu liturgi</string>
+    <string name="btn_desc_mainmenu_agenda">Buka menu agenda sepekan</string>
+    <string name="btn_desc_mainmenu_saren">Buka menu sapaan dan renungan pagi</string>
+    <string name="btn_desc_mainmenu_ykb">Buka menu renungan YKB</string>
+    <string name="btn_desc_mainmenu_kml">Buka menu lagu pujian</string>
+    <string name="btn_desc_mainmenu_offertory">Buka menu persembahan</string>
+    <string name="btn_desc_mainmenu_form">Buka menu formulir</string>
+
+    <!-- Constant string for describing the banner image in the "Info/About Church" fragment. -->
+    <string name="info_church_img_description">Gereja Kristen Indonesia Salatiga</string>
+
+    <!-- Constant string for the labeling of each card in the "church info" fragment. -->
+    <string name="card_info_church_profile">Profil GKI Salatiga</string>
+    <string name="card_info_church_pastor">Kependetaan</string>
+    <string name="card_info_church_assembly">Majelis Jemaat</string>
+    <string name="card_info_church_ministry">Badan Pelayanan</string>
+    <string name="card_info_church_contact">Kontak dan Media Sosial</string>
+
+    <!-- Constant string for describing the card icons in the "church info" fragment. -->
+    <string name="card_desc_info_church_profile">Buka info profil GKI Salatiga</string>
+    <string name="card_desc_info_church_pastor">Buka info kependetaan</string>
+    <string name="card_desc_info_church_assembly">Buka info majelis jemaat</string>
+    <string name="card_desc_info_church_ministry">Buka info badan pelayanan</string>
+    <string name="card_desc_info_church_contact">Buka info kontak dan media sosial</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>

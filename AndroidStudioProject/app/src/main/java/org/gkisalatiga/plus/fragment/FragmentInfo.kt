@@ -30,9 +30,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
@@ -42,6 +45,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -59,12 +63,14 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.abstract.GlobalClass
+import org.gkisalatiga.plus.global.GlobalSchema
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -77,12 +83,101 @@ import java.util.concurrent.Executors
  */
 class FragmentInfo() : ComponentActivity() {
 
+    // Defines the routing of each "church info" card.
+    private val cardRoutes = listOf(
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+    )
+
+    // Defines the label of each "church info" card.
+    private val cardLabels = listOf(
+        (GlobalSchema.context).resources.getString(R.string.card_info_church_profile),
+        (GlobalSchema.context).resources.getString(R.string.card_info_church_pastor),
+        (GlobalSchema.context).resources.getString(R.string.card_info_church_assembly),
+        (GlobalSchema.context).resources.getString(R.string.card_info_church_ministry),
+        (GlobalSchema.context).resources.getString(R.string.card_info_church_contact),
+    )
+
+    // Defines the icon description in each of the "church info" card.
+    private val cardIconDescriptions = listOf(
+        (GlobalSchema.context).resources.getString(R.string.card_desc_info_church_profile),
+        (GlobalSchema.context).resources.getString(R.string.card_desc_info_church_pastor),
+        (GlobalSchema.context).resources.getString(R.string.card_desc_info_church_assembly),
+        (GlobalSchema.context).resources.getString(R.string.card_desc_info_church_ministry),
+        (GlobalSchema.context).resources.getString(R.string.card_desc_info_church_contact),
+    )
+
+    // Defines and locates the icon for each card in the "church info" fragment.
+    private val cardIcons = listOf(
+        R.drawable.baseline_flaky_256,
+        R.drawable.baseline_flaky_256,
+        R.drawable.baseline_flaky_256,
+        R.drawable.baseline_flaky_256,
+        R.drawable.baseline_flaky_256,
+    )
+
     @Composable
     public fun getComposable() {
-        Text("This is info.")
+        // Setting the layout to center both vertically and horizontally,
+        // and then make it scrollable vertically.
+        // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
+        val scrollState = rememberScrollState()
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+                .padding(20.dp)
+        ) {
+            /* Display the church's building image. */
+            val imgChurchSource = R.drawable.sample_welcome_banner
+            val imgChurchDescription = (GlobalSchema.context).resources.getString(R.string.info_church_img_description)
+            Surface (
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Image(
+                    painter = painterResource(imgChurchSource),
+                    contentDescription = imgChurchDescription,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
 
-        // Testing the accessibility of the global variable.
-        // Log.d("Groaker", "Testing global variable persistence. Is it as expected? [globalVar = ${GlobalClass.Companion.globalVar}]")
+            /* Display the individual "church info" card. */
+            Column ( modifier = Modifier.padding(top = 10.dp) ) {
+                // Assumes cardRoutes, cardIcons, cardLabels, and cardIconDescriptions all have the same size.
+                cardRoutes.forEachIndexed { index, str ->
+                    Card(
+                        onClick = {
+                            Toast.makeText((GlobalSchema.context), "You just clicked: $str!", Toast.LENGTH_SHORT).show()
+                        },
+                        modifier = Modifier.padding(bottom = 5.dp).height(50.dp)
+                        ) {
+                        Row ( modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically ) {
+                            // The card icon.
+                            Image(
+                                painter = painterResource(cardIcons[index]),
+                                contentDescription = cardIconDescriptions[index],
+                                modifier = Modifier.padding(5.dp),
+                                contentScale = ContentScale.Fit,
+                            )
+                            Spacer( modifier = Modifier.width(20.dp) )
+                            // The card label.
+                            Text(cardLabels[index], fontSize = 18.sp)
+                            Spacer( modifier = Modifier.weight(1f) )
+                            Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(end = 5.dp))
+                        }
+                    }
+                }
+            }
+        }
+
     }
+
 
 }

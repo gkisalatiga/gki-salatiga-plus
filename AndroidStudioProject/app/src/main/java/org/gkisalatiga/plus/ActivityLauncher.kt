@@ -28,7 +28,6 @@
 package org.gkisalatiga.plus
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.OvershootInterpolator
@@ -37,46 +36,31 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import kotlinx.coroutines.delay
-import org.gkisalatiga.plus.abstract.GlobalClass
-import org.gkisalatiga.plus.abstract.ParameterSchema
 import org.gkisalatiga.plus.global.GlobalSchema
+import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.Downloader
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.lib.ResetSchema
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenMain
 // import org.gkisalatiga.plus.screen.ScreenMain
-import org.gkisalatiga.plus.screen.ScreenProfile
-import org.gkisalatiga.plus.screen.ScreenVideo
-import org.gkisalatiga.plus.screen.ScreenVideoLive
-import org.gkisalatiga.plus.screen.ScreenWebView
-import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 
 class ActivityLauncher : ComponentActivity() {
 
@@ -95,7 +79,7 @@ class ActivityLauncher : ComponentActivity() {
         // Determine the default screen, fragment, and submenu to open upon first app launch.
         val defaultScreenLaunch = NavigationRoutes().SCREEN_MAIN
         val defaultFragmentLaunch = NavigationRoutes().FRAG_MAIN_HOME
-        val defaultServicesSubmenu = NavigationRoutes().SUB_KEBAKTIAN_ES
+        val defaultServicesSubmenu = NavigationRoutes().SUB_BLANK
 
         // Setting some of the most important default values of the global schema.
         // (i.e., the composable navigation direction.)
@@ -106,7 +90,10 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.lastServicesSubmenu.value = defaultServicesSubmenu
 
         // Setting the global context value.
-        GlobalSchema.norender["context"] = this
+        GlobalSchema.context = this
+
+        // Retrieving the latest JSON metadata.
+        initMetaData()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
@@ -179,93 +166,31 @@ class ActivityLauncher : ComponentActivity() {
         }
     }
 
-
-
-    /*
     /**
-     * This initializes the whole-screen "activity" of the app,
-     * as well as the Composable navigation that navigates between Composable activities.
-     * We really don't implement Activity and Fragment that much, since we use Jetpack Composable.
-     *
-     * This function also handles Composable navigation flow.
+     * This app prepares the downloading of JSON metadata.
+     * It should always be performed at the beginning of app to ensure updated content.
+     * ---
+     * This function does not need to become a composable function since it requires no UI.
      */
-    @Composable
-    private fun initComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        Log.d("Groaker", "Are we getting logged?")
-        // This will manage the application's main "screens" (i.e., primary activities)
-        NavHost(navController = screenController, startDestination = "${NavigationRoutes().SCREEN_MAIN}?") {
-            composable(
-                "${NavigationRoutes().SCREEN_MAIN}?{menu}&{submenu}",
-                arguments = listOf(
-                    navArgument("menu") {
-                        nullable = true
-                        type = NavType.StringType
-                    },
-                    navArgument("submenu") {
-                        nullable = true
-                        type = NavType.StringType
-                    }
-                )
-            ) {
-                // For backward-compatibility, the "menu" selection parameter is optional.
-                var menu = requireNotNull(it.arguments).getString("menu")
-                var submenu = requireNotNull(it.arguments).getString("submenu")
+    private fun initMetaData() {
+        Downloader().initMetaData()
 
-                // Mitigates OOB exception when trying to split the string.
-                // For some unknown reason, both menu and submenu variables contain identical string.
-                if (menu.toString().contains("&")) {
-                    menu = menu.toString().split("&")[0]
-                    submenu = submenu.toString().split("&")[1]
-                }
+        // Upon successful metadata download, we manage the app's internal variable storage
+        // according to the downloaded JSON file's schema.
+        // We also make any appropriate settings accordingly.
+        while (true) {
+            if (GlobalSchema.isJSONMetaDataInitialized.value) {
+                // Let's read the metadata and assign the global JSONObject for others to read.
+                val appDB = AppDatabase()
+                appDB.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
+                GlobalSchema.globalJSONObject = appDB.getMainData()
 
-                ScreenMain(menu, submenu).getComposable(screenController, fragmentController, context)
-            }
-            composable(NavigationRoutes().SCREEN_ABOUT) {
-                ScreenAbout().getComposable(screenController, fragmentController, context)
-            }
-            composable(
-                "${NavigationRoutes().SCREEN_PROFILE}/{frag}",
-                arguments = listOf(navArgument("frag") {
-                    type = NavType.StringType
-                })
-            ) {
-                val frag = requireNotNull(it.arguments).getString("frag")
-                ScreenProfile(frag).getComposable(screenController, fragmentController, context)
-            }
-            composable(
-                "${NavigationRoutes().SCREEN_WEBVIEW}/{dest}",
-                arguments = listOf(navArgument("dest") {
-                    type = NavType.StringType
-                })
-            ) {
-                val dest = requireNotNull(it.arguments).getString("dest")
-                ScreenWebView(dest).getComposable(screenController, fragmentController, context)
-            }
-            composable(
-                "${NavigationRoutes().SCREEN_VIDEO}/{dest}",
-                arguments = listOf(navArgument("dest") {
-                    type = NavType.StringType
-                })
-            ) {
-                val dest = requireNotNull(it.arguments).getString("dest")
-                ScreenVideo(dest).getComposable(screenController, fragmentController, context)
-            }
-            composable(
-                "${NavigationRoutes().SCREEN_LIVE}/{dest}?{submenu}",
-                arguments = listOf(
-                    navArgument("dest") {
-                        type = NavType.StringType
-                    },
-                    navArgument("submenu") {
-                        type = NavType.StringType
-                    }
-                )
-            ) {
-                val dest = requireNotNull(it.arguments).getString("dest")
-                val submenu = requireNotNull(it.arguments).getString("submenu")
-                ScreenVideoLive(dest, submenu).getComposable(screenController, fragmentController, context)
+                // It is finally set-up. Let's break free from this loop.
+                break
+            } else {
+                continue
             }
         }
     }
- */
+
 }

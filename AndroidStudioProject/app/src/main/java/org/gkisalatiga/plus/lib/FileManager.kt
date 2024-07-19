@@ -10,6 +10,7 @@
 package org.gkisalatiga.plus.lib
 
 import android.net.Uri
+import org.gkisalatiga.plus.global.GlobalSchema
 import java.io.File
 import java.io.FileInputStream
 
