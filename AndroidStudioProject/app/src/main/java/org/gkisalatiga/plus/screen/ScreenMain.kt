@@ -20,6 +20,8 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -98,9 +100,13 @@ import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentInfo
 import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
+import org.gkisalatiga.plus.lib.Downloader
+import org.gkisalatiga.plus.lib.FileManager
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.lib.ResetSchema
+import java.io.File
+import java.io.FileInputStream
 
 class ScreenMain() : ComponentActivity() {
 
@@ -125,7 +131,7 @@ class ScreenMain() : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
         // Initializing the horizontal pager.
-        horizontalPagerState = rememberPagerState ( pageCount = {3}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
+        horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
 
         Log.d("Groaker", "Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
         Log.d("Groaker", "Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
@@ -168,8 +174,8 @@ class ScreenMain() : ComponentActivity() {
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.
             // SOURCE: https://stackoverflow.com/a/69151539
-            /*BackHandler {
-                val curRoute = fragRoutes[currentPagerPage.value]
+            BackHandler {
+                val curRoute = GlobalSchema.lastMainScreenPagerPage.value
                 if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
                     Toast.makeText(GlobalSchema.norender["context"] as Context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
 
@@ -180,17 +186,27 @@ class ScreenMain() : ComponentActivity() {
                     curRoute == NavigationRoutes().FRAG_MAIN_INFO ||
                     curRoute == NavigationRoutes().FRAG_MAIN_SERVICES
                 ) {
-                    // If we are in the main screen but not at fragment one, navigate the app to fragment one.
-                    currentPagerPage.value = 0
-
-                    // After selecting the value of the destination fragment,
-                    // show the destination fragment and hide the rest of other fragments in the current screen.
-                    fragmentVisibility.forEach { it.value = false }
-                    fragmentVisibility[currentPagerPage.value].value = true
+                    // Since we are in the main screen but not at fragment one,
+                    // navigate the app to fragment one.
+                    bottomNavPagerScrollTo.value = 0
                 } else {
                     // Do nothing.
                 }
-            }*/
+            }
+        }
+
+        /* TODO */
+        key(GlobalSchema.pathToDownloadedPrivateFile.value) {
+            val downloadedPath = GlobalSchema.pathToDownloadedPrivateFile.value
+            if (downloadedPath.isNotEmpty()) {
+                Log.d("Groaker", "Downloaded to $downloadedPath successfully!")
+
+                // Reading the data.
+                // SOURCE: https://stackoverflow.com/a/45202002
+                val file = File(downloadedPath)
+                val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
+                Log.d("Groaker-Dump", inputAsString)
+            }
         }
 
         // The link confirmation dialog.
@@ -307,6 +323,9 @@ class ScreenMain() : ComponentActivity() {
                 IconButton(
                     onClick = {
                         Toast.makeText(GlobalSchema.norender["context"] as Context, "NavIcon cliked", Toast.LENGTH_SHORT).show()
+
+                        // Attempt to download
+                        Downloader().asPrivateFile("https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/ewarta.json", "sample.json")
                     }
                 ) {
                     Icon(

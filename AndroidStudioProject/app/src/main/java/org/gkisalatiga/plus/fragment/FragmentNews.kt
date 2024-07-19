@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.gkisalatiga.plus.R
-import org.gkisalatiga.plus.lib.DownloadAndSaveImageTask
 
 class FragmentNews : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

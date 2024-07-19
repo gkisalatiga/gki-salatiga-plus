@@ -43,6 +43,12 @@ class GlobalSchema : Application() {
         // Stores globally the state of the last opened main menu fragment.
         var lastMainScreenPagerPage = mutableStateOf("")
 
+        /* The donwload status of the lib.Downloader's multithread. */
+        var isPrivateDownloadComplete = mutableStateOf(false)
+
+        /* Stores the path to the downloaded private file; used in lib.Downloader. */
+        var pathToDownloadedPrivateFile = mutableStateOf("")
+
         /* ------------------------------------------------------------------------------------ */
 
         /* Initializing the global schema that does not directly trigger recomposition. */

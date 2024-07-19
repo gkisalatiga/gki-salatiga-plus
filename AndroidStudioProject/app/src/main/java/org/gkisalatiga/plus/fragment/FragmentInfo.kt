@@ -67,7 +67,6 @@ import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.abstract.GlobalClass
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.AppDatabase
-import org.gkisalatiga.plus.lib.DownloadAndSaveImageTask
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import java.io.InputStream
 import java.net.URL
