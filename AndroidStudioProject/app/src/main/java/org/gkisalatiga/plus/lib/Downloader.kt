@@ -9,76 +9,124 @@
 
 package org.gkisalatiga.plus.lib
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.AsyncTask
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
+import org.gkisalatiga.plus.global.GlobalSchema
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.lang.ref.WeakReference
-import java.net.URL
 import java.util.concurrent.Executors
-import java.util.logging.Logger
 
-class Downloader {
-    public fun download(url: String, rememberReturnArray: MutableState<InputStream>): Downloader {
+/**
+ * Attempts to download an online data.
+ * SOURCE: https://stackoverflow.com/a/53128216
+ */
+class Downloader() {
+
+    /**
+     * Downloads a file and save it as a private file in the app's private storage.
+     * SOURCE: https://www.geeksforgeeks.org/how-to-load-any-image-from-url-without-using-any-dependency-in-android/
+     *
+     * @param streamURL the internet link to download.
+     * @param saveFileAs the name of the file to save as in the app's private storage.
+     * @return nothing. the downloaded file path is stored in "GlobalSchema.pathToDownloadedPrivateFile.value" upon successful download.
+     */
+    public fun asPrivateFile(streamURL: String, saveFileAs: String) {
         // Non-blocking the main GUI by creating a separate thread for the download
-        // Preparing the thread
+        // Preparing the thread.
         val executor = Executors.newSingleThreadExecutor()
 
-        // This is the main loop object to ensure that updates on each individual thread
-        // can be shown to the user
-        val handler = Handler(Looper.getMainLooper())
+        // The return status of the download process.
+        var downloadStatus: Boolean = false
+
+        // The absolute path of the downloaded private file.
+        var downloadedAbsolutePath: String = ""
 
         // Fetching the data
         executor.execute {
-            // The downloaded input stream
-            var downloadedStream: InputStream
 
-            // Try to get the file on the internet
+            // Notify anyone that the download is ongoing.
+            GlobalSchema.pathToDownloadedPrivateFile.value = ""
+            GlobalSchema.isPrivateDownloadComplete.value = false
+
             try {
-                downloadedStream = URL(url).openStream()
+                // Opening the file download stream.
+                val streamIn = java.net.URL(streamURL).openStream()
 
-                // Use the handler to make any change to the UI from the multithread
-                handler.post {
-                    rememberReturnArray.value = downloadedStream
-                }
-            } catch (e: Exception) {
-                println("Error detected!")
-            }
-        }
+                // Coverting input stream (bytes) to string.
+                // SOURCE: http://stackoverflow.com/questions/49467780/ddg#49468129
+                val decodedData: ByteArray = streamIn.readBytes()
 
-        return this
-    }
-}
+                // Creating the private file.
+                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
+                val privateFile = File(fileCreator, saveFileAs)
 
-/**
- * SOURCE: https://stackoverflow.com/a/53128216
- */
-class DownloadAndSaveImageTask(context: Context) : AsyncTask<String, Unit, Unit>() {
-    private var mContext: WeakReference<Context> = WeakReference(context)
-
-    override fun doInBackground(vararg params: String?) {
-        val url = params[0]
-
-        mContext.get()?.let {
-            try {
-                var file = it.getDir("Images", Context.MODE_PRIVATE)
-                file = File(file, "img.jpg")
-                val out = FileOutputStream(file)
+                // Writing into the file.
+                val out = FileOutputStream(privateFile)
                 out.flush()
+                out.write(decodedData)
                 out.close()
-                Log.i("Seiggailion", "Image saved.")
+
+                Log.d("Groaker", "Download successful into ${privateFile.absolutePath}")
+                downloadedAbsolutePath = privateFile.absolutePath
+                downloadStatus = true
+
             } catch (e: Exception) {
-                Log.i("Seiggailion", "Failed to save image.")
+                Log.d("Groaker", "Error encountered during download: $e")
+                downloadStatus = false
             }
+
+            // Break free from this thread. Save download path.
+            GlobalSchema.pathToDownloadedPrivateFile.value = downloadedAbsolutePath
+            GlobalSchema.isPrivateDownloadComplete.value = true
+            executor.shutdown()
         }
     }
+
+    /**
+     * Downloads and initiates the metadata JSON source file from the CDN.
+     * This function will then assign the downloaded JSON path to the appropriate global variable.
+     * Requires no argument and does not return any return value.
+     */
+    public fun initMetaData() {
+        // Non-blocking the main GUI by creating a separate thread for the download
+        // Preparing the thread.
+        val executor = Executors.newSingleThreadExecutor()
+
+        // Fetching the data
+        Log.d("Groaker", "Attempting to download the JSON metadata file ...")
+        executor.execute {
+
+            try {
+                // Opening the file download stream.
+                val streamIn = java.net.URL(GlobalSchema.JSONSource).openStream()
+
+                // Coverting input stream (bytes) to string.
+                // SOURCE: http://stackoverflow.com/questions/49467780/ddg#49468129
+                val decodedData: ByteArray = streamIn.readBytes()
+
+                // Creating the private file.
+                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
+                val privateFile = File(fileCreator, GlobalSchema.JSONSavedFilename)
+
+                // Writing into the file.
+                val out = FileOutputStream(privateFile)
+                out.flush()
+                out.write(decodedData)
+                out.close()
+
+                // Notify all the other functions about the JSON file path.
+                GlobalSchema.absolutePathToJSONMetaData = privateFile.absolutePath
+                GlobalSchema.isJSONMetaDataInitialized.value = true
+
+                Log.d("Groaker", "JSON metadata was successfully downloaded into: ${privateFile.absolutePath}")
+
+            } catch (e: Exception) {
+                Log.d("Groaker", "Error encountered during download: $e")
+            }
+
+            // Break free from this thread.
+            executor.shutdown()
+        }
+    }
+
 }

@@ -1,5 +1,13 @@
 # GKI Salatiga+ Changelog
 
+## v0.0.6-alpha (2024-07-20) version code 6
+
+- New: Added splash screen to the app
+- New: Added the live YouTube video viewer
+- Fix: Replaced AnimatedVisibility with HorizontalPager for the main menu fragment display
+- Fix: Replaced NavHost-based navigation with custom-made GlobalSchema to improve code cleanliness
+- Fix: Reduced the number of bottom navigation menu to 3 menus
+
 ## v0.0.5-alpha (2024-07-17) version code 5
 
 - Added link confirmation dialog for opening external social media links

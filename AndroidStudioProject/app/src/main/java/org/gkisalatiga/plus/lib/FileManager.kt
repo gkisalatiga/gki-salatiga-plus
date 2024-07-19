@@ -10,6 +10,9 @@
 package org.gkisalatiga.plus.lib
 
 import android.net.Uri
+import org.gkisalatiga.plus.global.GlobalSchema
+import java.io.File
+import java.io.FileInputStream
 
 class FileManager {
     private val appPackageName: String = "org.salatiga.plus"
@@ -20,5 +23,17 @@ class FileManager {
      */
     public fun getResourceUri(resId: Int): Uri {
         return Uri.parse("android.resource://$appPackageName/$resId")
+    }
+
+    /**
+     * Reads a file in the private storage and convert the file's content as a string.
+     * SOURCE: https://stackoverflow.com/a/45202002
+     *
+     * @param privateFilePath the private file's full path.
+     * @return the file's content as string.
+     */
+    public fun readPrivateFileAsString(privateFilePath: String): String {
+        val privateFileRead = File(privateFilePath)
+        return FileInputStream(privateFileRead).bufferedReader().use { it.readText() }
     }
 }

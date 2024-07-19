@@ -7,13 +7,13 @@
 package org.gkisalatiga.plus.fragment
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.provider.Settings.Global
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,23 +21,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,34 +53,126 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import org.gkisalatiga.plus.R
+import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class FragmentHome : ComponentActivity() {
-    // The string text used in the profile items.
-    private val profileItemText = listOf (
-        "Profil Gereja",
-        "Kependetaan",
-        "Kemajelisan",
-        "Badan Pelayanan"
+class FragmentHome() : ComponentActivity() {
+
+    // The following defines the visible menu buttons shown in the main menu,
+    // as well as their corresponding navigation targets.
+    private val btnRoutes = listOf(
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_BLANK,
     )
 
-    // The icons used in the profile items.
-    private val profileItemIcon = listOf (
-        R.drawable.baseline_article_24,
-        R.drawable.baseline_newspaper_24,
-        R.drawable.baseline_access_time_24,
-        R.drawable.baseline_location_on_24
+    // The following defines the label of each visible menu button.
+    private val btnLabels = listOf(
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_wj),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_liturgi),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_agenda),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_saren),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_kml),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_offertory),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_form),
     )
 
-    // The destination fragments of the profile items.
-    private val profileItemDestination = listOf (
-        NavigationRoutes().FRAG_PROFILE_CHURCH,
-        NavigationRoutes().FRAG_PROFILE_PASTOR,
-        NavigationRoutes().FRAG_PROFILE_ASSEMBLY,
-        NavigationRoutes().FRAG_PROFILE_MINISTRY
+    // The following defines each visible menu button's icon description.
+    private val btnDescriptions = listOf(
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_wj),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_liturgi),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_agenda),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_saren),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_kml),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_offertory),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_form),
     )
 
+    // The following defines the icons used for the visible menu buttons.
+    private val btnIcons = listOf(
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+        R.drawable.baseline_newspaper_48,
+    )
+
+    @Composable
+    public fun getComposable() {
+
+        // Setting the layout to center both vertically and horizontally
+        // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            /* Displaying the welcome banner in the main menu. */
+            Surface (
+                shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp),
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.sample_welcome_banner),
+                    contentDescription = "Some name",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+
+            /* Displaing the main menu action buttons. */
+            // Assumes btnRoutes, btnLabels, and btnIcons all have the same size.
+            val spanSize: Int = 4
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(spanSize),
+                modifier = Modifier.padding(20.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                btnRoutes.forEachIndexed { index, str ->
+                    item {
+                        OutlinedButton (
+                            onClick = {
+                                // This will be triggered when the main menu button is clicked.
+                                Toast.makeText((GlobalSchema.context), "You may have clicked: $str!", Toast.LENGTH_SHORT).show()
+                                      },
+                            modifier = Modifier.padding(5.dp).height(100.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            contentPadding = PaddingValues(5.dp)
+                        ) {
+                            // The main menu element wrapper.
+                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                                // The main menu action button icon.
+                                Image(
+                                    painter = painterResource(btnIcons[index]),
+                                    contentDescription = btnDescriptions[index],
+                                    alignment = Alignment.Center,
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                // The text.
+                                Text(btnLabels[index], textAlign = TextAlign.Center)
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    /*
     /**
      * Navigation between screens
      * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
@@ -158,7 +258,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -192,7 +296,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -226,7 +334,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -253,4 +365,5 @@ class FragmentHome : ComponentActivity() {
             }
         }
     }
+     */
 }
