@@ -14,6 +14,9 @@ public data class NavigationRoutes (
     val SCREEN_MAIN: String = "nav_screen_main",
     val SCREEN_ABOUT: String = "nav_screen_about",
     val SCREEN_PROFILE: String = "nav_screen_profile",
+    val SCREEN_WEBVIEW: String = "nav_screen_webview",
+    val SCREEN_VIDEO: String = "nav_screen_video",
+    val SCREEN_LIVE: String = "nav_screen_live",
 
     // The individual Composable "fragments" of each screen.
     // Note that we do not actually implement fragments, since we use Jetpack Compose.
@@ -22,10 +25,16 @@ public data class NavigationRoutes (
     val FRAG_MAIN_SERVICES: String = "nav_frag_services",
     val FRAG_MAIN_NEWS: String = "nav_frag_news",
     val FRAG_MAIN_EVENTS: String = "nav_frag_events",
+    val FRAG_MAIN_INFO: String = "nav_frag_info",
     val FRAG_PROFILE_CHURCH: String = "nav_frag_church",
     val FRAG_PROFILE_PASTOR: String = "nav_frag_pastorate",
     val FRAG_PROFILE_ASSEMBLY: String = "nav_frag_assembly",
     val FRAG_PROFILE_MINISTRY: String = "nav_frag_ministry",
     val FRAG_ABOUT: String = "nav_frag_about",
     val FRAG_BLANK: String = "nav_frag_blank",
+
+    // The following definitions define "sub-menus" that are part of a given fragment.
+    val SUB_KEBAKTIAN_UMUM: String = "nav_sub_umum",
+    val SUB_KEBAKTIAN_ES: String = "nav_sub_es",
+    val SUB_BLANK: String = "nav_sub_blank",
 )

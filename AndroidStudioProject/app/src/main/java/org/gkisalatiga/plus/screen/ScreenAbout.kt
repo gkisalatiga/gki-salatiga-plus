@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +41,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -56,25 +58,30 @@ import org.gkisalatiga.plus.fragment.FragmentEvents
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentNews
 import org.gkisalatiga.plus.fragment.FragmentServices
+import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class ScreenAbout : ComponentActivity() {
+class ScreenAbout() : ComponentActivity() {
+
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    public fun getComposable() {
+        Log.d("Groaker", "Last selected fragment of main screen: ${GlobalSchema.lastMainScreenPagerPage.value}")
+
         Scaffold (
-            topBar = { this.getTopBar(screenController, fragmentController, context) }
+            topBar = { getTopBar() }
                 ) {
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
+                Text("Some Scaffold Content.")
             }
         }
     }
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
-    private fun getTopBar(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    private fun getTopBar() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -90,7 +97,8 @@ class ScreenAbout : ComponentActivity() {
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    screenController.navigate(NavigationRoutes().SCREEN_MAIN)
+                    // GlobalSchema.schema.value["pushScreen"] = NavigationRoutes().SCREEN_MAIN
+                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,

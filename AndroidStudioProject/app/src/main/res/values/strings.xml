@@ -1,18 +1,23 @@
 <resources>
     <string name="app_name">GKI Salatiga Plus</string>
+    <string name="app_name_alias">GKI Salatiga+</string>
     <string name="title_activity_main">GKI Salatiga+</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
     <string name="bottomnav_menu_1">Home</string>
     <string name="bottomnav_menu_2">Services</string>
-    <string name="bottomnav_menu_3">News</string>
+    <string name="bottomnav_menu_3">Info</string>
     <string name="bottomnav_menu_4">Events</string>
 
-    <!-- Constant strings for ScreenAbout and its related fragments. -->
+    <!-- Constant strings for screen titles. -->
     <string name="screenabout_title">About</string>
-
-    <!-- Constant strings for ScreenProfile and its related fragments. -->
     <string name="screenprofile_title">Profil</string>
+    <string name="screenwebview_title">WebView</string>
+    <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
+
+    <!-- String constants used in submenus. -->
+    <string name="submenu_services_umum">Kebaktian Umum</string>
+    <string name="submenu_services_es">English Service</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>

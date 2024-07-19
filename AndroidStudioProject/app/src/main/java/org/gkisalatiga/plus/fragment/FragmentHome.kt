@@ -7,8 +7,6 @@
 package org.gkisalatiga.plus.fragment
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -35,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -48,31 +47,37 @@ import androidx.navigation.NavHostController
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class FragmentHome : ComponentActivity() {
-    // The string text used in the profile items.
-    private val profileItemText = listOf (
-        "Profil Gereja",
-        "Kependetaan",
-        "Kemajelisan",
-        "Badan Pelayanan"
-    )
+class FragmentHome() : ComponentActivity() {
 
-    // The icons used in the profile items.
-    private val profileItemIcon = listOf (
-        R.drawable.baseline_article_24,
-        R.drawable.baseline_newspaper_24,
-        R.drawable.baseline_access_time_24,
-        R.drawable.baseline_location_on_24
-    )
+    @Composable
+    public fun getComposable() {
 
-    // The destination fragments of the profile items.
-    private val profileItemDestination = listOf (
-        NavigationRoutes().FRAG_PROFILE_CHURCH,
-        NavigationRoutes().FRAG_PROFILE_PASTOR,
-        NavigationRoutes().FRAG_PROFILE_ASSEMBLY,
-        NavigationRoutes().FRAG_PROFILE_MINISTRY
-    )
+        // Setting the layout to center both vertically and horizontally
+        // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
+        val scrollState = rememberScrollState()
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+        ) {
+            /* Displaying the welcome banner in the main menu. */
+            Surface (
+                shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.sample_welcome_banner),
+                    contentDescription = "Some name",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+            Text("This is home.")
+        }
+    }
 
+    /*
     /**
      * Navigation between screens
      * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
@@ -158,7 +163,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -192,7 +201,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -226,7 +239,11 @@ class FragmentHome : ComponentActivity() {
                     // The actual content.
                     items (5) {
                         Card (
-                            onClick = { Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
+                                val destination = "abcd5dasar_$it"
+                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
+                                      },
                             modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
                         ) {
                             Column {
@@ -253,4 +270,5 @@ class FragmentHome : ComponentActivity() {
             }
         }
     }
+     */
 }
