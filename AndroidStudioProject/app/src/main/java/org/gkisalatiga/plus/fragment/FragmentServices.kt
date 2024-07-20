@@ -197,7 +197,8 @@ class FragmentServices() : ComponentActivity() {
 
                     // Trying to switch to the YouTube viewer and open the stream.
                     Log.d("Groaker", "Opening YouTube stream: $url.")
-                    GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url!!)
+                    GlobalSchema.ytViewerParameters["yt-link"] = url
+                    GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url)
                     GlobalSchema.ytViewerParameters["title"] = title!!
                     GlobalSchema.ytViewerParameters["date"] = date
                     GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE

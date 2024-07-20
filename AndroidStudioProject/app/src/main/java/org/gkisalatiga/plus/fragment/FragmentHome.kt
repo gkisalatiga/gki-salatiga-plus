@@ -64,8 +64,8 @@ class FragmentHome() : ComponentActivity() {
     // The following defines the visible menu buttons shown in the main menu,
     // as well as their corresponding navigation targets.
     private val btnRoutes = listOf(
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_WARTA,
+        NavigationRoutes().SCREEN_LITURGI,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_YKB,

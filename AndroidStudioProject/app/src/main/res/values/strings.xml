@@ -18,6 +18,8 @@
     <string name="screenlive_title">Live-buoy</string>
     <string name="screenforms_title">Formidable</string>
     <string name="screenykb_title">Yayasan Komunikasi Bersama</string>
+    <string name="screenwarta_title">Warta Jemaat</string>
+    <string name="screenliturgi_title">Tata Ibadah</string>
 
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>
@@ -25,7 +27,7 @@
 
     <!-- Constant strings for the main menu's action buttons -->
     <string name="btn_mainmenu_wj">Warta Jemaat</string>
-    <string name="btn_mainmenu_liturgi">Liturgi</string>
+    <string name="btn_mainmenu_liturgi">Tata Ibadah</string>
     <string name="btn_mainmenu_agenda">Agenda Sepekan</string>
     <string name="btn_mainmenu_saren">SaRen Pagi</string>
     <string name="btn_mainmenu_ykb">Renungan YKB</string>
@@ -60,12 +62,19 @@
     <string name="card_desc_info_church_ministry">Buka info badan pelayanan</string>
     <string name="card_desc_info_church_contact">Buka info kontak dan media sosial</string>
 
-    <!-- Constant string used in ScreenWebView -->
+    <!-- Constant string used in ScreenWebView. -->
     <string name="webview_visit_link_confirmation_title">Kunjungi situs luar?</string>
     <string name="webview_visit_link_confirmation_subtitle">Anda akan dialihkan ke situs berikut melalui peramban di ponsel Anda:</string>
     <string name="webview_visit_link_cancel_btn">Batalkan</string>
     <string name="webview_visit_link_proceed_btn">Lanjutkan</string>
     <string name="webview_visit_link_link_copied">Tautan berhasil disalin!</string>
+
+    <!-- Constant string used in pre-recorded and live video view. -->
+    <string name="yt_visit_link_confirmation_title">Buka di pemutar YouTube?</string>
+    <string name="yt_visit_link_confirmation_subtitle">Anda akan dialihkan ke aplikasi YouTube di ponsel Anda dari tautan berikut:</string>
+    <string name="yt_visit_link_cancel_btn">Batalkan</string>
+    <string name="yt_visit_link_proceed_btn">Lanjutkan</string>
+    <string name="yt_visit_link_link_copied">Tautan video berhasil disalin!</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>

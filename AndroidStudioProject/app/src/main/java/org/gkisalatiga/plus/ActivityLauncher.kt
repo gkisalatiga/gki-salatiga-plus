@@ -61,8 +61,10 @@ import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenForms
+import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenVideoLive
+import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
 import java.util.concurrent.Executors
@@ -178,6 +180,8 @@ class ActivityLauncher : ComponentActivity() {
                 NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
                 NavigationRoutes().SCREEN_FORMS -> { ScreenForms().getComposable() }
                 NavigationRoutes().SCREEN_YKB -> { ScreenYKB().getComposable() }
+                NavigationRoutes().SCREEN_WARTA -> { ScreenWarta().getComposable() }
+                NavigationRoutes().SCREEN_LITURGI -> { ScreenLiturgi().getComposable() }
                 NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
             }
         }

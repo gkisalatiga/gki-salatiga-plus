@@ -11,22 +11,15 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import android.view.ViewGroup
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -48,7 +41,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -60,8 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import org.gkisalatiga.plus.R
 
-import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.global.GlobalSchema
+import org.gkisalatiga.plus.lib.StringFormatter
 
 class ScreenWebView() : ComponentActivity() {
 
@@ -128,8 +120,13 @@ class ScreenWebView() : ComponentActivity() {
                 wv.webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(
                         view: WebView?,
-                        request: WebResourceRequest?
+                        url: String?
                     ): Boolean {
+                        // Prevents redirection from Google Drive into Google login page.
+                        Log.d("Groaker-Test", "Redirection URL: ${url.toString()}")
+                        if (url!!.startsWith("https://drive.google.com")) {
+                            wv.loadUrl(StringFormatter().getGoogleDrivePreview(url!!))
+                        }
                         return false
                     }
 
@@ -146,6 +143,7 @@ class ScreenWebView() : ComponentActivity() {
                         """.trimIndent()
                         wv.loadUrl("javascript:(function() { $jsBody })()")
                     }
+
                 }
 
                 // Enables JavaScript.
@@ -206,7 +204,7 @@ class ScreenWebView() : ComponentActivity() {
     @Composable
     private fun getLinkConfirmationDialog() {
         val ctx = LocalContext.current
-        val destURL = stringResource(R.string.webview_visit_link_link_copied)
+        val notificationText = stringResource(R.string.webview_visit_link_link_copied)
         if (showLinkConfirmationDialog.value) {
             AlertDialog(
                 onDismissRequest = { showLinkConfirmationDialog.value = false },
@@ -220,7 +218,7 @@ class ScreenWebView() : ComponentActivity() {
                             val clipData = ClipData.newPlainText("text", GlobalSchema.webViewTargetURL)
                             GlobalSchema.clipManager!!.setPrimaryClip(clipData)
 
-                            Toast.makeText(ctx, destURL, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(ctx, notificationText, Toast.LENGTH_SHORT).show()
                         }) {
                             OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),

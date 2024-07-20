@@ -43,6 +43,25 @@ class StringFormatter {
     }
 
     /**
+     * Returns a Google Drive link that has "/preview" suffix in the URL.
+     */
+    public fun getGoogleDrivePreview(url: String): String {
+        var a: String = ""
+
+        if (url.endsWith("/view")) {
+            a = url.replace("/view", "/preview")
+        } else if (url.endsWith("/preview")) {
+            a = url
+        } else if (url.endsWith("/edit")) {
+            a = url.replace("/edit", "/preview")
+        } else if (url.endsWith("/")) {
+            a = url + "preview"
+        }
+
+        return a
+    }
+
+    /**
      * Cleans a YouTube link by removing redundant parts.
      * @param url the link of the YouTube video.
      * @return the YouTube video ID of the link.

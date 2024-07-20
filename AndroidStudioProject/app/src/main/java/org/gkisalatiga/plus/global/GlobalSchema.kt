@@ -87,6 +87,7 @@ class GlobalSchema : Application() {
             "date" to "",
             "title" to "",
             "yt-id" to "",
+            "yt-link" to ""
         )
 
         // Determines what link to show in ScreenWebView, and its title.
