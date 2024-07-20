@@ -10,57 +10,130 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.os.PersistableBundle
+import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.navigation.NavHostController
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import org.gkisalatiga.plus.R
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.global.GlobalSchema
 
-/**
- * @param destination the destination URL that needs to be displayed.
- */
-class ScreenWebView(private val destination: String?) : ComponentActivity() {
+class ScreenWebView() : ComponentActivity() {
+
+    // The trigger to open an URL in an external browser.
+    private var doTriggerBrowserOpen = mutableStateOf(false)
+
+    // Controls, from an outside composable, whether to display the link confirmation dialog.
+    private var showLinkConfirmationDialog = mutableStateOf(false)
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    public fun getComposable() {
         Scaffold (
-            topBar = { this.getTopBar(screenController, fragmentController, context) }
+            topBar = { this.getTopBar() }
                 ) {
-            // Hiding/displaying a certain fragment based on the passed argument.
-            Toast.makeText(context, "Called fragment: $destination", Toast.LENGTH_SHORT).show()
-            if (destination != null) {
-            }
 
             // Display the necessary content.
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
-                Text("One is attempting to access $destination")
+                getMainContent()
             }
         }
+
+        // Display the external link open confirm dialog.
+        getLinkConfirmationDialog()
+
+        // Ensure that when we are at the first screen upon clicking "back",
+        // the app is exited instead of continuing to navigate back to the previous screens.
+        // SOURCE: https://stackoverflow.com/a/69151539
+        BackHandler {
+            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_FORMS
+        }
+
+        // Handles opening URLs in external browser.
+        key(doTriggerBrowserOpen.value) {
+            if (doTriggerBrowserOpen.value) {
+                // Opens in an external browser.
+                // SOURCE: https://stackoverflow.com/a/69103918
+                LocalUriHandler.current.openUri(GlobalSchema.webViewTargetURL)
+
+                doTriggerBrowserOpen.value = false
+            }
+        }
+
+    }
+
+    @Composable
+    private fun getMainContent() {
+        // Declare a string that contains a url.
+        val destURL = GlobalSchema.webViewTargetURL
+
+        /* Displaying the web view.
+         * SOURCE: https://medium.com/@kevinnzou/using-webview-in-jetpack-compose-bbf5991cfd14 */
+        // Adding a WebView inside AndroidView with layout as full screen
+        AndroidView(factory = {
+            WebView(it).apply {
+                this.layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                // Enables JavaScript.
+                // SOURCE: https://stackoverflow.com/a/69373543
+                this.settings.javaScriptEnabled = true
+                this.evaluateJavascript("(function() { alert('Welcome to forms! Awokawokawkoawok'); })();") { str ->
+                    // android.util.Log.d("LogName", (str)!!) // Prints: "this"
+                }
+            }
+        }, update = {
+            it.loadUrl(destURL)
+        })
     }
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
-    private fun getTopBar(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
+    private fun getTopBar() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -69,23 +142,85 @@ class ScreenWebView(private val destination: String?) : ComponentActivity() {
             ),
             title = {
                 Text(
-                    stringResource(R.string.screenwebview_title),
+                    GlobalSchema.webViewTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    screenController.navigate(NavigationRoutes().SCREEN_MAIN)
+                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_FORMS
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },
-            actions = { },
+            actions = {
+                IconButton(onClick = {
+                    showLinkConfirmationDialog.value = true
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = ""
+                    )
+                }
+            },
             scrollBehavior = scrollBehavior
         )
     }
+
+    /**
+     * This function displays the confirmation dialog that asks the user
+     * whether the user wants to proceed opening a certain link.
+     * SOURCE: https://www.composables.com/tutorials/dialogs
+     * SOURCE: https://developer.android.com/develop/ui/compose/components/dialog
+     */
+    @Composable
+    private fun getLinkConfirmationDialog() {
+        val ctx = LocalContext.current
+        val destURL = stringResource(R.string.webview_visit_link_link_copied)
+        if (showLinkConfirmationDialog.value) {
+            AlertDialog(
+                onDismissRequest = { showLinkConfirmationDialog.value = false },
+                title = { Text(stringResource(R.string.webview_visit_link_confirmation_title), fontWeight = FontWeight.Bold, fontSize = 24.sp) },
+                text = {
+                    Column {
+                        Text(stringResource(R.string.webview_visit_link_confirmation_subtitle) )
+                        Surface (modifier = Modifier.fillMaxWidth(), color = Color.Transparent, onClick = {
+                            // Attempt to copy text to clipboard.
+                            // SOURCE: https://www.geeksforgeeks.org/clipboard-in-android/
+                            val clipData = ClipData.newPlainText("text", GlobalSchema.webViewTargetURL)
+                            GlobalSchema.clipManager!!.setPrimaryClip(clipData)
+
+                            Toast.makeText(ctx, destURL, Toast.LENGTH_SHORT).show()
+                        }) {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = GlobalSchema.webViewTargetURL,
+                                onValueChange = { /* NOTHING */ },
+                                label = { Text("-") },
+                                enabled = false,
+                            )
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
+                        Text(stringResource(R.string.webview_visit_link_cancel_btn).uppercase())
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showLinkConfirmationDialog.value = false
+                        doTriggerBrowserOpen.value = true
+                    }) {
+                        Text(stringResource(R.string.webview_visit_link_proceed_btn).uppercase())
+                    }
+                }
+            )
+        }
+    }
+
 }

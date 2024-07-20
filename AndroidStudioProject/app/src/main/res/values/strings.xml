@@ -16,6 +16,7 @@
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
     <string name="screenlive_title">Live-buoy</string>
+    <string name="screenforms_title">Formidable</string>
 
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>
@@ -57,6 +58,13 @@
     <string name="card_desc_info_church_assembly">Buka info majelis jemaat</string>
     <string name="card_desc_info_church_ministry">Buka info badan pelayanan</string>
     <string name="card_desc_info_church_contact">Buka info kontak dan media sosial</string>
+
+    <!-- Constant string used in ScreenWebView -->
+    <string name="webview_visit_link_confirmation_title">Kunjungi situs luar?</string>
+    <string name="webview_visit_link_confirmation_subtitle">Anda akan dialihkan ke situs berikut melalui peramban di ponsel Anda:</string>
+    <string name="webview_visit_link_cancel_btn">Batalkan</string>
+    <string name="webview_visit_link_proceed_btn">Lanjutkan</string>
+    <string name="webview_visit_link_link_copied">Tautan berhasil disalin!</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>

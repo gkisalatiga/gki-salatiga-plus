@@ -146,7 +146,7 @@ class ScreenProfile(private val frag: String?) : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },

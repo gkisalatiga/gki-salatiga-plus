@@ -142,7 +142,7 @@ class ActivitySingleLauncher : ComponentActivity() {
                 })
             ) {
                 val dest = requireNotNull(it.arguments).getString("dest")
-                ScreenWebView(dest).getComposable(screenController, fragmentController, context)
+                // ScreenWebView(dest).getComposable(screenController, fragmentController, context)
             }
             composable(
                 "${NavigationRoutes().SCREEN_VIDEO}/{dest}",

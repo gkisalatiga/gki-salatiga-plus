@@ -80,7 +80,7 @@ class ScreenVideo(private val destination: String?) : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },

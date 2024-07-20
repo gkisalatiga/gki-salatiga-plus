@@ -321,7 +321,7 @@ class ScreenMain() : ComponentActivity() {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
                 val coroutineScope = rememberCoroutineScope()
@@ -331,7 +331,7 @@ class ScreenMain() : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Info,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },
@@ -1139,7 +1139,7 @@ class ScreenMain2(menu: String?, submenu: String?) : ComponentActivity() {
                 IconButton(onClick = { Toast.makeText(context, "NavIcon cliked", Toast.LENGTH_SHORT).show() }) {
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
                 val coroutineScope = rememberCoroutineScope()
@@ -1155,7 +1155,7 @@ class ScreenMain2(menu: String?, submenu: String?) : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Info,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },

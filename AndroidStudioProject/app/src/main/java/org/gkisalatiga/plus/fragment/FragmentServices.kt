@@ -100,11 +100,11 @@ class FragmentServices() : ComponentActivity() {
                         label = { Text(item) },
                         selected = selectedChip[index].value,
                         leadingIcon = {
-                            Icon(
+                            /*Icon(
                                 imageVector = iconOfChip[index],
                                 contentDescription = "Done icon",
                                 modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )
+                            )*/
                         },
                     )
                 }
@@ -153,7 +153,7 @@ class FragmentServices() : ComponentActivity() {
 
         // Enlist the cards to be shown in this fragment.
         // This is equivalent to this fragment's particular JSON node.
-        var cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
+        val cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
         for (i in 0 until array.length()) {
             val curNode = array[i] as JSONObject
             cardsList.add(mapOf(
