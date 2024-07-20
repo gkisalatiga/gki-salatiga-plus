@@ -99,13 +99,7 @@ class FragmentServices() : ComponentActivity() {
                         },
                         label = { Text(item) },
                         selected = selectedChip[index].value,
-                        leadingIcon = {
-                            /*Icon(
-                                imageVector = iconOfChip[index],
-                                contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )*/
-                        },
+                        leadingIcon = { },
                     )
                 }
             }

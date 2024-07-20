@@ -1,5 +1,14 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.0-alpha (2024-07-20) version code 7
+
+- Info: This version is major feature introduction pre-release
+- New: Added "Warta Jemaat" PDF document viewer feature
+- New: Added "Tata Ibadah" PDF document viewer feature
+- New: Added "SaRen Pagi" morning devotional
+- New: Added "Renungan YKB" daily devotion from Yayasan Komunikasi Bersama
+- New: Added church forms menu
+
 ## v0.0.6-alpha (2024-07-20) version code 6
 
 - New: Added splash screen to the app

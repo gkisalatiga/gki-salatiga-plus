@@ -15,11 +15,13 @@
     <string name="screenprofile_title">Profil</string>
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
-    <string name="screenlive_title">Live-buoy</string>
+    <string name="screenprerecord_title">GKI Salatiga+ Series</string>
+    <string name="screenlive_title">GKI Salatiga+ Live Stream</string>
     <string name="screenforms_title">Formidable</string>
     <string name="screenykb_title">Yayasan Komunikasi Bersama</string>
     <string name="screenwarta_title">Warta Jemaat</string>
     <string name="screenliturgi_title">Tata Ibadah</string>
+    <string name="screensaren_title">Sapaan dan Renungan Pagi</string>
 
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>

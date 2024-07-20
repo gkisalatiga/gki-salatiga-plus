@@ -46,11 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.screen.ScreenAbout
-import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenProfile
-import org.gkisalatiga.plus.screen.ScreenVideo
-import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 
 class ActivitySingleLauncher : ComponentActivity() {
@@ -151,7 +147,7 @@ class ActivitySingleLauncher : ComponentActivity() {
                 })
             ) {
                 val dest = requireNotNull(it.arguments).getString("dest")
-                ScreenVideo(dest).getComposable(screenController, fragmentController, context)
+                // ScreenVideo(dest).getComposable(screenController, fragmentController, context)
             }
             composable(
                 "${NavigationRoutes().SCREEN_LIVE}/{dest}?{submenu}",

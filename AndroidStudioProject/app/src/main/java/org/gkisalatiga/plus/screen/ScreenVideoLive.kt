@@ -54,7 +54,6 @@ import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-
 class ScreenVideoLive() : ComponentActivity() {
 
     // The YouTube video viewer object.
