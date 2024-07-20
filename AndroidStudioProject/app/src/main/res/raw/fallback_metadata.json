@@ -10,25 +10,8 @@
             "youtube": "https://www.youtube.com/@GKISalatiga",
             "web": "https://gkisalatiga.org",
             "linktree": "https://linktr.ee/gkisalatiga",
-            "whatsapp": "http://wa.me/6285228909700",
+            "whatsapp": "https://wa.me/6285228909700",
             "email": "gkisalatiga@gmail.com"
-        },
-        "url-webview": {
-            "ykb-kiddy": [
-                "https://www.ykb-wasiat.org/kiddy"
-            ],
-            "ykb-teens": [
-                "https://www.ykb-wasiat.org/teens-for-christ"
-            ],
-            "ykb-youth": [
-                "https://www.ykb-wasiat.org/youth-for-christ"
-            ],
-            "ykb-wasiat": [
-                "http://ykb-wasiat.org/wasiat"
-            ],
-            "ykb-lansia": [
-                "https://www.ykb-wasiat.org/2024/07/17/dihina-namun-tidak-terhina/jendela-hati"
-            ]
         },
         "yt-video": {
             "kml": [
@@ -224,6 +207,28 @@
             {
                 "title": "Update Data Anggota Jemaat dan Simpatisan GKI Salatiga",
                 "url": "https://docs.google.com/forms/d/e/1FAIpQLSdhMVZ-AxgvaVX-VBPo5_XdL-0qUd4erO_rh5HFLM9u0pyTFA/viewform"
+            }
+        ],
+        "ykb": [
+            {
+                "title": "Renungan Kiddy",
+                "url": "https://www.ykb-wasiat.org/kiddy"
+            },
+            {
+                "title": "Teens for Christ",
+                "url": "https://www.ykb-wasiat.org/teens-for-christ"
+            },
+            {
+                "title": "Youth for Christ",
+                "url": "https://www.ykb-wasiat.org/youth-for-christ"
+            },
+            {
+                "title": "Renungan Wasiat",
+                "url": "https://ykb-wasiat.org/wasiat"
+            },
+            {
+                "title": "Renungan Usia Indah",
+                "url": "https://www.ykb-wasiat.org/jendela-hati/"
             }
         ],
         "offertory": [

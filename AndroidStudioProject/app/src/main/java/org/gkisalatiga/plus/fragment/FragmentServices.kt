@@ -99,13 +99,7 @@ class FragmentServices() : ComponentActivity() {
                         },
                         label = { Text(item) },
                         selected = selectedChip[index].value,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = iconOfChip[index],
-                                contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        },
+                        leadingIcon = { },
                     )
                 }
             }
@@ -153,7 +147,7 @@ class FragmentServices() : ComponentActivity() {
 
         // Enlist the cards to be shown in this fragment.
         // This is equivalent to this fragment's particular JSON node.
-        var cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
+        val cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
         for (i in 0 until array.length()) {
             val curNode = array[i] as JSONObject
             cardsList.add(mapOf(
@@ -197,7 +191,8 @@ class FragmentServices() : ComponentActivity() {
 
                     // Trying to switch to the YouTube viewer and open the stream.
                     Log.d("Groaker", "Opening YouTube stream: $url.")
-                    GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url!!)
+                    GlobalSchema.ytViewerParameters["yt-link"] = url
+                    GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url)
                     GlobalSchema.ytViewerParameters["title"] = title!!
                     GlobalSchema.ytViewerParameters["date"] = date
                     GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE

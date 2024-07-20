@@ -16,7 +16,8 @@
             android:name=".ActivityLauncher"
             android:exported="true"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.GKISalatigaPlus">
+            android:theme="@style/Theme.GKISalatigaPlus"
+            android:usesCleartextTraffic="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

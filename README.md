@@ -6,9 +6,11 @@ The developmental project of GKI Salatiga's mobile church application
 - [X] Add splash screen at launch
 - [ ] Add change log to the "About" screen
 - [ ] Change SVG resources color according to theme [(reference)](https://stackoverflow.com/questions/33126904/change-fillcolor-of-a-vector-in-android-programmatically)
-- [ ] Replace hard-coded strings, values, and dimensions with Android resource XML values
-- [ ] (Optional) Add scroll bar to some scrollable views
+- [X] Replace hard-coded strings, values, and dimensions with Android resource XML values
 - [ ] Replace the implementation of "GlobalSchema.context" with "LocalContext.current" to prevent memory leak
+- [ ] Replace debug toasts with "if (debug)" expressions, in which "debug" variable can be toggled manually
+- [ ] Fix bottom nav not scrolling the horizontal pager issue
+- [ ] (Optional) Add scroll bar to some scrollable views
 
 ## License of Materials Used
 

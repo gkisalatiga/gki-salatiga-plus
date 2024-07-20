@@ -218,6 +218,8 @@ class ScreenMain() : ComponentActivity() {
                             label = { Text(item) },
                             selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
                             onClick = {
+                                Log.d("Groaker", "Triggered bottom nav button into index: $index")
+                                Log.d("Groaker", "The current global value of the bottom nav page is: ${GlobalSchema.lastMainScreenPagerPage.value}")
                                 bottomNavPagerScrollTo.value = index
                             }
                         )
@@ -321,7 +323,7 @@ class ScreenMain() : ComponentActivity() {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
                 val coroutineScope = rememberCoroutineScope()
@@ -331,7 +333,7 @@ class ScreenMain() : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Info,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },
@@ -1139,7 +1141,7 @@ class ScreenMain2(menu: String?, submenu: String?) : ComponentActivity() {
                 IconButton(onClick = { Toast.makeText(context, "NavIcon cliked", Toast.LENGTH_SHORT).show() }) {
                     Icon(
                         imageVector = Icons.Rounded.AccountCircle,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
                 val coroutineScope = rememberCoroutineScope()
@@ -1155,7 +1157,7 @@ class ScreenMain2(menu: String?, submenu: String?) : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.Rounded.Info,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },

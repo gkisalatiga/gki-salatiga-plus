@@ -17,6 +17,7 @@ import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,6 +78,14 @@ class ScreenAbout() : ComponentActivity() {
                 Text("Some Scaffold Content.")
             }
         }
+
+        // Ensure that when we are at the first screen upon clicking "back",
+        // the app is exited instead of continuing to navigate back to the previous screens.
+        // SOURCE: https://stackoverflow.com/a/69151539
+        BackHandler {
+            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
+        }
+
     }
 
     @Composable
@@ -101,7 +110,7 @@ class ScreenAbout() : ComponentActivity() {
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Localiszes desc"
+                        contentDescription = ""
                     )
                 }
             },

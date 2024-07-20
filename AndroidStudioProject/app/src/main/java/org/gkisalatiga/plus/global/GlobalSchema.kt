@@ -13,6 +13,7 @@ package org.gkisalatiga.plus.global
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
@@ -86,12 +87,20 @@ class GlobalSchema : Application() {
             "date" to "",
             "title" to "",
             "yt-id" to "",
+            "yt-link" to ""
         )
+
+        // Determines what link to show in ScreenWebView, and its title.
+        var webViewTargetURL: String = ""
+        var webViewTitle: String = ""
 
         /* This parameter is required for  manipulating the composition and the app's view. */
         // TODO: Find a way to use the app's context across functions without memory leak.
         @SuppressLint("StaticFieldLeak")
         var context: Context = AppCompatActivity()
+
+        /* This is the clipboard manager. */
+        var clipManager: ClipboardManager? = null
 
     }
 }

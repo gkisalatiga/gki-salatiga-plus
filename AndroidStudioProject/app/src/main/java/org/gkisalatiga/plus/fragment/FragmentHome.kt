@@ -64,14 +64,14 @@ class FragmentHome() : ComponentActivity() {
     // The following defines the visible menu buttons shown in the main menu,
     // as well as their corresponding navigation targets.
     private val btnRoutes = listOf(
+        NavigationRoutes().SCREEN_WARTA,
+        NavigationRoutes().SCREEN_LITURGI,
+        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_SAREN,
+        NavigationRoutes().SCREEN_YKB,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_FORMS,
     )
 
     // The following defines the label of each visible menu button.
@@ -146,7 +146,9 @@ class FragmentHome() : ComponentActivity() {
                         OutlinedButton (
                             onClick = {
                                 // This will be triggered when the main menu button is clicked.
-                                Toast.makeText((GlobalSchema.context), "You may have clicked: $str!", Toast.LENGTH_SHORT).show()
+                                if (btnRoutes[index] != NavigationRoutes().SCREEN_BLANK) {
+                                    GlobalSchema.pushScreen.value = btnRoutes[index]
+                                }
                                       },
                             modifier = Modifier.padding(5.dp).height(100.dp),
                             shape = RoundedCornerShape(10.dp),
@@ -172,198 +174,4 @@ class FragmentHome() : ComponentActivity() {
         }
     }
 
-    /*
-    /**
-     * Navigation between screens
-     * SOURCE: https://medium.com/@husayn.fakher/a-guide-to-navigation-in-jetpack-compose-questions-and-answers-d86b7e6a8523
-     */
-    @Composable
-    public fun getComposable(screenController: NavHostController, fragmentController: NavHostController, context: Context) {
-        Column {
-            // Setting the layout to center both vertically and horizontally
-            // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
-            val scrollState = rememberScrollState()
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = scrollState)
-            ) {
-                /* Displaying the welcome banner in the main menu. */
-                Surface (
-                    shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.sample_welcome_banner),
-                        contentDescription = "Some name",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth
-                    )
-                }
-
-                /* Displaying the "main menu" options. */
-                LazyRow ( modifier = Modifier.padding(vertical = 10.dp).padding(horizontal = 0.dp) ) {
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                    // The main menu "main" content.
-                    items (4) { index ->
-                        Button(onClick = {
-                            screenController.navigate("${NavigationRoutes().SCREEN_PROFILE}/${profileItemDestination[index]}")
-                        }, modifier = Modifier.padding(horizontal = 5.dp).wrapContentWidth(), shape = RoundedCornerShape(10.dp)) {
-                            Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                                // Ensures that the drawable image to be used matches with theme accent color.
-                                // SOURCE: https://stackoverflow.com/a/15266893
-                                // getDrawable(profileItemIcon[index])?.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC)
-
-                                Image(
-                                    painter = painterResource(profileItemIcon[index]),
-                                    contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Text(profileItemText[index])
-                            }
-                        }
-                    }
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-
-                /* Displaying the daily Bible verses. */
-                Column ( modifier = Modifier.padding(10.dp) ) {
-                    Text("Inspirasi Harian", fontWeight = FontWeight.Bold, fontSize = 26.sp, modifier = Modifier.padding(bottom = 5.dp))
-                    Row {
-                        Text("Mazmur 203:1-1002", fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text("[TB1]")
-                        Text("Senin, 32 Juli 2024", fontStyle = FontStyle.Italic, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
-                    }
-                    Text("Sungguh alangkah baiknya, sungguh alangkah indahnya, bila saudara semua hidup rukun bersama." +
-                            "Seperti minyak di kepala Harun yang ke janggut dan jubahnya turun." +
-                            "Seperti embun yang dari Hermon mengalir ke bukit Sion.")
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                /* Displaying the daily morning devotion. */
-                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Sapaan dan Renungan Pagi", fontWeight = FontWeight.Bold, fontSize = 26.sp)
-                    // SOURCE: https://stackoverflow.com/a/69278397
-                    Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
-                }
-                LazyRow {
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                    // The actual content.
-                    items (5) {
-                        Card (
-                            onClick = {
-                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                                val destination = "abcd5dasar_$it"
-                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
-                                      },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
-                        ) {
-                            Column {
-                                Image(
-                                    painter = painterResource(R.drawable.sample_thumbnail_youtube),
-                                    contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Column (modifier = Modifier.padding(5.dp)) {
-                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
-                                    Text("14 Juli 2024")
-                                }
-                            }
-                        }
-                    }
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-
-                /* Displaying the choir production videos. */
-                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text("GKI Salatiga Choir", fontWeight = FontWeight.Bold, fontSize = 26.sp)
-                    // SOURCE: https://stackoverflow.com/a/69278397
-                    Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
-                }
-                LazyRow {
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                    // The actual content.
-                    items (5) {
-                        Card (
-                            onClick = {
-                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                                val destination = "abcd5dasar_$it"
-                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
-                                      },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
-                        ) {
-                            Column {
-                                Image(
-                                    painter = painterResource(R.drawable.sample_thumbnail_youtube_2),
-                                    contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Column (modifier = Modifier.padding(5.dp)) {
-                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
-                                    Text("14 Juli 2024")
-                                }
-                            }
-                        }
-                    }
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-
-                /* Displaying the music videos produced by Komisi Musik dan Liturgi (KML). */
-                Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text("KML Production", fontWeight = FontWeight.Bold, fontSize = 26.sp)
-                    // SOURCE: https://stackoverflow.com/a/69278397
-                    Spacer(modifier = Modifier.weight(1f))
-                    Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
-                }
-                LazyRow {
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                    // The actual content.
-                    items (5) {
-                        Card (
-                            onClick = {
-                                Toast.makeText(context, "The card $title is clicked", Toast.LENGTH_SHORT).show()
-                                val destination = "abcd5dasar_$it"
-                                screenController.navigate("${NavigationRoutes().SCREEN_VIDEO}/${destination}")
-                                      },
-                            modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
-                        ) {
-                            Column {
-                                Image(
-                                    painter = painterResource(R.drawable.sample_thumbnail_youtube_3),
-                                    contentDescription = "Some name",
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Column (modifier = Modifier.padding(5.dp)) {
-                                    Text("YouTube Video Title Wkwkwk :v", fontWeight = FontWeight.Bold)
-                                    Text("14 Juli 2024")
-                                }
-                            }
-                        }
-                    }
-                    // Left-right padding.
-                    item { Spacer(modifier = Modifier.width(5.dp)) }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Below spacer needs to be added a little bit more,
-                // to mitigate bottom FAB.
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-        }
-    }
-     */
 }

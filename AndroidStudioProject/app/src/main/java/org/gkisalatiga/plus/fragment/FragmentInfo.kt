@@ -57,11 +57,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -138,7 +140,7 @@ class FragmentInfo() : ComponentActivity() {
             val imgChurchDescription = (GlobalSchema.context).resources.getString(R.string.info_church_img_description)
             Surface (
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp)
             ) {
                 Image(
                     painter = painterResource(imgChurchSource),
