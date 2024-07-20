@@ -218,6 +218,8 @@ class ScreenMain() : ComponentActivity() {
                             label = { Text(item) },
                             selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
                             onClick = {
+                                Log.d("Groaker", "Triggered bottom nav button into index: $index")
+                                Log.d("Groaker", "The current global value of the bottom nav page is: ${GlobalSchema.lastMainScreenPagerPage.value}")
                                 bottomNavPagerScrollTo.value = index
                             }
                         )

@@ -4,7 +4,7 @@
  * Written by Samarthya Lykamanuella (github.com/groaking)
  *
  * ---
- * Display church forms.
+ * Display the YKB daily devotional.
  */
 
 package org.gkisalatiga.plus.screen
@@ -60,7 +60,7 @@ import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.json.JSONObject
 
-class ScreenForms() : ComponentActivity() {
+class ScreenYKB() : ComponentActivity() {
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -97,8 +97,8 @@ class ScreenForms() : ComponentActivity() {
                 .verticalScroll(state = scrollState)
                 .padding(20.dp)
         ) {
-            /* Display the church's building image. */
-            val imgSource = R.drawable.banner_forms
+            /* Display the banner image. */
+            val imgSource = R.drawable.banner_ykb
             val imgDescription = "Menu banner"
             Surface (
                 shape = RoundedCornerShape(20.dp),
@@ -112,10 +112,10 @@ class ScreenForms() : ComponentActivity() {
                 )
             }
 
-            /* Retrieve the list of forms. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONArray("forms")
+            /* Retrieve the list of devotionals. */
+            val formListAsJSONArray = AppDatabase().getMainData().getJSONArray("ykb")
 
-            /* Enumerate and enlist the individual form. */
+            /* Enumerate and enlist the individual card. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())
             for (i in 0 until formListAsJSONArray.length()) {
                 val curNode = formListAsJSONArray[i] as JSONObject
@@ -129,7 +129,7 @@ class ScreenForms() : ComponentActivity() {
             // because JSONArray iterates from 1, not 0.
             enumeratedFormList.removeAt(0)
 
-            /* Draw the form selection elements. */
+            /* Draw the devotional selection elements. */
             enumeratedFormList.forEach {
 
                 // Preparing the arguments.
@@ -142,7 +142,7 @@ class ScreenForms() : ComponentActivity() {
                         Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
-                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_FORMS
+                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_YKB
 
                         // Navigate to the WebView viewer.
                         GlobalSchema.webViewTargetURL = url!!
@@ -175,7 +175,7 @@ class ScreenForms() : ComponentActivity() {
             ),
             title = {
                 Text(
-                    stringResource(R.string.screenforms_title),
+                    stringResource(R.string.screenykb_title),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

@@ -18,6 +18,7 @@ public data class NavigationRoutes (
     val SCREEN_VIDEO: String = "nav_screen_video",
     val SCREEN_LIVE: String = "nav_screen_live",
     val SCREEN_FORMS: String = "nav_screen_forms",
+    val SCREEN_YKB: String = "nav_screen_ykb",
     val SCREEN_BLANK: String = "nav_screen_blank",
 
     // The individual Composable "fragments" of each screen.

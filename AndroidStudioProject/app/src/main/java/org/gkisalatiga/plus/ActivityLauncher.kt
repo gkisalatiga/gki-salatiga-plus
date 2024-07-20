@@ -64,6 +64,7 @@ import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWebView
+import org.gkisalatiga.plus.screen.ScreenYKB
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -176,6 +177,7 @@ class ActivityLauncher : ComponentActivity() {
                 NavigationRoutes().SCREEN_ABOUT -> { ScreenAbout().getComposable() }
                 NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
                 NavigationRoutes().SCREEN_FORMS -> { ScreenForms().getComposable() }
+                NavigationRoutes().SCREEN_YKB -> { ScreenYKB().getComposable() }
                 NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
             }
         }

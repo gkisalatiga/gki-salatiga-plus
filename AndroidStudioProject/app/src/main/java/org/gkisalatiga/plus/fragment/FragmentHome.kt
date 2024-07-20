@@ -68,7 +68,7 @@ class FragmentHome() : ComponentActivity() {
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_YKB,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_FORMS,

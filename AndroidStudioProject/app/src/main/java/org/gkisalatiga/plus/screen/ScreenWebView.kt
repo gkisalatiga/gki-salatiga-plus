@@ -17,7 +17,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -89,7 +91,7 @@ class ScreenWebView() : ComponentActivity() {
         // the app is exited instead of continuing to navigate back to the previous screens.
         // SOURCE: https://stackoverflow.com/a/69151539
         BackHandler {
-            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_FORMS
+            GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
         }
 
         // Handles opening URLs in external browser.
@@ -115,16 +117,40 @@ class ScreenWebView() : ComponentActivity() {
         // Adding a WebView inside AndroidView with layout as full screen
         AndroidView(factory = {
             WebView(it).apply {
-                this.layoutParams = ViewGroup.LayoutParams(
+                val wv = this
+                wv.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
+
+                // Custom WebViewClient to disable arbitrary opening an external website.
+                // SOURCE: https://stackoverflow.com/a/62166792
+                wv.webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        return false
+                    }
+
+                    // Evaluating javascript.
+                    // SOURCE: https://stackoverflow.com/a/51822916
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        val jsBody = """
+                            /* Hides navigations in YKB. */
+                            document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
+                            document.getElementsByClassName('navbar-header')[0].style.display='none';
+                            document.getElementsByClassName('rightbar-devotion')[0].style.display='none';
+                            document.getElementById('multiple-ajax-calendar-2').style.display='none';
+                            document.getElementById('header').style.display='none';
+                        """.trimIndent()
+                        wv.loadUrl("javascript:(function() { $jsBody })()")
+                    }
+                }
+
                 // Enables JavaScript.
                 // SOURCE: https://stackoverflow.com/a/69373543
-                this.settings.javaScriptEnabled = true
-                this.evaluateJavascript("(function() { alert('Welcome to forms! Awokawokawkoawok'); })();") { str ->
-                    // android.util.Log.d("LogName", (str)!!) // Prints: "this"
-                }
+                wv.settings.javaScriptEnabled = true
             }
         }, update = {
             it.loadUrl(destURL)
@@ -149,7 +175,7 @@ class ScreenWebView() : ComponentActivity() {
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_FORMS
+                    GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,

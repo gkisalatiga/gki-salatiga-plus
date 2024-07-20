@@ -17,6 +17,7 @@
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
     <string name="screenlive_title">Live-buoy</string>
     <string name="screenforms_title">Formidable</string>
+    <string name="screenykb_title">Yayasan Komunikasi Bersama</string>
 
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>
