@@ -19,7 +19,6 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -100,9 +99,7 @@ class ScreenMain() : ComponentActivity() {
         Log.d("Groaker", "Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.value}")
 
         // Listen to the bottom nav's request to change the horizontal pager page.
-        key(bottomNavPagerScrollTo.value) {
-            doNavBarScrollPager()
-        }
+        listenNavBarScrollPager()
 
         // Listen to the change in the horizontal pager's page state.
         // Then change the global page state accordingly.
@@ -219,7 +216,13 @@ class ScreenMain() : ComponentActivity() {
                             selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
                             onClick = {
                                 Log.d("Groaker", "Triggered bottom nav button into index: $index")
-                                Log.d("Groaker", "The current global value of the bottom nav page is: ${GlobalSchema.lastMainScreenPagerPage.value}")
+
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.value}")
+
                                 bottomNavPagerScrollTo.value = index
                             }
                         )
@@ -231,7 +234,7 @@ class ScreenMain() : ComponentActivity() {
     }
 
     @Composable
-    private fun doNavBarScrollPager() {
+    private fun listenNavBarScrollPager() {
         // Force recomposition of the horizontal pager.
         // SOURCE: https://stackoverflow.com/a/77289069
         LaunchedEffect(bottomNavPagerScrollTo.value) {
