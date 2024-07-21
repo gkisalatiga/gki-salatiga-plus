@@ -9,7 +9,8 @@ The developmental project of GKI Salatiga's mobile church application
 - [X] Replace hard-coded strings, values, and dimensions with Android resource XML values
 - [ ] Replace the implementation of "GlobalSchema.context" with "LocalContext.current" to prevent memory leak
 - [ ] Replace debug toasts with "if (debug)" expressions, in which "debug" variable can be toggled manually
-- [ ] Fix bottom nav not scrolling the horizontal pager issue
+- [X] Fix bottom nav not scrolling the horizontal pager issue
+- [ ] Lock orientation to portrait-only
 - [ ] (Optional) Add scroll bar to some scrollable views
 
 ## License of Materials Used

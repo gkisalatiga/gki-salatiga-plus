@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.1-alpha (2024-07-21) version code 8
+
+- Fix: Fixed bottom nav not scrolling to the intended the horizontal pager page
+
 ## v0.1.0-alpha (2024-07-20) version code 7
 
 - Info: This version is major feature introduction pre-release
