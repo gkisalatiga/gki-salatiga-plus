@@ -135,20 +135,6 @@ class FragmentInfo() : ComponentActivity() {
                 .verticalScroll(state = scrollState)
                 .padding(20.dp)
         ) {
-            /* Display the church's building image. */
-            val imgChurchSource = R.drawable.sample_welcome_banner
-            val imgChurchDescription = (GlobalSchema.context).resources.getString(R.string.info_church_img_description)
-            Surface (
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp)
-            ) {
-                Image(
-                    painter = painterResource(imgChurchSource),
-                    contentDescription = imgChurchDescription,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
 
             /* Display the individual "church info" card. */
             Column ( modifier = Modifier.padding(top = 10.dp) ) {

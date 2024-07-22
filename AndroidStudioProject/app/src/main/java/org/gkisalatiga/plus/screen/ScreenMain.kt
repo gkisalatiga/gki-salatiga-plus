@@ -39,6 +39,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomAppBar
@@ -59,13 +60,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -135,34 +141,13 @@ class ScreenMain() : ComponentActivity() {
                     getTopBar()
 
                     // Shows the main content.
-                    /*
-                    val bottomSheetState = rememberModalBottomSheetState()
-                    val scope = rememberCoroutineScope()
-                    ModalBottomSheet(
-                        dragHandle = null,
-                        sheetState = bottomSheetState,
-                        onDismissRequest = {
-                            scope.launch { bottomSheetState.partialExpand() }
-                        }
-                    ) {
-                        // Enabling pager for managing and layouting multiple fragments in a given screen.
-                        // SOURCE: https://www.composables.com/foundation/horizontalpager
-                        HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize() ) { page ->
-                            when (page) {
-                                0 -> FragmentHome().getComposable()
-                                1 -> FragmentServices().getComposable()
-                                2 -> FragmentInfo().getComposable()
-                            }
-                        }
-                    }*/
-
                     Surface (
                         modifier = Modifier.padding(top = LocalContext.current.resources.getDimension(R.dimen.new_topbar_content_top_y_offset).dp).fillMaxSize().zIndex(10f),
                         shape = RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
                     ) {
                         // Enabling pager for managing and layouting multiple fragments in a given screen.
                         // SOURCE: https://www.composables.com/foundation/horizontalpager
-                        HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize().padding(top = 20.dp) ) { page ->
+                        HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize().padding(top = 0.dp) ) { page ->
                             when (page) {
                                 0 -> FragmentHome().getComposable()
                                 1 -> FragmentServices().getComposable()
@@ -289,23 +274,43 @@ class ScreenMain() : ComponentActivity() {
                     .padding(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_padding).dp)
             ) {
                 Column {
+
+                    // Shadow.
+                    // SOURCE: https://codingwithrashid.com/how-to-add-shadows-to-text-in-android-jetpack-compose/
+                    val shadowTextStyle = TextStyle(
+                        shadow = Shadow(
+                            color = Color.Gray,
+                            offset = Offset(2.0f, 2.0f),
+                            blurRadius = 5.0f
+                        )
+                    )
+
                     // This text will trigger the "About App" screen.
                     val ctx = LocalContext.current
                     Surface (
                         color = Color.Transparent,
+                        modifier = Modifier.padding(bottom = 10.dp),
                         onClick = {
                             if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You will open the about app.", Toast.LENGTH_SHORT).show()
+
+                            // Opens the "About app" screen.
+                            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_ABOUT
                         }
                     ) {
-                        Row (verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(R.string.app_name_alias))
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // The app title.
+                            Text(stringResource(R.string.app_name_alias), fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White)
                             Spacer(Modifier.width(20.dp))
-                            Icon(Icons.Default.PlayArrow, "")
+                            // The "next" button.
+                            Icon(Icons.AutoMirrored.Default.KeyboardArrowRight, "", tint = Color.White)
                         }
                     }
+
                     // The overlaying greetings text.
-                    Text(stringResource(R.string.new_topbar_greetings))
-                    Text(stringResource(R.string.new_topbar_person_name))
+                    Text(stringResource(R.string.new_topbar_greetings), fontSize = 36.sp, fontWeight = FontWeight.Bold, color = Color.White, style = shadowTextStyle)
+                    Text(stringResource(R.string.new_topbar_person_name), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White, style = shadowTextStyle)
                 }
             }
 

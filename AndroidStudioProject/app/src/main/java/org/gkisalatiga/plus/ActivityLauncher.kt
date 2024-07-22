@@ -37,6 +37,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -152,9 +153,9 @@ class ActivityLauncher : ComponentActivity() {
     private fun initSplashScreen(splashNavController: NavHostController) {
         Log.d("Groaker", "Loading splash screen of the app ...")
 
-        val scale = remember { androidx.compose.animation.core.Animatable(0f) }
+        val scale = remember { androidx.compose.animation.core.Animatable(0.9f) }
         LaunchedEffect(key1 = true) {
-            scale.animateTo(targetValue = 0.9f, animationSpec = tween(durationMillis = 1000, easing = { OvershootInterpolator(2f).getInterpolation(it) }))
+            scale.animateTo(targetValue = 0.4f, animationSpec = tween(durationMillis = 1000, easing = { OvershootInterpolator(2f).getInterpolation(it) }))
 
             // Determines the duration of the splash screen.
             delay(1000L)
@@ -162,8 +163,8 @@ class ActivityLauncher : ComponentActivity() {
         }
 
         // Displays the splash screen content.
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Image(painter = painterResource(id = R.mipmap.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.scale(scale.value))
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().background(Color(0xff071450))) {
+            Image(painter = painterResource(id = R.drawable.splash_screen_foreground), contentDescription = "Splash screen logo", modifier = Modifier.scale(scale.value))
         }
     }
 
