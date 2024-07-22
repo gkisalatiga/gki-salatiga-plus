@@ -1,9 +1,16 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.2-alpha (2024-07-23) version code 9
+
+- New: Added horizontal auto-scrolling carousel in the main menu
+- Improved: Church news and liturgy are now highlighted in the main menu as the "primary items"
+- Improved: Tinted the background color blue during splash screen to harmonize with the logo
+- Improved: Merged live and pre-recorded YouTube videos into the "content" navigation menu
+
 ## v0.1.1-alpha (2024-07-21) version code 8
 
 - New: Added GKI Salatiga+ application logo
-- Fix: Fixed bottom nav not scrolling to the intended the horizontal pager page
+- Fix: Fixed bottom nav not scrolling to the intended horizontal pager page
 
 ## v0.1.0-alpha (2024-07-20) version code 7
 
@@ -24,28 +31,28 @@
 
 ## v0.0.5-alpha (2024-07-17) version code 5
 
-- Added link confirmation dialog for opening external social media links
-- Added preliminary profile information screen and fragments
+- New: Added link confirmation dialog for opening external social media links
+- New: Added preliminary profile information screen and fragments
 
 ## v0.0.4-alpha (2024-07-17) version code 4
 
-- Added the preliminary layout of the bottom sheet
-- Fixed padding on most YouTube video thumbnails
-- Fixed padding on text-based card elements
+- New: Added the preliminary layout of the bottom sheet
+- Fix: Fixed padding on most YouTube video thumbnails
+- Fix: Fixed padding on text-based card elements
 
 ## v0.0.3-alpha (2024-07-16) version code 3
 
-- Added the main screen menus: Home, Services, News, and Events
-- Added features to display daily Bible verses and welcome banner
-- Added church profile buttons
+- New: Added the main screen menus: Home, Services, News, and Events
+- New: Added features to display daily Bible verses and welcome banner
+- New: Added church profile buttons
 
 ## v0.0.2-alpha (2024-07-16) version code 2
 
-- Fixed nested NavHost not working by substituting with AnimatedVisibility
-- Added inter-fragment switching mechanism
+- New: Added inter-fragment switching mechanism
+- Fix: Fixed nested NavHost not working by substituting with AnimatedVisibility
 
 ## v0.0.1-alpha (2024-07-15) version code 1
 
-- Added bottom navigation and FAB
-- Added top navigation
-- Created the Composable navigation routing for screens and fragments
+- New: Added bottom navigation and FAB
+- New: Added top navigation
+- New: Created the Composable navigation routing for screens and fragments

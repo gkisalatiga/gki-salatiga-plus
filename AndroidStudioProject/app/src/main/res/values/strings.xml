@@ -1,8 +1,8 @@
 <resources>
     <!-- Constant strings for app-related names -->
-    <string name="app_name">GKI Salatiga Plus</string>
-    <string name="app_name_alias">GKI Salatiga+</string>
-    <string name="title_activity_main">GKI Salatiga+</string>
+    <string name="app_name">GKI Salatiga Plus (Alpha)</string>
+    <string name="app_name_alias">GKI Salatiga+ (Alpha)</string>
+    <string name="title_activity_main">GKI Salatiga+ (Alpha)</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
     <string name="bottomnav_menu_home">Beranda</string>
@@ -26,6 +26,8 @@
     <!-- Constant strings used in submenus. -->
     <string name="submenu_services_umum">Kebaktian Umum</string>
     <string name="submenu_services_es">English Service</string>
+    <string name="submenu_services_saren">Sapaan dan Renungan Pagi</string>
+    <string name="submenu_services_kml">KML Production</string>
 
     <!-- Constant strings for the main menu's action buttons -->
     <string name="btn_mainmenu_wj">Warta Jemaat</string>

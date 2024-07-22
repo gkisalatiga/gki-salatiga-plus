@@ -31,10 +31,13 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.Interpolator
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -84,7 +87,7 @@ class ActivityLauncher : ComponentActivity() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         // Preamble logging to the terminal.
-        Log.d("Groaker", "Starting app: ${this.resources.getString(R.string.app_name_alias)}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Starting app: ${this.resources.getString(R.string.app_name_alias)}")
 
         // Call the superclass. (The default behavior. DO NOT CHANGE!)
         super.onCreate(savedInstanceState)
@@ -151,14 +154,14 @@ class ActivityLauncher : ComponentActivity() {
      */
     @Composable
     private fun initSplashScreen(splashNavController: NavHostController) {
-        Log.d("Groaker", "Loading splash screen of the app ...")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Loading splash screen of the app ...")
 
-        val scale = remember { androidx.compose.animation.core.Animatable(0.9f) }
+        val scale = remember { androidx.compose.animation.core.Animatable(1.6f) }
         LaunchedEffect(key1 = true) {
-            scale.animateTo(targetValue = 0.4f, animationSpec = tween(durationMillis = 1000, easing = { OvershootInterpolator(2f).getInterpolation(it) }))
+            scale.animateTo(targetValue = 0.4f, animationSpec = tween(durationMillis = 1000, easing = { FastOutSlowInEasing.transform(it) /*OvershootInterpolator(2f).getInterpolation(it)*/ }))
 
             // Determines the duration of the splash screen.
-            delay(1000L)
+            delay(100)
             splashNavController.navigate("main_screen")
         }
 
@@ -174,8 +177,10 @@ class ActivityLauncher : ComponentActivity() {
      */
     @Composable
     private fun initMainGraphic() {
-        Log.d("Groaker", "Initializing main graphic ...")
-        Log.d("Groaker", "Obtained 'pushScreen' value: ${GlobalSchema.pushScreen.value}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
+            Log.d("Groaker", "Initializing main graphic ...")
+            Log.d("Groaker", "Obtained 'pushScreen' value: ${GlobalSchema.pushScreen.value}")
+        }
 
         // Watch for the state change in the parameter "pushScreen".
         // SOURCE: https://stackoverflow.com/a/73129228
@@ -214,7 +219,7 @@ class ActivityLauncher : ComponentActivity() {
             val appDB = AppDatabase()
 
             // Let's apply the fallback JSON data until the actual, update JSON metadata is downloaded.
-            Log.d("Groaker", "Loading the fallback JSON metadata ...")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Loading the fallback JSON metadata ...")
             GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
 
             // Set the flag to "false" to signal that we need to have the new data now.
@@ -228,7 +233,7 @@ class ActivityLauncher : ComponentActivity() {
                 if (GlobalSchema.isJSONMetaDataInitialized.value) {
                     // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
-                    Log.d("Groaker", "Successfully refreshed the JSON data!")
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Successfully refreshed the JSON data!")
 
                     // It is finally set-up. Let's break free from this loop.
                     break

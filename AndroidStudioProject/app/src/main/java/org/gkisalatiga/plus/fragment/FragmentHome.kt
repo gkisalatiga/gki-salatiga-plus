@@ -127,7 +127,7 @@ class FragmentHome() : ComponentActivity() {
         // Please fill the following integer-variable with a number of pages
         // that the user won't bother scrolling.
         // SOURCE: https://stackoverflow.com/a/75469260
-        val baseInfiniteScrollingPages = 400
+        val baseInfiniteScrollingPages = 16384  // --- 2^14.
 
         // Necessary variables for the infinite-page carousel.
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
