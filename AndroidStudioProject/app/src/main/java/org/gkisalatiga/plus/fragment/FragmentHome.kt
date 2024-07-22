@@ -120,34 +120,26 @@ class FragmentHome() : ComponentActivity() {
             verticalArrangement = Arrangement.Top,
             modifier = Modifier.fillMaxSize()
         ) {
-            /* Displaying the welcome banner in the main menu. */
-            Surface (
-                shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp),
-                modifier = Modifier.padding(bottom = 20.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.sample_welcome_banner),
-                    contentDescription = "Some name",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
 
-            /* Displaing the main menu action buttons. */
+            /* Displaying the top two menus. */
+            // TODO
+
+            /* Displaing the main menu action buttons other than the first two. */
             // Assumes btnRoutes, btnLabels, and btnIcons all have the same size.
-            val spanSize: Int = 4
+            val spanSize: Int = 3
             LazyVerticalGrid(
                 columns = GridCells.Fixed(spanSize),
                 modifier = Modifier.padding(20.dp),
                 horizontalArrangement = Arrangement.Center,
             ) {
-                btnRoutes.forEachIndexed { index, str ->
+                btnRoutes.subList(2, btnRoutes.size).forEachIndexed { index, str ->
+                    val offsetIndex = index + 2
                     item {
                         OutlinedButton (
                             onClick = {
                                 // This will be triggered when the main menu button is clicked.
-                                if (btnRoutes[index] != NavigationRoutes().SCREEN_BLANK) {
-                                    GlobalSchema.pushScreen.value = btnRoutes[index]
+                                if (btnRoutes[offsetIndex] != NavigationRoutes().SCREEN_BLANK) {
+                                    GlobalSchema.pushScreen.value = btnRoutes[offsetIndex]
                                 }
                                       },
                             modifier = Modifier.padding(5.dp).height(100.dp),
@@ -158,13 +150,13 @@ class FragmentHome() : ComponentActivity() {
                             Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
                                 // The main menu action button icon.
                                 Image(
-                                    painter = painterResource(btnIcons[index]),
-                                    contentDescription = btnDescriptions[index],
+                                    painter = painterResource(btnIcons[offsetIndex]),
+                                    contentDescription = btnDescriptions[offsetIndex],
                                     alignment = Alignment.Center,
                                 )
                                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                 // The text.
-                                Text(btnLabels[index], textAlign = TextAlign.Center)
+                                Text(btnLabels[offsetIndex], textAlign = TextAlign.Center)
                             }
                         }
                     }

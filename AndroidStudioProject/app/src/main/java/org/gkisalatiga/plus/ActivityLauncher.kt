@@ -88,18 +88,21 @@ class ActivityLauncher : ComponentActivity() {
         // Call the superclass. (The default behavior. DO NOT CHANGE!)
         super.onCreate(savedInstanceState)
 
-        // Determine the default screen, fragment, and submenu to open upon first app launch.
+        // Determine the default screen, fragment, and submenu to open upon first app launch,
+        // as well as other pre-determined default values.
         val defaultScreenLaunch = NavigationRoutes().SCREEN_MAIN
         val defaultFragmentLaunch = NavigationRoutes().FRAG_MAIN_HOME
         val defaultServicesSubmenu = NavigationRoutes().SUB_BLANK
+        val defaultNewTopBarBackground = R.drawable.topbar_greetings_home
 
         // Setting some of the most important default values of the global schema.
         // (i.e., the composable navigation direction.)
         GlobalSchema.pushScreen.value = defaultScreenLaunch
-        // GlobalSchema.pushFragment.value = defaultFragmentLaunch
-        // GlobalSchema.pushScreen.value = defaultScreenLaunch
         GlobalSchema.lastMainScreenPagerPage.value = defaultFragmentLaunch
         GlobalSchema.lastServicesSubmenu.value = defaultServicesSubmenu
+
+        // The top bar greeting background.
+        GlobalSchema.lastNewTopBarBackground.value = defaultNewTopBarBackground
 
         // Setting the global context value.
         GlobalSchema.context = this
@@ -160,7 +163,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Displays the splash screen content.
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Image(painter = painterResource(id = R.drawable.baseline_filter_drama_512), contentDescription = "Logo", modifier = Modifier.scale(scale.value))
+            Image(painter = painterResource(id = R.mipmap.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.scale(scale.value))
         }
     }
 

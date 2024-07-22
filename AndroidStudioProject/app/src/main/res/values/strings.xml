@@ -5,9 +5,9 @@
     <string name="title_activity_main">GKI Salatiga+</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
-    <string name="bottomnav_menu_home">Home</string>
-    <string name="bottomnav_menu_services">Services</string>
-    <string name="bottomnav_menu_info">Info</string>
+    <string name="bottomnav_menu_home">Beranda</string>
+    <string name="bottomnav_menu_services">Kontent</string>
+    <string name="bottomnav_menu_info">Tentang</string>
     <string name="bottomnav_menu_events">Events</string>
 
     <!-- Constant strings for screen titles. -->
@@ -77,6 +77,10 @@
     <string name="yt_visit_link_cancel_btn">Batalkan</string>
     <string name="yt_visit_link_proceed_btn">Lanjutkan</string>
     <string name="yt_visit_link_link_copied">Tautan video berhasil disalin!</string>
+
+    <!-- Constant string used in the new top bar layout. -->
+    <string name="new_topbar_greetings">Shalom!</string>
+    <string name="new_topbar_person_name">Jemaat dan simpatisan terkasih</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>

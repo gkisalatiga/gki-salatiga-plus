@@ -44,6 +44,20 @@ class GlobalSchema : Application() {
         var globalJSONObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
+        /* Initializing the debugging toggles. */
+
+        // Whether to enable the easter egg feature of the app and display it to the user.
+        const val DEBUG_ENABLE_EASTER_EGG = false
+
+        // Whether to display the debugger's toast.
+        const val DEBUG_ENABLE_TOAST = true
+
+        // Whether to display the debugger's logcat logging.
+        const val DEBUG_ENABLE_LOG_CAT = true
+        const val DEBUG_ENABLE_LOG_CAT_DUMPER = true
+        const val DEBUG_ENABLE_LOG_CAT_TESTING = true
+
+        /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
          * These parameters must be individually a mutable state object.
          * Changing any of the following parameters would directly and immediately trigger recomposition. */
@@ -63,6 +77,9 @@ class GlobalSchema : Application() {
 
         // Stores globally the state of the last opened main menu fragment.
         var lastMainScreenPagerPage = mutableStateOf("")
+
+        // Stores globally the current background of the new top bar by user github.com/ujepx64.
+        var lastNewTopBarBackground = mutableStateOf(0)
 
         /* The download status of the lib.Downloader's multithread. */
         var isPrivateDownloadComplete = mutableStateOf(false)
