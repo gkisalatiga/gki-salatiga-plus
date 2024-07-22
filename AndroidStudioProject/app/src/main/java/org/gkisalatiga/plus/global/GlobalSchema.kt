@@ -29,7 +29,7 @@ class GlobalSchema : Application() {
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which JSON API source to look up to in order to update the application content.
          * It cannot and should not be changed arbitrarily within the app code. */
-        val JSONSource = "https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/gkisplus.json"
+        val JSONSource = "https://raw.githubusercontent.com/gkisalatiga/gki-salatiga-plus/main/JSONSchema/gkisplus.json"
 
         // This is the filename which will save the above JSON source.
         val JSONSavedFilename = "gkisplus.json"
@@ -42,6 +42,20 @@ class GlobalSchema : Application() {
 
         // The JSONObject that can be globally accessed by any function and class in the app.
         var globalJSONObject: JSONObject? = null
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Initializing the debugging toggles. */
+
+        // Whether to enable the easter egg feature of the app and display it to the user.
+        const val DEBUG_ENABLE_EASTER_EGG = false
+
+        // Whether to display the debugger's toast.
+        const val DEBUG_ENABLE_TOAST = true
+
+        // Whether to display the debugger's logcat logging.
+        const val DEBUG_ENABLE_LOG_CAT = true
+        const val DEBUG_ENABLE_LOG_CAT_DUMPER = true
+        const val DEBUG_ENABLE_LOG_CAT_TESTING = true
 
         /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
@@ -63,6 +77,9 @@ class GlobalSchema : Application() {
 
         // Stores globally the state of the last opened main menu fragment.
         var lastMainScreenPagerPage = mutableStateOf("")
+
+        // Stores globally the current background of the new top bar by user github.com/ujepx64.
+        var lastNewTopBarBackground = mutableStateOf(0)
 
         /* The download status of the lib.Downloader's multithread. */
         var isPrivateDownloadComplete = mutableStateOf(false)

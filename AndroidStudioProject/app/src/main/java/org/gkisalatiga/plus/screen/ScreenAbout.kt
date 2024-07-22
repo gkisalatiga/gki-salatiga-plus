@@ -12,6 +12,7 @@ package org.gkisalatiga.plus.screen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint.Align
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -43,6 +45,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -74,8 +77,11 @@ class ScreenAbout() : ComponentActivity() {
         Scaffold (
             topBar = { getTopBar() }
                 ) {
-            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
-                Text("Some Scaffold Content.")
+            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()).fillMaxSize() ) {
+                Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+                    Text("Dibuat oleh Sam, Jeffrey, dan Joaquim")
+                    Text("Semoga di-approve sama MJ :v")
+                }
             }
         }
 

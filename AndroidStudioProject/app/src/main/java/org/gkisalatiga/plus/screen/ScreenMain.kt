@@ -24,48 +24,65 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentInfo
 import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
-import org.gkisalatiga.plus.lib.Downloader
-import org.gkisalatiga.plus.lib.ImagePainterFromFile
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import kotlin.coroutines.CoroutineContext
 
 class ScreenMain() : ComponentActivity() {
 
@@ -77,13 +94,16 @@ class ScreenMain() : ComponentActivity() {
     )
 
     // Used by the bottom nav to command the scrolling of the horizontal pager.
-    private var bottomNavPagerScrollTo = mutableStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
+    private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
 
     // Determines the top bar title.
     private var topBarTitle = mutableStateOf((GlobalSchema.context).resources.getString(R.string.app_name_alias))
 
     // Controls the horizontal scrolling of the pager.
     private lateinit var horizontalPagerState: PagerState
+
+    // Determines what background to show on the new top bar layout by user github.com/ujepx64.
+    private var newTopBarBackground = mutableIntStateOf(GlobalSchema.lastNewTopBarBackground.value)
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
@@ -92,11 +112,11 @@ class ScreenMain() : ComponentActivity() {
         // Initializing the horizontal pager.
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
 
-        Log.d("Groaker", "Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
-        Log.d("Groaker", "Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
-        Log.d("Groaker", "Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
-        Log.d("Groaker", "Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
-        Log.d("Groaker", "Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.value}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.intValue}")
 
         // Listen to the bottom nav's request to change the horizontal pager page.
         listenNavBarScrollPager()
@@ -109,21 +129,31 @@ class ScreenMain() : ComponentActivity() {
 
         Scaffold (
             bottomBar = { getBottomBar() },
-            topBar = { getTopBar() },
+            topBar = { /* The "top bar" is now merged with the scaffold content. */ },
             floatingActionButton =  { },
             floatingActionButtonPosition = FabPosition.Center,
         ) {
             // Setting up the layout of all of the fragments.
             // Then wrapping each fragment in AnimatedVisibility so that we can manually control their visibility.
-            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
+            Box (Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())) {
+                Box {
+                    // Shows the new top bar.
+                    getTopBar()
 
-                // Enabling pager for managing and layouting multiple fragments in a given screen.
-                // SOURCE: https://www.composables.com/foundation/horizontalpager
-                HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize() ) { page ->
-                    when (page) {
-                        0 -> FragmentHome().getComposable()
-                        1 -> FragmentServices().getComposable()
-                        2 -> FragmentInfo().getComposable()
+                    // Shows the main content.
+                    Surface (
+                        modifier = Modifier.padding(top = LocalContext.current.resources.getDimension(R.dimen.new_topbar_content_top_y_offset).dp).fillMaxSize().zIndex(10f),
+                        shape = RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
+                    ) {
+                        // Enabling pager for managing and layouting multiple fragments in a given screen.
+                        // SOURCE: https://www.composables.com/foundation/horizontalpager
+                        HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize().padding(top = 0.dp) ) { page ->
+                            when (page) {
+                                0 -> FragmentHome().getComposable()
+                                1 -> FragmentServices().getComposable()
+                                2 -> FragmentInfo().getComposable()
+                            }
+                        }
                     }
                 }
             }
@@ -145,50 +175,13 @@ class ScreenMain() : ComponentActivity() {
                 ) {
                     // Since we are in the main screen but not at fragment one,
                     // navigate the app to fragment one.
-                    bottomNavPagerScrollTo.value = 0
+                    bottomNavPagerScrollTo.intValue = 0
                 } else {
                     // Do nothing.
                 }
             }
         }
 
-        /* TODO */
-        key(GlobalSchema.pathToDownloadedPrivateFile.value) {
-            val downloadedPath = GlobalSchema.pathToDownloadedPrivateFile.value
-            if (downloadedPath.isNotEmpty()) {
-                Log.d("Groaker", "Downloaded to $downloadedPath successfully!")
-
-                // Reading the data.
-                // SOURCE: https://stackoverflow.com/a/45202002
-                // val file = File(downloadedPath)
-                // val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
-                // Log.d("Groaker-Dump", inputAsString)
-
-                /* Displaying the image. */
-                showLinkConfirmationDialog.value = true
-                if (showLinkConfirmationDialog.value) {
-                    AlertDialog(
-                        onDismissRequest = { showLinkConfirmationDialog.value = false },
-                        title = { "Test" },
-                        text = {
-                            Image(
-                                painter = ImagePainterFromFile(downloadedPath),
-                                contentDescription = ""
-                            )
-                        },
-                        dismissButton = {
-                            TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
-                                Text("Keluar".uppercase())
-                            }
-                        },
-                        confirmButton = { }
-                    )
-                }
-            }
-        }
-
-        // The link confirmation dialog.
-        // getLinkConfirmationDialog()
     }
 
     @Composable
@@ -221,9 +214,9 @@ class ScreenMain() : ComponentActivity() {
                                 Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
                                 Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
                                 Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
-                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.value}")
+                                Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.intValue}")
 
-                                bottomNavPagerScrollTo.value = index
+                                bottomNavPagerScrollTo.intValue = index
                             }
                         )
                     }
@@ -237,111 +230,92 @@ class ScreenMain() : ComponentActivity() {
     private fun listenNavBarScrollPager() {
         // Force recomposition of the horizontal pager.
         // SOURCE: https://stackoverflow.com/a/77289069
-        LaunchedEffect(bottomNavPagerScrollTo.value) {
+        LaunchedEffect(bottomNavPagerScrollTo.intValue) {
             Log.d("Groaker", "Launching 'LaunchedEffect' on the horizontal pager state ...")
 
             // Scroll to the desired pager page.
-            horizontalPagerState.animateScrollToPage(bottomNavPagerScrollTo.value)
+            horizontalPagerState.animateScrollToPage(bottomNavPagerScrollTo.intValue)
         }
     }
 
-    // Controls, from an outside composable, whether to display the link confirmation dialog.
-    private var showLinkConfirmationDialog = mutableStateOf(false)
+    @Composable
+    private fun getTopBar() {
 
-    /**
-     * This function displays the confirmation dialog that asks the user
-     * whether the user wants to proceed opening a certain link.
-     * SOURCE: https://www.composables.com/tutorials/dialogs
-     * SOURCE: https://developer.android.com/develop/ui/compose/components/dialog
-     */
-    /*@Composable
-    private fun getLinkConfirmationDialog() {
-        if (showLinkConfirmationDialog.value) {
-            AlertDialog(
-                onDismissRequest = { showLinkConfirmationDialog.value = false },
-                title = { Text(GlobalSchema.norender["linkConfirmTitle"].toString()) },
-                text = {
-                    Column {
-                        Text("Do you want to open the following link?")
-                        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            OutlinedTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = GlobalSchema.norender["linkConfirmURL"].toString(),
-                                onValueChange = { /* NOTHING */ },
-                                label = { Text("-") },
-                                enabled = false
-                            )
+        /* Drawing canvas for the new top bar layout. */
+        Box ( modifier = Modifier
+            .height(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_height).dp)
+            .fillMaxWidth() ) {
+
+            /* Drawing the top bar greetings banner background. */
+            // SOURCE: https://stackoverflow.com/a/70965281
+            Image (
+                painter = painterResource(newTopBarBackground.intValue),
+                contentDescription = "",
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            /* To colorize the image. */
+            Box (Modifier.background(Color(0x77fdb308)).matchParentSize()) {}
+
+            /* Drawing the overlapping top bar transparent gradient. */
+            // SOURCE: https://developer.android.com/develop/ui/compose/graphics/draw/brush
+            // SOURCE: https://stackoverflow.com/a/60479489
+            val overlayGradient = Brush.verticalGradient(colorStops = arrayOf (
+                // HSL (hue, saturation, lightness) must be in range (0..360, 0..1, 0..1)
+                0.0f to Color.hsl(38f, 0.98f, 0.51f),
+                0.5f to Color.Transparent,
+                1.0f to Color.White
+            ))
+            Box (
+                modifier = Modifier
+                    .background(overlayGradient)
+                    .matchParentSize()
+                    .padding(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_padding).dp)
+            ) {
+                Column {
+
+                    // Shadow.
+                    // SOURCE: https://codingwithrashid.com/how-to-add-shadows-to-text-in-android-jetpack-compose/
+                    val shadowTextStyle = TextStyle(
+                        shadow = Shadow(
+                            color = Color.Gray,
+                            offset = Offset(2.0f, 2.0f),
+                            blurRadius = 5.0f
+                        )
+                    )
+
+                    // This text will trigger the "About App" screen.
+                    val ctx = LocalContext.current
+                    Surface (
+                        color = Color.Transparent,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        onClick = {
+                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You will open the about app.", Toast.LENGTH_SHORT).show()
+
+                            // Opens the "About app" screen.
+                            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_ABOUT
+                        }
+                    ) {
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // The app title.
+                            Text(stringResource(R.string.app_name_alias), fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White)
+                            Spacer(Modifier.width(20.dp))
+                            // The "next" button.
+                            Icon(Icons.AutoMirrored.Default.KeyboardArrowRight, "", tint = Color.White)
                         }
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
-                        Text("Proceed".uppercase())
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showLinkConfirmationDialog.value = false }) {
-                        Text("Back".uppercase())
-                    }
+
+                    // The overlaying greetings text.
+                    Text(stringResource(R.string.new_topbar_greetings), fontSize = 36.sp, fontWeight = FontWeight.Bold, color = Color.White, style = shadowTextStyle)
+                    Text(stringResource(R.string.new_topbar_person_name), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White, style = shadowTextStyle)
                 }
-            )
+            }
+
         }
-    }*/
 
-    @Composable
-    @OptIn(ExperimentalMaterial3Api::class)
-    private fun getTopBar() {
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary
-            ),
-            title = {
-                Text(
-                    topBarTitle.value,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            navigationIcon = { },
-            actions = {
-                IconButton(
-                    onClick = {
-                        Toast.makeText(GlobalSchema.context, "NavIcon cliked", Toast.LENGTH_SHORT).show()
-
-                        /* TODO */
-                        // Attempt to download.
-                        // ---
-                        // Get filename.
-                        // SOURCE: https://stackoverflow.com/a/26570321
-                        val fileToDownload = "https://ewarta.gkiserpong.org/wp-content/ewarta/eWarta-20240630.jpg"
-                        val filename = fileToDownload.substring(fileToDownload.lastIndexOf("/") + 1)
-                        Log.d("Groaker", "We want to download: $fileToDownload")
-                        Log.d("Groaker", "It will be saved as: $filename")
-                        // Downloader().asPrivateFile("https://raw.githubusercontent.com/groaking/groaking.github.io/main/playground/ewarta.json", "sample.json")
-                        // Downloader().asPrivateFile("https://ewarta.gkiserpong.org/wp-content/ewarta/eWarta-20240630.jpg", "sampleimage.jpg")
-                        Downloader().asPrivateFile(fileToDownload, filename)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.AccountCircle,
-                        contentDescription = ""
-                    )
-                }
-                val coroutineScope = rememberCoroutineScope()
-                IconButton(onClick = {
-                    // Opens the "About app" screen.
-                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_ABOUT
-                }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Info,
-                        contentDescription = ""
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior
-        )
     }
 }
 
