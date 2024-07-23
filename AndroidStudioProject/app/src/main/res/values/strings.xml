@@ -57,6 +57,7 @@
     <string name="card_info_church_pastor">Kependetaan</string>
     <string name="card_info_church_assembly">Majelis Jemaat</string>
     <string name="card_info_church_ministry">Badan Pelayanan</string>
+    <string name="card_info_church_biblestudy">PA Wilayah</string>
     <string name="card_info_church_contact">Kontak dan Media Sosial</string>
 
     <!-- Constant string for describing the card icons in the "church info" fragment. -->
@@ -64,6 +65,7 @@
     <string name="card_desc_info_church_pastor">Buka info kependetaan</string>
     <string name="card_desc_info_church_assembly">Buka info majelis jemaat</string>
     <string name="card_desc_info_church_ministry">Buka info badan pelayanan</string>
+    <string name="card_desc_info_church_biblestudy">Buka info pemahaman Alkitab wilayah</string>
     <string name="card_desc_info_church_contact">Buka info kontak dan media sosial</string>
 
     <!-- Constant string used in ScreenWebView. -->

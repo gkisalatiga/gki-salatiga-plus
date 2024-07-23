@@ -127,7 +127,7 @@ class FragmentHome() : ComponentActivity() {
         // Please fill the following integer-variable with a number of pages
         // that the user won't bother scrolling.
         // SOURCE: https://stackoverflow.com/a/75469260
-        val baseInfiniteScrollingPages = 16384  // --- 2^14.
+        val baseInfiniteScrollingPages = 512  // --- i.e., 2^9.
 
         // Necessary variables for the infinite-page carousel.
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
@@ -142,7 +142,7 @@ class FragmentHome() : ComponentActivity() {
         // SOURCE: https://stackoverflow.com/a/67615616
         LaunchedEffect(carouselPagerState.settledPage) {
             launch {
-                delay(1000)
+                delay(2000)
                 with(carouselPagerState) {
                     animateScrollToPage(
                         page = currentPage + 1,
@@ -222,23 +222,6 @@ class FragmentHome() : ComponentActivity() {
 
                     }
                 }  // --- end of item.
-
-                /* Display the church's building image. */
-                /*item (span = { GridItemSpan(spanSize) }) {
-                    val imgChurchSource = R.drawable.sample_welcome_banner
-                    val imgChurchDescription = (GlobalSchema.context).resources.getString(R.string.info_church_img_description)
-                    Surface (
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp)
-                    ) {
-                        Image(
-                            painter = painterResource(imgChurchSource),
-                            contentDescription = imgChurchDescription,
-                            modifier = Modifier.fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
-                }*/
 
                 /* Displaying the top two menus. */
                 item (span = { GridItemSpan(spanSize) }) {

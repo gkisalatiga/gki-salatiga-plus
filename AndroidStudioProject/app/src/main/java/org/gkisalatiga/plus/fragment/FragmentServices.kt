@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -119,7 +120,7 @@ class FragmentServices() : ComponentActivity() {
 
         // Enlist the cards to be shown in this fragment.
         // This is equivalent to this fragment's particular JSON node.
-        val cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
+        var cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
         for (i in 0 until array.length()) {
             val curNode = array[i] as JSONObject
             cardsList.add(mapOf(
@@ -145,12 +146,15 @@ class FragmentServices() : ComponentActivity() {
             }
         }
 
+        // Only show the three most recent videos.
+        if (cardsList.size > 3) {
+            cardsList = cardsList.subList(0, 3)
+        }
+
         /* Displaying the section title. */
         Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Text(sectionTitle, fontWeight = FontWeight.Bold, fontSize = 26.sp)
-            // SOURCE: https://stackoverflow.com/a/69278397
-            Spacer(modifier = Modifier.weight(1f))
-            Button(onClick = {}) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
+            Text(sectionTitle, modifier = Modifier.fillMaxWidth().weight(4f), fontWeight = FontWeight.Bold, fontSize = 26.sp, overflow = TextOverflow.Ellipsis)
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth().weight(1f)) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
         }
 
         /* Displaying the individual item of this section. */
@@ -184,7 +188,7 @@ class FragmentServices() : ComponentActivity() {
                         GlobalSchema.ytViewerParameters["date"] = date
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },
-                    modifier = Modifier.fillMaxHeight().width(300.dp).padding(horizontal = 5.dp),
+                    modifier = Modifier.fillMaxHeight().width(320.dp).height(232.dp).padding(horizontal = 5.dp),
                 ) {
                     Column {
                         // Displaying the image.
@@ -197,7 +201,7 @@ class FragmentServices() : ComponentActivity() {
                         )
                         // Displaying the content description of the card.
                         Column (modifier = Modifier.padding(10.dp)) {
-                            Text(title!!, fontWeight = FontWeight.Bold)
+                            Text(title!!, fontWeight = FontWeight.Bold, minLines = 1, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Text(date)
                         }
                     }
