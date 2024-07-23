@@ -87,7 +87,7 @@ class FragmentInfo() : ComponentActivity() {
 
     // Defines the routing of each "church info" card.
     private val cardRoutes = listOf(
-        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().FRAG_PROFILE_CHURCH,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_BLANK,
@@ -114,7 +114,7 @@ class FragmentInfo() : ComponentActivity() {
 
     // Defines and locates the icon for each card in the "church info" fragment.
     private val cardIcons = listOf(
-        R.drawable.baseline_flaky_256,
+        R.drawable.baseline_person_48,
         R.drawable.baseline_flaky_256,
         R.drawable.baseline_flaky_256,
         R.drawable.baseline_flaky_256,
@@ -129,7 +129,7 @@ class FragmentInfo() : ComponentActivity() {
         val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Bottom,
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(state = scrollState)
@@ -144,9 +144,9 @@ class FragmentInfo() : ComponentActivity() {
                         onClick = {
                             Toast.makeText((GlobalSchema.context), "You just clicked: $str!", Toast.LENGTH_SHORT).show()
                         },
-                        modifier = Modifier.padding(bottom = 5.dp).height(50.dp)
+                        modifier = Modifier.padding(bottom = 7.dp).height(80.dp)
                         ) {
-                        Row ( modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically ) {
+                        Row ( modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically ) {
                             // The card icon.
                             Image(
                                 painter = painterResource(cardIcons[index]),
@@ -156,7 +156,7 @@ class FragmentInfo() : ComponentActivity() {
                             )
                             Spacer( modifier = Modifier.width(20.dp) )
                             // The card label.
-                            Text(cardLabels[index], fontSize = 18.sp)
+                            Text(cardLabels[index], fontSize = 16.sp)
                             Spacer( modifier = Modifier.weight(1f) )
                             Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(end = 5.dp))
                         }
