@@ -9,6 +9,8 @@
 
 package org.gkisalatiga.plus.lib
 
+import android.net.UrlQuerySanitizer
+
 class StringFormatter {
 
     // List of local month names in Indonesian.
@@ -67,12 +69,16 @@ class StringFormatter {
      * @return the YouTube video ID of the link.
      */
     public fun getYouTubeIDFromUrl(url: String): String {
-        var a = url
 
-        // Example URL: https://www.youtube.com/watch?v=dy9P2mSu5V4"
-        a = a.replace("https://www.youtube.com/watch?v=", "")
+        // Sanitize the URL, so that we only obtain the "watch?v=..." query argument.
+        // SOURCE: https://stackoverflow.com/a/56622688
+        val sanitizer = UrlQuerySanitizer()
+        sanitizer.allowUnregisteredParamaters = true
+        sanitizer.parseUrl(url)
+        // Retrieve the YouTube ID string from the URL.
+        val ytID = sanitizer.getValue("v")!!
 
-        return a
+        return ytID
     }
 
     /**
