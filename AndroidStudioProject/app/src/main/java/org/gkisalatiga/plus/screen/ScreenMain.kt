@@ -86,6 +86,9 @@ import kotlin.coroutines.CoroutineContext
 
 class ScreenMain() : ComponentActivity() {
 
+    // For "double-press back" to exit.
+    var backPressedTime: Long = 0
+
     // Enlists all of the fragments that will be displayed in this particular screen.
     private val fragRoutes = listOf(
         NavigationRoutes().FRAG_MAIN_HOME,
@@ -164,11 +167,19 @@ class ScreenMain() : ComponentActivity() {
             BackHandler {
                 val curRoute = GlobalSchema.lastMainScreenPagerPage.value
                 if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
-                    Toast.makeText(GlobalSchema.context, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
 
-                    // Exit the application.
-                    // SOURCE: https://stackoverflow.com/a/67402808
-                    (GlobalSchema.context as ComponentActivity).finish()
+                    // Ensure "double tap the back button to exit".
+                    if (backPressedTime + 3000 > System.currentTimeMillis()) {
+                        // Exit the application.
+                        // SOURCE: https://stackoverflow.com/a/67402808
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(LocalContext.current, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
+                        (LocalContext.current as ComponentActivity).finish()
+                    } else {
+                        Toast.makeText(LocalContext.current, stringResource(R.string.exit_confirmation_toast_string), Toast.LENGTH_LONG).show()
+                    }
+
+                    backPressedTime = System.currentTimeMillis()
+
                 } else if (
                     curRoute == NavigationRoutes().FRAG_MAIN_INFO ||
                     curRoute == NavigationRoutes().FRAG_MAIN_SERVICES

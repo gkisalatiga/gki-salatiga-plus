@@ -80,7 +80,7 @@ class ScreenAbout() : ComponentActivity() {
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()).fillMaxSize() ) {
                 Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
                     Text("Dibuat oleh Sam, Jeffrey, dan Joaquim")
-                    Text("Semoga di-approve sama MJ :v")
+                    Text("Semoga di-approve sama MJ \uD83D\uDDFF :v")
                 }
             }
         }

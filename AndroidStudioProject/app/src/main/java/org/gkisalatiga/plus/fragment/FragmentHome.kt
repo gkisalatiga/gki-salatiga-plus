@@ -188,7 +188,7 @@ class FragmentHome() : ComponentActivity() {
                         ) {
                             /* Display the sample image. */
                             Surface (
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(15.dp),
                                 modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp)
                             ) {
                                 Image(
@@ -203,7 +203,7 @@ class FragmentHome() : ComponentActivity() {
                         // Create the pager indicator.
                         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
                         Row(
-                            modifier = Modifier.height(50.dp).fillMaxWidth().align(Alignment.BottomCenter),
+                            modifier = Modifier.height(45.dp).fillMaxWidth().align(Alignment.BottomCenter),
                             horizontalArrangement = Arrangement.Center
                         ) {
                             repeat(actualPageCount) { iteration ->
@@ -215,7 +215,7 @@ class FragmentHome() : ComponentActivity() {
                                         .padding(4.dp)
                                         .clip(CircleShape)
                                         .background(color)
-                                        .size(16.dp)
+                                        .size(10.dp)
                                 )
                             }
                         }

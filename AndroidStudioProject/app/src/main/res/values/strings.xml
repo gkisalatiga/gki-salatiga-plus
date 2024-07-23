@@ -84,6 +84,9 @@
     <string name="new_topbar_greetings">Shalom!</string>
     <string name="new_topbar_person_name">Jemaat dan simpatisan terkasih</string>
 
+    <!-- Confirmation string for "press again to exit". -->
+    <string name="exit_confirmation_toast_string">Tekan sekali lagi untuk keluar dari aplikasi.</string>
+
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>
     <string name="empty_string"></string>
