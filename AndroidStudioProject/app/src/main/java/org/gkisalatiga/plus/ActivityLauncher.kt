@@ -34,7 +34,9 @@ import android.util.Log
 import android.view.animation.Interpolator
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -82,6 +84,16 @@ class ActivityLauncher : ComponentActivity() {
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable transparent status bar.
+        // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            )
+        )
+
+
         // Enable on-the-fly edit of drawable SVG vectors.
         // SOURCE: https://stackoverflow.com/a/38418049
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
