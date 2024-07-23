@@ -6,7 +6,7 @@
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
     <string name="bottomnav_menu_home">Beranda</string>
-    <string name="bottomnav_menu_services">Kontent</string>
+    <string name="bottomnav_menu_services">Konten</string>
     <string name="bottomnav_menu_info">Tentang</string>
     <string name="bottomnav_menu_events">Events</string>
 

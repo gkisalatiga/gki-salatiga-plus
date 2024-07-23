@@ -164,18 +164,20 @@ class ScreenMain() : ComponentActivity() {
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.
             // SOURCE: https://stackoverflow.com/a/69151539
+            val exitConfirm = stringResource(R.string.exit_confirmation_toast_string)
+            val localContext = LocalContext.current
             BackHandler {
                 val curRoute = GlobalSchema.lastMainScreenPagerPage.value
                 if (curRoute == NavigationRoutes().FRAG_MAIN_HOME) {
 
                     // Ensure "double tap the back button to exit".
-                    if (backPressedTime + 3000 > System.currentTimeMillis()) {
+                    if (backPressedTime + 2000 > System.currentTimeMillis()) {
                         // Exit the application.
                         // SOURCE: https://stackoverflow.com/a/67402808
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(LocalContext.current, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
-                        (LocalContext.current as ComponentActivity).finish()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(localContext, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
+                        (localContext as ComponentActivity).finish()
                     } else {
-                        Toast.makeText(LocalContext.current, stringResource(R.string.exit_confirmation_toast_string), Toast.LENGTH_LONG).show()
+                        Toast.makeText(localContext, exitConfirm , Toast.LENGTH_LONG).show()
                     }
 
                     backPressedTime = System.currentTimeMillis()
