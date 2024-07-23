@@ -1,5 +1,15 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.3-alpha (2024-07-23) version code 10
+
+- New: Added the internal HTML WebView for displaying custom HTML string data
+- Improved: Updated the main menu carousel duration from 1 second to 2 second
+- Improved: Replaced the dummy bottom nav bar icons with the appropriate icons
+- Improved: In the "About Church" menu, each menu item card now has visually appealing background.
+- Improved: Enabled APK compression and optimization
+- Fix: YouTube ID grabber now mitigates additional query parameter being added into the URL
+- Fix: Fixed the section title in the "Konten" menu overlapping the "show more" button
+
 ## v0.1.2-alpha (2024-07-23) version code 9
 
 - New: Added horizontal auto-scrolling carousel in the main menu

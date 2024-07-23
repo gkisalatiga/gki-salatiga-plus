@@ -67,6 +67,7 @@ import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenForms
+import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenSaRen
@@ -173,7 +174,7 @@ class ActivityLauncher : ComponentActivity() {
             scale.animateTo(targetValue = 0.4f, animationSpec = tween(durationMillis = 1000, easing = { FastOutSlowInEasing.transform(it) /*OvershootInterpolator(2f).getInterpolation(it)*/ }))
 
             // Determines the duration of the splash screen.
-            delay(100)
+            delay(250)
             splashNavController.navigate("main_screen")
         }
 
@@ -208,6 +209,7 @@ class ActivityLauncher : ComponentActivity() {
                 NavigationRoutes().SCREEN_WARTA -> { ScreenWarta().getComposable() }
                 NavigationRoutes().SCREEN_LITURGI -> { ScreenLiturgi().getComposable() }
                 NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
+                NavigationRoutes().SCREEN_INTERNAL_HTML -> { ScreenInternalHTML().getComposable() }
             }
         }
     }

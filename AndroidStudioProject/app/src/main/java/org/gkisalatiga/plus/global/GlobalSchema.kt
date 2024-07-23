@@ -111,6 +111,11 @@ class GlobalSchema : Application() {
         var webViewTargetURL: String = ""
         var webViewTitle: String = ""
 
+        // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,
+        // as well as its content title.
+        var targetStaticJSONNode: String = ""
+        var internalWebViewTitle: String = ""
+
         /* This parameter is required for  manipulating the composition and the app's view. */
         // TODO: Find a way to use the app's context across functions without memory leak.
         @SuppressLint("StaticFieldLeak")

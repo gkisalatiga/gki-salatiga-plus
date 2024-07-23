@@ -12,6 +12,8 @@ package org.gkisalatiga.plus.screen
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.util.Log
+import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -145,6 +147,13 @@ class ScreenWebView() : ComponentActivity() {
                     }
 
                 }
+
+                // Disable text selection and haptic feedback caused by long press.
+                // This also disables copy-pasting of HTML text.
+                // SOURCE: https://stackoverflow.com/a/12793740
+                wv.setOnLongClickListener(OnLongClickListener { true })
+                wv.isLongClickable = false
+                wv.isHapticFeedbackEnabled = false
 
                 // Enables JavaScript.
                 // SOURCE: https://stackoverflow.com/a/69373543

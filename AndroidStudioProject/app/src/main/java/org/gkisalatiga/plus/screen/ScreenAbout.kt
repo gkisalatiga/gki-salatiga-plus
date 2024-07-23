@@ -57,10 +57,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.gkisalatiga.plus.R
-import org.gkisalatiga.plus.fragment.FragmentAbout
-import org.gkisalatiga.plus.fragment.FragmentEvents
 import org.gkisalatiga.plus.fragment.FragmentHome
-import org.gkisalatiga.plus.fragment.FragmentNews
 import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
