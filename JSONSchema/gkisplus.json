@@ -189,7 +189,9 @@
             "church_profile": "<b>This is an HTML code for church profile.</b>",
             "pastor": "<b>This is an HTML code for pastor.</b>",
             "assembly": "<b>This is an HTML code for assembly.</b>",
-            "ministry": "<b>This is an HTML code for ministry.</b>"
+            "ministry": "<b>This is an HTML code for ministry.</b>",
+            "bible_study": "<b>This is an HTML code for PA Wilayah.</b>",
+            "social_media": "<b>This is an HTML code for Media Sosial.</b>"
         },
         "agenda": {
             "mon": [
