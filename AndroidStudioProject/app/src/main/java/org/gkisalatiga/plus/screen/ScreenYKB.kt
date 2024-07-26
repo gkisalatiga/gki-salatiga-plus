@@ -151,7 +151,7 @@ class ScreenYKB() : ComponentActivity() {
                     },
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
                 ) {
-                    Row ( modifier = Modifier.padding(5.dp).fillMaxSize(), verticalAlignment = Alignment.CenterVertically ) {
+                    Row ( modifier = Modifier.padding(5.dp).fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically ) {
                         Text(title!!, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(3f))
                         Spacer( modifier = Modifier.weight(1f) )
                         // The "arrow forward" icon.
