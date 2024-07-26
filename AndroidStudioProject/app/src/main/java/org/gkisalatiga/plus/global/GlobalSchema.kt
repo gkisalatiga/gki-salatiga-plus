@@ -29,7 +29,7 @@ class GlobalSchema : Application() {
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which JSON API source to look up to in order to update the application content.
          * It cannot and should not be changed arbitrarily within the app code. */
-        val JSONSource = "https://raw.githubusercontent.com/gkisalatiga/gki-salatiga-plus/main/JSONSchema/gkisplus.json"
+        val JSONSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus.json"
 
         // This is the filename which will save the above JSON source.
         val JSONSavedFilename = "gkisplus.json"
