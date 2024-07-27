@@ -1,5 +1,11 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.5-alpha (12) --- 2024-07-27
+
+- New: Added YouTube video description display
+- New: "Show more videos" feature
+- Improved: Smoothed out transitions between HorizontalPager pages in the main menu
+
 ## v0.1.4-alpha (11) --- 2024-07-26
 
 - New: The JSON database now autofetches online updates without requiring admin supervision

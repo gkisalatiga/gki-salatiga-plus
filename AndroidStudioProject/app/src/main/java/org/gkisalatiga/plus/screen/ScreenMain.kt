@@ -155,7 +155,12 @@ class ScreenMain() : ComponentActivity() {
                     ) {
                         // Enabling pager for managing and layouting multiple fragments in a given screen.
                         // SOURCE: https://www.composables.com/foundation/horizontalpager
-                        HorizontalPager( state = horizontalPagerState, modifier = Modifier.fillMaxSize().padding(top = 0.dp) ) { page ->
+                        HorizontalPager(
+                            state = horizontalPagerState,
+                            modifier = Modifier.fillMaxSize().padding(top = 0.dp),
+                            // Without this property, the left-right page scrolling would be insanely laggy!
+                            beyondViewportPageCount = 2
+                        ) { page ->
                             when (page) {
                                 0 -> FragmentHome().getComposable()
                                 1 -> FragmentServices().getComposable()

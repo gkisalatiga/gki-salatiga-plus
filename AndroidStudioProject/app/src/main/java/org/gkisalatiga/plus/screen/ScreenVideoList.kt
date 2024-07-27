@@ -14,13 +14,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,7 +58,7 @@ import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.lib.StringFormatter
 import org.json.JSONObject
 
-class ScreenSaRen() : ComponentActivity() {
+class ScreenVideoList : ComponentActivity() {
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -100,32 +95,42 @@ class ScreenSaRen() : ComponentActivity() {
                 .verticalScroll(state = scrollState)
                 .padding(20.dp)
         ) {
+
+            /* Retrieve the list of devotionals. */
+            val targetPlaylistNode = GlobalSchema.videoListTargetNode
+            val videoListAsJSONArray = AppDatabase().getMainData().getJSONObject("yt-video").getJSONArray(targetPlaylistNode)
+
             /* Display the banner image. */
             val imgSource = R.drawable.banner_saren
             val imgDescription = "Menu banner"
             Surface (
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp)
+                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp).height(225.dp)
             ) {
-                Image(
+                AsyncImage(
+                    videoListAsJSONArray.getJSONObject(0).getString("thumbnail")!!,
+                    contentDescription = "",
+                    error = painterResource(R.drawable.thumbnail_loading),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+                /*Image(
                     painter = painterResource(imgSource),
                     contentDescription = imgDescription,
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.FillWidth
-                )
+                )*/
             }
-
-            /* Retrieve the list of devotionals. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONObject("yt-video").getJSONArray("saren")
 
             /* Enumerate and enlist the individual card. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())
-            for (i in 0 until formListAsJSONArray.length()) {
-                val curNode = formListAsJSONArray[i] as JSONObject
+            for (i in 0 until videoListAsJSONArray.length()) {
+                val curNode = videoListAsJSONArray[i] as JSONObject
                 enumeratedFormList.add(mapOf(
                     "title" to curNode.getString("title"),
                     "date" to curNode.getString("date"),
                     "link" to curNode.getString("link"),
+                    "desc" to curNode.getString("desc"),
                     "thumbnail" to curNode.getString("thumbnail")
                 ))
             }
@@ -141,6 +146,7 @@ class ScreenSaRen() : ComponentActivity() {
                 val title = it["title"]
                 val date = StringFormatter().convertDateFromJSON(it["date"]!!)
                 val url = it["link"]!!
+                val desc = it["desc"]!!
                 val thumbnail = StringFormatter().getYouTubeThumbnailFromUrl( it["link"]!! )
 
                 // Displaying the individual card.
@@ -149,15 +155,17 @@ class ScreenSaRen() : ComponentActivity() {
                         Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
-                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_SAREN
+                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
 
                         // Trying to switch to the YouTube viewer and open the stream.
                         Log.d("Groaker", "Opening YouTube stream: $url.")
                         GlobalSchema.ytViewerParameters["yt-link"] = url
                         GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url)
                         GlobalSchema.ytViewerParameters["title"] = title!!
-                        GlobalSchema.ytViewerParameters["date"] = date!!
-                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_PRERECORDED
+                        GlobalSchema.ytViewerParameters["date"] = date
+                        GlobalSchema.ytViewerParameters["desc"] = desc
+                        GlobalSchema.ytViewerParameters["thumbnail"] = thumbnail
+                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
                 ) {
@@ -167,10 +175,19 @@ class ScreenSaRen() : ComponentActivity() {
                             model = thumbnail,
                             contentDescription = title,
                             error = painterResource(R.drawable.thumbnail_loading),
-                            modifier = Modifier.weight(0.8f).fillMaxHeight(),
-                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.weight(1f).width(60.dp),
+                            contentScale = ContentScale.Crop,
                         )
-                        Text(title!!, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(3f))
+                        Text(title!!,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .weight(3f),
+                            minLines = 1,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
 
@@ -190,7 +207,7 @@ class ScreenSaRen() : ComponentActivity() {
             ),
             title = {
                 Text(
-                    stringResource(R.string.screensaren_title),
+                    GlobalSchema.videoListTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
