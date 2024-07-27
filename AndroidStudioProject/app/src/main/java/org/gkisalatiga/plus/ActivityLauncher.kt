@@ -31,14 +31,11 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
-import android.view.animation.Interpolator
-import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -70,12 +67,13 @@ import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
-import org.gkisalatiga.plus.screen.ScreenSaRen
+import org.gkisalatiga.plus.screen.ScreenVideoList
 import org.gkisalatiga.plus.screen.ScreenVideo
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
+import org.json.JSONObject
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -205,7 +203,7 @@ class ActivityLauncher : ComponentActivity() {
                 NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
                 NavigationRoutes().SCREEN_FORMS -> { ScreenForms().getComposable() }
                 NavigationRoutes().SCREEN_YKB -> { ScreenYKB().getComposable() }
-                NavigationRoutes().SCREEN_SAREN -> { ScreenSaRen().getComposable() }
+                NavigationRoutes().SCREEN_VIDEO_LIST -> { ScreenVideoList().getComposable() }
                 NavigationRoutes().SCREEN_WARTA -> { ScreenWarta().getComposable() }
                 NavigationRoutes().SCREEN_LITURGI -> { ScreenLiturgi().getComposable() }
                 NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
@@ -232,9 +230,12 @@ class ActivityLauncher : ComponentActivity() {
             // Create the JSON manager object.
             val appDB = AppDatabase()
 
-            // Let's apply the fallback JSON data until the actual, update JSON metadata is downloaded.
+            // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Loading the fallback JSON metadata ...")
             GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
+
+            // Init the services sections, mitigating java.util.ConcurrentModificationException.
+            initServicesSection()
 
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
@@ -249,6 +250,9 @@ class ActivityLauncher : ComponentActivity() {
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Successfully refreshed the JSON data!")
 
+                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
+                    initServicesSection()
+
                     // It is finally set-up. Let's break free from this loop.
                     break
                 } else {
@@ -260,6 +264,41 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
+    }
+
+    /**
+     * This function initializes the sections inside the "Services" tab,
+     * based on the retrieved (or fallback) JSON.
+     *
+     * This function is created in order to mitigate: java.util.ConcurrentModificationException,
+     * which occurs when the services sections are initialized in the fragment instead of the main thread/composable.
+     */
+    private fun initServicesSection() {
+        // Preamble logging.
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.initServicesSection] Launching services initialization ...")
+
+        // Get the application's JSON object.
+        val json: JSONObject = AppDatabase().getMainData()
+
+        // Reset the ArrayLists.
+        GlobalSchema.servicesNode = ArrayList<String>()
+        GlobalSchema.servicesTitle = ArrayList<String>()
+
+        // Retrieve the dict key of the list of services.
+        val servicesDictionaryKey: JSONObject = json.getJSONObject("yt-video")
+        for (l in servicesDictionaryKey.keys()) {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TESTING) Log.d("Groaker-Test", "Current value of l in services dict.: $l")
+            GlobalSchema.servicesNode.add(l!!)
+        }
+
+        // Retrieve the title helper for services.
+        // This is the list of services to display, corresponding to the JSONSchema node name.
+        val helperTitleArray: JSONObject = json.getJSONObject("helper-title").getJSONObject("yt-video")
+        for (l in GlobalSchema.servicesNode) {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TESTING) Log.d("Groaker-Test", "Current value of added string in the helper array: ${helperTitleArray.getString(l)}")
+            GlobalSchema.servicesTitle.add(helperTitleArray.getString(l))
+        }
+
     }
 
 }

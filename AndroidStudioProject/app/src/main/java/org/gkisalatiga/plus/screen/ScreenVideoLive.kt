@@ -16,7 +16,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -44,6 +46,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -95,6 +98,8 @@ class ScreenVideoLive() : ComponentActivity() {
 
                     Text(GlobalSchema.ytViewerParameters["title"]!!, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
                     Text(GlobalSchema.ytViewerParameters["date"]!!)
+                    Spacer(Modifier.height(10.dp))
+                    Text(GlobalSchema.ytViewerParameters["desc"]!!)
 
                 }
             }
@@ -117,7 +122,7 @@ class ScreenVideoLive() : ComponentActivity() {
 
         // Ensures that we always land where we started.
         BackHandler {
-            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
+            GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
             view!!.release()
         }
     }
@@ -140,7 +145,7 @@ class ScreenVideoLive() : ComponentActivity() {
             },
             navigationIcon = {
                 IconButton(onClick = {
-                    GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MAIN
+                    GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
                     view!!.release()
                 }) { Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "") }
             },

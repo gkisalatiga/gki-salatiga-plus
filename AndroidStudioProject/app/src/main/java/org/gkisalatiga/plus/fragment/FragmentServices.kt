@@ -39,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,21 +63,11 @@ import org.json.JSONObject
 
 class FragmentServices() : ComponentActivity() {
 
-    // The list of services to display, corresponding to the JSONSchema node name.
-    private val listOfServicesNode = listOf (
-        "umum",
-        "es",
-        "saren",
-        "kml"
-    )
+    // The list of JSON nodes corresponding to a service section.
+    private val listOfServicesNode: ArrayList<String> = GlobalSchema.servicesNode
 
     // The list of services to display, corresponding to the section title string ID.
-    private val listOfServicesTitle = listOf (
-        R.string.submenu_services_umum,
-        R.string.submenu_services_es,
-        R.string.submenu_services_saren,
-        R.string.submenu_services_kml
-    )
+    private val listOfServicesTitle: ArrayList<String> = GlobalSchema.servicesTitle
 
     @Composable
     public fun getComposable() {
@@ -96,9 +87,8 @@ class FragmentServices() : ComponentActivity() {
             // Assumes both "listOfServicesNode" and "listOfServicesTitle" have the same list size.
             listOfServicesNode.forEachIndexed { index, str ->
                 // Displaying the relevant YouTube-based church services.
-                getServicesUI(str, stringResource(listOfServicesTitle[index]))
+                getServicesUI(str, listOfServicesTitle[index])
             }
-
         }
 
     }
@@ -127,6 +117,7 @@ class FragmentServices() : ComponentActivity() {
                 "title" to curNode.getString("title"),
                 "date" to curNode.getString("date"),
                 "link" to curNode.getString("link"),
+                "desc" to curNode.getString("desc"),
                 "thumbnail" to curNode.getString("thumbnail")
             ))
         }
@@ -154,7 +145,12 @@ class FragmentServices() : ComponentActivity() {
         /* Displaying the section title. */
         Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Text(sectionTitle, modifier = Modifier.fillMaxWidth().weight(4f), fontWeight = FontWeight.Bold, fontSize = 26.sp, overflow = TextOverflow.Ellipsis)
-            Button(onClick = {}, modifier = Modifier.fillMaxWidth().weight(1f)) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
+            Button(onClick = {
+                // Display the list of videos in this playlist.
+                GlobalSchema.videoListTargetNode = nodeName
+                GlobalSchema.videoListTitle = sectionTitle
+                GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
+            }, modifier = Modifier.fillMaxWidth().weight(1f)) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
         }
 
         /* Displaying the individual item of this section. */
@@ -169,6 +165,7 @@ class FragmentServices() : ComponentActivity() {
                 // Preparing the arguments.
                 val title = cardsList[it]["title"]
                 val url = cardsList[it]["link"]
+                val desc = cardsList[it]["desc"]
 
                 // Format the date.
                 val date = StringFormatter().convertDateFromJSON(cardsList[it]["date"]!!)
@@ -186,6 +183,8 @@ class FragmentServices() : ComponentActivity() {
                         GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url)
                         GlobalSchema.ytViewerParameters["title"] = title!!
                         GlobalSchema.ytViewerParameters["date"] = date
+                        GlobalSchema.ytViewerParameters["desc"] = desc!!
+                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },
                     modifier = Modifier.fillMaxHeight().width(320.dp).height(232.dp).padding(horizontal = 5.dp),

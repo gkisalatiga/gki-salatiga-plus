@@ -44,6 +44,15 @@ class GlobalSchema : Application() {
         var globalJSONObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
+        /* Initializing values that are preloaded during ActivityLauncher initializations. */
+
+        // The list of JSON nodes corresponding to a service section.
+        var servicesNode: ArrayList<String> = ArrayList<String>()
+
+        // The list of services to display, corresponding to the section title string ID.
+        var servicesTitle: ArrayList<String> = ArrayList<String>()
+
+        /* ------------------------------------------------------------------------------------ */
         /* Initializing the debugging toggles. */
 
         // Whether to enable the easter egg feature of the app and display it to the user.
@@ -95,6 +104,9 @@ class GlobalSchema : Application() {
             ""
         )
 
+        // The status of internet connection.
+        var isConnectedToInternet: Boolean = false
+
         /* ------------------------------------------------------------------------------------ */
         /* Initializing the global schema that does not directly trigger recomposition. */
 
@@ -103,6 +115,8 @@ class GlobalSchema : Application() {
             /* These parameters are required for displaying the right content in the YouTube viewer. */
             "date" to "",
             "title" to "",
+            "desc" to "",
+            "thumbnail" to "",
             "yt-id" to "",
             "yt-link" to ""
         )
@@ -110,6 +124,11 @@ class GlobalSchema : Application() {
         // Determines what link to show in ScreenWebView, and its title.
         var webViewTargetURL: String = ""
         var webViewTitle: String = ""
+
+        // Determines what playlist to display when switching to "ScreenVideoList".
+        // This represents the JSON node under "data/yt-video".
+        var videoListTargetNode: String = ""
+        var videoListTitle: String = ""
 
         // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,
         // as well as its content title.

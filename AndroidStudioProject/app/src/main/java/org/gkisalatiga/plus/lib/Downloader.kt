@@ -14,6 +14,7 @@ import android.util.Log
 import org.gkisalatiga.plus.global.GlobalSchema
 import java.io.File
 import java.io.FileOutputStream
+import java.net.UnknownHostException
 import java.util.concurrent.Executors
 
 /**
@@ -118,10 +119,14 @@ class Downloader() {
                 GlobalSchema.absolutePathToJSONMetaData = privateFile.absolutePath
                 GlobalSchema.isJSONMetaDataInitialized.value = true
 
-                Log.d("Groaker", "JSON metadata was successfully downloaded into: ${privateFile.absolutePath}")
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "JSON metadata was successfully downloaded into: ${privateFile.absolutePath}")
 
-            } catch (e: Exception) {
-                Log.d("Groaker", "Error encountered during download: $e")
+                // We are connected to the internet!
+                GlobalSchema.isConnectedToInternet = true
+
+            } catch (e: UnknownHostException) {
+                GlobalSchema.isConnectedToInternet = false
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable during download: $e")
             }
 
             // Break free from this thread.
