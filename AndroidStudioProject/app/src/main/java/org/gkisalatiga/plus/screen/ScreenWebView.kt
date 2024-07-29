@@ -11,6 +11,7 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.ClipData
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -26,7 +27,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -101,6 +104,7 @@ class ScreenWebView() : ComponentActivity() {
 
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Composable
     private fun getMainContent() {
         // Declare a string that contains a url.
@@ -120,6 +124,17 @@ class ScreenWebView() : ComponentActivity() {
                 // Custom WebViewClient to disable arbitrary opening an external website.
                 // SOURCE: https://stackoverflow.com/a/62166792
                 wv.webViewClient = object : WebViewClient() {
+
+                    // The filter JavaScript command.
+                    val jsBody = """
+                            /* Hides navigations in YKB. */
+                            document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
+                            document.getElementsByClassName('navbar-header')[0].style.display='none';
+                            document.getElementsByClassName('rightbar-devotion')[0].style.display='none';
+                            document.getElementById('multiple-ajax-calendar-2').style.display='none';
+                            document.getElementById('header').style.display='none';
+                        """.trimIndent()
+
                     override fun shouldOverrideUrlLoading(
                         view: WebView?,
                         url: String?
@@ -135,14 +150,14 @@ class ScreenWebView() : ComponentActivity() {
                     // Evaluating javascript.
                     // SOURCE: https://stackoverflow.com/a/51822916
                     override fun onPageFinished(view: WebView?, url: String?) {
-                        val jsBody = """
-                            /* Hides navigations in YKB. */
-                            document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
-                            document.getElementsByClassName('navbar-header')[0].style.display='none';
-                            document.getElementsByClassName('rightbar-devotion')[0].style.display='none';
-                            document.getElementById('multiple-ajax-calendar-2').style.display='none';
-                            document.getElementById('header').style.display='none';
-                        """.trimIndent()
+                        wv.loadUrl("javascript:(function() { $jsBody })()")
+                    }
+
+                    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                        wv.loadUrl("javascript:(function() { $jsBody })()")
+                    }
+
+                    override fun onLoadResource(view: WebView?, url: String?) {
                         wv.loadUrl("javascript:(function() { $jsBody })()")
                     }
 
@@ -158,6 +173,10 @@ class ScreenWebView() : ComponentActivity() {
                 // Enables JavaScript.
                 // SOURCE: https://stackoverflow.com/a/69373543
                 wv.settings.javaScriptEnabled = true
+
+                // Enable pinching and zooming.
+                // SOURCE: https://stackoverflow.com/a/7172165
+                wv.settings.builtInZoomControls = true
             }
         }, update = {
             it.loadUrl(destURL)
@@ -195,7 +214,7 @@ class ScreenWebView() : ComponentActivity() {
                     showLinkConfirmationDialog.value = true
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Info,
+                        imageVector = Icons.AutoMirrored.Default.OpenInNew,
                         contentDescription = ""
                     )
                 }

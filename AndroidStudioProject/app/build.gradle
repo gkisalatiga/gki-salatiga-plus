@@ -114,6 +114,10 @@ dependencies {
     // SOURCE: https://github.com/PierfrancescoSoffritti/android-youtube-player
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
+    // Add more material icons.
+    // SOURCE: https://stackoverflow.com/a/65665564
+    implementation "androidx.compose.material:material-icons-extended"
+
     // Enable global storing, accessing, and writing of variables inside composable elements.
     // SOURCE: https://github.com/GuyMichael/Reactdroid
     // SOURCE: https://medium.com/nerd-for-tech/android-jetpackcompose-with-global-state-3a0b3c0f0b30

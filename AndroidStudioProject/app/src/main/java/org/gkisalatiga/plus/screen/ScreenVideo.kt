@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -56,7 +57,7 @@ import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class ScreenVideo() : ComponentActivity() {
+class ScreenVideo : ComponentActivity() {
 
     // The YouTube video viewer object.
     var view: YouTubePlayerView? = null
@@ -151,7 +152,7 @@ class ScreenVideo() : ComponentActivity() {
                     showLinkConfirmationDialog.value = true
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Info,
+                        imageVector = Icons.AutoMirrored.Default.OpenInNew,
                         contentDescription = ""
                     )
                 }

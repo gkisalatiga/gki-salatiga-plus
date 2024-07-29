@@ -31,6 +31,7 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -73,6 +74,7 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
+import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 import org.json.JSONObject
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -83,6 +85,11 @@ class ActivityLauncher : ComponentActivity() {
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Disable dark mode because the coding for dark theme is complicated.
+        // SOURCE: https://stackoverflow.com/q/68044843
+        /*AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)*/
+
         // Enable transparent status bar.
         // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
         enableEdgeToEdge(
@@ -91,7 +98,6 @@ class ActivityLauncher : ComponentActivity() {
                 android.graphics.Color.TRANSPARENT
             )
         )
-
 
         // Enable on-the-fly edit of drawable SVG vectors.
         // SOURCE: https://stackoverflow.com/a/38418049
@@ -133,28 +139,31 @@ class ActivityLauncher : ComponentActivity() {
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
+            GKISalatigaPlusTheme {
 
-            // This variable allows one to control
-            // whether the splash screen should be displayed upon launch.
-            val showSplash = true
+                // This variable allows one to control
+                // whether the splash screen should be displayed upon launch.
+                val showSplash = true
 
-            if (showSplash) {
-                // Splash screen.
-                // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
-                Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
-                    val splashNavController = rememberNavController()
-                    NavHost(navController = splashNavController, startDestination = "splash_screen") {
-                        composable("splash_screen") {
-                            initSplashScreen(splashNavController = splashNavController)
-                        }
-                        composable("main_screen") {
-                            initMainGraphic()
+                if (showSplash) {
+                    // Splash screen.
+                    // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
+                    Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+                        val splashNavController = rememberNavController()
+                        NavHost(navController = splashNavController, startDestination = "splash_screen") {
+                            composable("splash_screen") {
+                                initSplashScreen(splashNavController = splashNavController)
+                            }
+                            composable("main_screen") {
+                                initMainGraphic()
+                            }
                         }
                     }
+                } else {
+                    // Just display the main graphic directly.
+                    initMainGraphic()
                 }
-            } else {
-                // Just display the main graphic directly.
-                initMainGraphic()
+
             }
         }
     }

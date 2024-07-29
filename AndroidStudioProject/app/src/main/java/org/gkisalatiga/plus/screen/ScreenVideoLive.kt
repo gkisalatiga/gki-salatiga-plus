@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -154,7 +155,7 @@ class ScreenVideoLive() : ComponentActivity() {
                     showLinkConfirmationDialog.value = true
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Info,
+                        imageVector = Icons.AutoMirrored.Default.OpenInNew,
                         contentDescription = ""
                     )
                 }

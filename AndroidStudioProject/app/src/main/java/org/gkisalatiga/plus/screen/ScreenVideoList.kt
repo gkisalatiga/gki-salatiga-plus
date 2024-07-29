@@ -114,12 +114,6 @@ class ScreenVideoList : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.FillWidth
                 )
-                /*Image(
-                    painter = painterResource(imgSource),
-                    contentDescription = imgDescription,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )*/
             }
 
             /* Enumerate and enlist the individual card. */
