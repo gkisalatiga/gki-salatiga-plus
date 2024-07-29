@@ -55,7 +55,7 @@ import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class FragmentHome() : ComponentActivity() {
+class FragmentHome : ComponentActivity() {
 
     // The following defines the visible menu buttons shown in the main menu,
     // as well as their corresponding navigation targets.
@@ -127,7 +127,7 @@ class FragmentHome() : ComponentActivity() {
         // Please fill the following integer-variable with a number of pages
         // that the user won't bother scrolling.
         // SOURCE: https://stackoverflow.com/a/75469260
-        val baseInfiniteScrollingPages = 512  // --- i.e., 2^9.
+        val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
 
         // Necessary variables for the infinite-page carousel.
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
@@ -142,7 +142,7 @@ class FragmentHome() : ComponentActivity() {
         // SOURCE: https://stackoverflow.com/a/67615616
         LaunchedEffect(carouselPagerState.settledPage) {
             launch {
-                delay(2000)
+                delay(2500)
                 with(carouselPagerState) {
                     animateScrollToPage(
                         page = currentPage + 1,

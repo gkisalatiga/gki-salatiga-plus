@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Beta Development: Next Release
+
+- Fix: Element colors now follow main theme
+
 ## v0.1.5-alpha (12) --- 2024-07-27
 
 - New: Added YouTube video description display

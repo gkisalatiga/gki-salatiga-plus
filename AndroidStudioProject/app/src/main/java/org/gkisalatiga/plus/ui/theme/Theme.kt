@@ -1,31 +1,33 @@
 package org.gkisalatiga.plus.ui.theme
 
-import android.app.Activity
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = Brown2,
-    secondary = Brown1,
-    tertiary = Brown3
+    secondary = Brown3,
+    tertiary = Brown4
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Brown2,
-    secondary = Brown1,
-    tertiary = Brown3
+    primary = Brown4,
+    secondary = Brown3,
+    tertiary = Brown2,
+    primaryContainer = Brown1,
 
+    /* Overriding default values. */
+    /*surface = Brown1,
+    onPrimary = Brown1,
+    onSecondary = Brown1,
+    onTertiary = Brown1,
+    onBackground = Brown1,
+    onSurface = Brown1,*/
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -39,9 +41,13 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun GKISalatigaPlusTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Disable dark mode because the coding for dark theme is complicated.
+    darkTheme: Boolean = false,
+
+    // Dynamic color is available on Android 12+.
+    // Must be set to "false" so that we can change the color manually.
+    // SOURCE: https://stackoverflow.com/a/75952884
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -50,17 +56,17 @@ fun GKISalatigaPlusTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> LightColorScheme
+        darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    val view = LocalView.current
+    /*val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
-    }
+    }*/
 
     MaterialTheme(
         colorScheme = colorScheme,
