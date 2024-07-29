@@ -21,8 +21,11 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -45,9 +48,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -69,14 +75,14 @@ class ScreenWebView() : ComponentActivity() {
     private var showLinkConfirmationDialog = mutableStateOf(false)
 
     @Composable
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ComposableNaming")
     public fun getComposable() {
         Scaffold (
             topBar = { this.getTopBar() }
                 ) {
 
             // Display the necessary content.
-            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
+            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())) {
                 getMainContent()
             }
         }
@@ -127,6 +133,14 @@ class ScreenWebView() : ComponentActivity() {
 
                     // The filter JavaScript command.
                     val jsBody = """
+                            /* Hides Google Forms footer and floating action buttons. */
+                            document.getElementsByClassName('T2dutf')[0].style.display='none';
+                            document.getElementsByClassName('v1CNvb')[0].style.display='none';
+                            document.getElementsByClassName('I3zNcc')[0].style.display='none';
+                            document.getElementsByClassName('U26fgb')[0].style.display='none';
+                            document.getElementsByClassName('zAVwcb')[0].style.display='none';
+                            document.getElementById('SMMuxb').style.display='none';
+                            
                             /* Hides navigations in YKB. */
                             document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
                             document.getElementsByClassName('navbar-header')[0].style.display='none';
@@ -149,15 +163,15 @@ class ScreenWebView() : ComponentActivity() {
 
                     // Evaluating javascript.
                     // SOURCE: https://stackoverflow.com/a/51822916
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        wv.loadUrl("javascript:(function() { $jsBody })()")
-                    }
-
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         wv.loadUrl("javascript:(function() { $jsBody })()")
                     }
 
                     override fun onLoadResource(view: WebView?, url: String?) {
+                        wv.loadUrl("javascript:(function() { $jsBody })()")
+                    }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
                         wv.loadUrl("javascript:(function() { $jsBody })()")
                     }
 
@@ -175,18 +189,35 @@ class ScreenWebView() : ComponentActivity() {
                 wv.settings.javaScriptEnabled = true
 
                 // Enable pinching and zooming.
+                // SOURCE: https://www.perplexity.ai/search/android-webview-how-to-enable-m7wBk07KS2GFsAk0cw1t4g
                 // SOURCE: https://stackoverflow.com/a/7172165
+                // SOURCE: https://stackoverflow.com/a/33784686
+                // SOURCE: https://stackoverflow.com/a/26115592
+                wv.settings.loadWithOverviewMode = true
                 wv.settings.builtInZoomControls = true
+                wv.settings.displayZoomControls = false
+                wv.settings.useWideViewPort = true
+                wv.settings.setSupportZoom(true)
             }
         }, update = {
-            it.loadUrl(destURL)
+            // To allow zooming on Google Drive PDF previews,
+            // we wrap them inside of an <iframe> tag.
+            if (destURL.contains("drive.google.com")) {
+                it.loadData("""
+                    <body style='padding: 0px; margin: 0px'>
+                        <iframe src='$destURL' style='position: absolute; height: 100%; width: 100%; border: none; margin: 0px; padding: 0px;'></iframe>
+                    </body>
+                """.trimIndent(), "text/html", "UTF-8")
+            } else {
+                it.loadUrl(destURL)
+            }
         })
     }
 
     @Composable
     @OptIn(ExperimentalMaterial3Api::class)
     private fun getTopBar() {
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+        // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -219,7 +250,7 @@ class ScreenWebView() : ComponentActivity() {
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            // scrollBehavior = scrollBehavior
         )
     }
 

@@ -3,6 +3,8 @@
 ## Alpha Development: Next Release
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle
+- Fix: Changed WebView external icon ti "OpenAsNew"
+- Fix: Enabled zooming by pinching in WebView
 - Fix: Element colors now follow main theme
 
 ## v0.1.5-alpha (12) --- 2024-07-27
