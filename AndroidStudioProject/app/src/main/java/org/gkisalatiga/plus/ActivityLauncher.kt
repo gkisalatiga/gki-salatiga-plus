@@ -37,6 +37,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -47,6 +48,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -202,9 +204,32 @@ class ActivityLauncher : ComponentActivity() {
             Log.d("Groaker", "Obtained 'pushScreen' value: ${GlobalSchema.pushScreen.value}")
         }
 
+        // We use nav. host because it has built-in support for transition effect/animation.
+        val mainNavController = rememberNavController()
+        NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
+            composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
+            composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
+            composable(NavigationRoutes().SCREEN_PRERECORDED) { ScreenVideo().getComposable() }
+            composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
+            composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
+            composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
+            composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
+            composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
+            composable(NavigationRoutes().SCREEN_LITURGI) { ScreenLiturgi().getComposable() }
+            composable(NavigationRoutes().SCREEN_WEBVIEW) { ScreenWebView().getComposable() }
+            composable(NavigationRoutes().SCREEN_INTERNAL_HTML) { ScreenInternalHTML().getComposable() }
+        }
+
         // Watch for the state change in the parameter "pushScreen".
         // SOURCE: https://stackoverflow.com/a/73129228
         key(GlobalSchema.pushScreen.value) {
+            mainNavController.navigate(GlobalSchema.pushScreen.value)
+        }
+
+        // Watch for the state change in the parameter "pushScreen".
+        // SOURCE: https://stackoverflow.com/a/73129228
+        /*key(GlobalSchema.pushScreen.value) {
+
             when(GlobalSchema.pushScreen.value) {
                 NavigationRoutes().SCREEN_MAIN -> { ScreenMain().getComposable() }
                 NavigationRoutes().SCREEN_ABOUT -> { ScreenAbout().getComposable() }
@@ -218,7 +243,7 @@ class ActivityLauncher : ComponentActivity() {
                 NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
                 NavigationRoutes().SCREEN_INTERNAL_HTML -> { ScreenInternalHTML().getComposable() }
             }
-        }
+        }*/
     }
 
     /**

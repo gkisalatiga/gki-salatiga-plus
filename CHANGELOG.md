@@ -3,6 +3,7 @@
 ## Alpha Development: Next Release
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle
+- New: Added transition animation (fade) between screens
 - Fix: Changed WebView external icon ti "OpenAsNew"
 - Fix: Enabled zooming by pinching in WebView
 - Fix: Element colors now follow main theme
