@@ -31,11 +31,13 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -46,6 +48,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +59,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
@@ -73,6 +77,7 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
+import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 import org.json.JSONObject
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -83,6 +88,7 @@ class ActivityLauncher : ComponentActivity() {
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         // Enable transparent status bar.
         // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
         enableEdgeToEdge(
@@ -91,7 +97,6 @@ class ActivityLauncher : ComponentActivity() {
                 android.graphics.Color.TRANSPARENT
             )
         )
-
 
         // Enable on-the-fly edit of drawable SVG vectors.
         // SOURCE: https://stackoverflow.com/a/38418049
@@ -127,34 +132,41 @@ class ActivityLauncher : ComponentActivity() {
         // java.lang.IllegalStateException: System services not available to Activities before onCreate()
         GlobalSchema.clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
+        // Prepares the global YouTube viewer.
+        // Prevents NPE.
+        GlobalSchema.ytView = YouTubePlayerView(this)
+
         // Retrieving the latest JSON metadata.
         initMetaData()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
+            GKISalatigaPlusTheme {
 
-            // This variable allows one to control
-            // whether the splash screen should be displayed upon launch.
-            val showSplash = true
+                // This variable allows one to control
+                // whether the splash screen should be displayed upon launch.
+                val showSplash = true
 
-            if (showSplash) {
-                // Splash screen.
-                // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
-                Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
-                    val splashNavController = rememberNavController()
-                    NavHost(navController = splashNavController, startDestination = "splash_screen") {
-                        composable("splash_screen") {
-                            initSplashScreen(splashNavController = splashNavController)
-                        }
-                        composable("main_screen") {
-                            initMainGraphic()
+                if (showSplash) {
+                    // Splash screen.
+                    // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
+                    Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+                        val splashNavController = rememberNavController()
+                        NavHost(navController = splashNavController, startDestination = "splash_screen") {
+                            composable("splash_screen") {
+                                initSplashScreen(splashNavController = splashNavController)
+                            }
+                            composable("main_screen") {
+                                initMainGraphic()
+                            }
                         }
                     }
+                } else {
+                    // Just display the main graphic directly.
+                    initMainGraphic()
                 }
-            } else {
-                // Just display the main graphic directly.
-                initMainGraphic()
+
             }
         }
     }
@@ -193,23 +205,28 @@ class ActivityLauncher : ComponentActivity() {
             Log.d("Groaker", "Obtained 'pushScreen' value: ${GlobalSchema.pushScreen.value}")
         }
 
+        // We use nav. host because it has built-in support for transition effect/animation.
+        val mainNavController = rememberNavController()
+        NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
+            composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
+            composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
+            composable(NavigationRoutes().SCREEN_PRERECORDED) { ScreenVideo().getComposable() }
+            composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
+            composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
+            composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
+            composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
+            composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
+            composable(NavigationRoutes().SCREEN_LITURGI) { ScreenLiturgi().getComposable() }
+            composable(NavigationRoutes().SCREEN_WEBVIEW) { ScreenWebView().getComposable() }
+            composable(NavigationRoutes().SCREEN_INTERNAL_HTML) { ScreenInternalHTML().getComposable() }
+        }
+
         // Watch for the state change in the parameter "pushScreen".
         // SOURCE: https://stackoverflow.com/a/73129228
         key(GlobalSchema.pushScreen.value) {
-            when(GlobalSchema.pushScreen.value) {
-                NavigationRoutes().SCREEN_MAIN -> { ScreenMain().getComposable() }
-                NavigationRoutes().SCREEN_ABOUT -> { ScreenAbout().getComposable() }
-                NavigationRoutes().SCREEN_PRERECORDED -> { ScreenVideo().getComposable() }
-                NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
-                NavigationRoutes().SCREEN_FORMS -> { ScreenForms().getComposable() }
-                NavigationRoutes().SCREEN_YKB -> { ScreenYKB().getComposable() }
-                NavigationRoutes().SCREEN_VIDEO_LIST -> { ScreenVideoList().getComposable() }
-                NavigationRoutes().SCREEN_WARTA -> { ScreenWarta().getComposable() }
-                NavigationRoutes().SCREEN_LITURGI -> { ScreenLiturgi().getComposable() }
-                NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
-                NavigationRoutes().SCREEN_INTERNAL_HTML -> { ScreenInternalHTML().getComposable() }
-            }
+            mainNavController.navigate(GlobalSchema.pushScreen.value)
         }
+
     }
 
     /**

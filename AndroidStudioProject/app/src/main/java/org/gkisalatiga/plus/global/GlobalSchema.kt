@@ -17,6 +17,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.mutableStateOf
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.json.JSONObject
 
 class GlobalSchema : Application() {
@@ -95,6 +96,9 @@ class GlobalSchema : Application() {
 
         /* Stores the path to the downloaded private file; used in lib.Downloader. */
         var pathToDownloadedPrivateFile = mutableStateOf("")
+
+        /* The global YouTubeViewer element. */
+        var ytView: YouTubePlayerView? = null
 
         /* ------------------------------------------------------------------------------------ */
         /* The following mutable variables are associated with internet downloads.

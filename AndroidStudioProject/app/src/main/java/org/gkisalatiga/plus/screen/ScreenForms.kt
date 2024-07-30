@@ -60,7 +60,7 @@ import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.json.JSONObject
 
-class ScreenForms() : ComponentActivity() {
+class ScreenForms : ComponentActivity() {
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

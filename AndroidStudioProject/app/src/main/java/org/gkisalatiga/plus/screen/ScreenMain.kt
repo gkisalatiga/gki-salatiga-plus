@@ -40,7 +40,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
@@ -51,18 +50,15 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -78,8 +74,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentInfo
@@ -87,9 +81,9 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import kotlin.coroutines.CoroutineContext
+import org.gkisalatiga.plus.ui.theme.Brown2
 
-class ScreenMain() : ComponentActivity() {
+class ScreenMain : ComponentActivity() {
 
     // For "double-press back" to exit.
     private var backPressedTime: Long = 0
@@ -100,6 +94,9 @@ class ScreenMain() : ComponentActivity() {
         NavigationRoutes().FRAG_MAIN_SERVICES,
         NavigationRoutes().FRAG_MAIN_INFO,
     )
+
+    // The calculated status bar's height, for determining the "top bar"'s top padding.
+    private var calculatedTopPadding = 0.dp
 
     // Used by the bottom nav to command the scrolling of the horizontal pager.
     private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
@@ -141,9 +138,11 @@ class ScreenMain() : ComponentActivity() {
             floatingActionButton =  { },
             floatingActionButtonPosition = FabPosition.Center,
         ) {
+            calculatedTopPadding = it.calculateTopPadding()
+
             // Setting up the layout of all of the fragments.
             // Then wrapping each fragment in AnimatedVisibility so that we can manually control their visibility.
-            Box (Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())) {
+            Box (Modifier.padding(bottom = it.calculateBottomPadding())) {
                 Box {
                     // Shows the new top bar.
                     getTopBar()
@@ -231,7 +230,7 @@ class ScreenMain() : ComponentActivity() {
             Icons.Outlined.Info
         )
 
-        BottomAppBar() {
+        BottomAppBar {
             // Ensures that the nav bar stays at the bottom
             // SOURCE: https://stackoverflow.com/q/70904979
             Row(modifier = Modifier.weight(1f, false)) {
@@ -250,6 +249,15 @@ class ScreenMain() : ComponentActivity() {
                                    },
                             label = { Text(item) },
                             selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
+                            colors = NavigationBarItemColors(
+                                selectedIconColor = Color.Unspecified,
+                                selectedTextColor = Color.Unspecified,
+                                selectedIndicatorColor = Brown2,
+                                unselectedIconColor = Color.Unspecified,
+                                unselectedTextColor = Color.Unspecified,
+                                disabledIconColor = Color.Unspecified,
+                                disabledTextColor = Color.Unspecified
+                            ),
                             onClick = {
                                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
                                     Log.d("Groaker", "Triggered bottom nav button into index: $index")
@@ -316,6 +324,7 @@ class ScreenMain() : ComponentActivity() {
                     .background(overlayGradient)
                     .matchParentSize()
                     .padding(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_padding).dp)
+                    .padding(top = calculatedTopPadding)
             ) {
                 Column {
 
