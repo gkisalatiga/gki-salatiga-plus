@@ -15,7 +15,7 @@ The developmental project of GKI Salatiga's mobile church application
 ### Pre-release to-do
 
 - [ ] (Temporary) Lock orientation to portrait-only
-- [ ] (Temporary) Disable dark mode
+- [X] (Temporary) Disable dark mode
 
 ## License of Materials Used
 
