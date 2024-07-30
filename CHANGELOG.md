@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Next Alpha Release
+
+- Improved: ScreenVideoLive now has better visual appearance and scrollable description box
+
 ## v0.1.6-alpha (13) --- 2024-07-30
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle

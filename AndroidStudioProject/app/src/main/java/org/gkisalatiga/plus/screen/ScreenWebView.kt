@@ -134,19 +134,24 @@ class ScreenWebView() : ComponentActivity() {
                     // The filter JavaScript command.
                     val jsBody = """
                             /* Hides Google Forms footer and floating action buttons. */
-                            document.getElementsByClassName('T2dutf')[0].style.display='none';
-                            document.getElementsByClassName('v1CNvb')[0].style.display='none';
-                            document.getElementsByClassName('I3zNcc')[0].style.display='none';
-                            document.getElementsByClassName('U26fgb')[0].style.display='none';
-                            document.getElementsByClassName('zAVwcb')[0].style.display='none';
-                            document.getElementById('SMMuxb').style.display='none';
+                            try {
+                                document.getElementsByClassName('T2dutf')[0].style.display='none';
+                                document.getElementsByClassName('v1CNvb')[0].style.display='none';
+                                document.getElementsByClassName('I3zNcc')[0].style.display='none';
+                                document.getElementsByClassName('U26fgb')[0].style.display='none';
+                                document.getElementsByClassName('zAVwcb')[0].style.display='none';
+                                document.getElementById('SMMuxb').style.display='none';
+                            } catch (e) { }
                             
                             /* Hides navigations in YKB. */
-                            document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
-                            document.getElementsByClassName('navbar-header')[0].style.display='none';
-                            document.getElementsByClassName('rightbar-devotion')[0].style.display='none';
-                            document.getElementById('multiple-ajax-calendar-2').style.display='none';
-                            document.getElementById('header').style.display='none';
+                            try {
+                                document.getElementsByClassName('siteinfo-footer')[0].style.display='none';
+                                document.getElementsByClassName('navbar-header')[0].style.display='none';
+                                document.getElementsByClassName('rightbar-devotion')[0].style.display='none';
+                                document.getElementById('multiple-ajax-calendar-2').style.display='none';
+                                document.getElementById('bs-example-navbar-collapse-1').style.display='none';
+                                document.getElementById('header').style.display='none';
+                            } catch (e) { }
                         """.trimIndent()
 
                     override fun shouldOverrideUrlLoading(
@@ -196,7 +201,7 @@ class ScreenWebView() : ComponentActivity() {
                 wv.settings.loadWithOverviewMode = true
                 wv.settings.builtInZoomControls = true
                 wv.settings.displayZoomControls = false
-                wv.settings.useWideViewPort = true
+                wv.settings.useWideViewPort = false
                 wv.settings.setSupportZoom(true)
             }
         }, update = {
