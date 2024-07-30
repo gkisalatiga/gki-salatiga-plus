@@ -38,6 +38,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -60,9 +61,6 @@ import org.gkisalatiga.plus.lib.NavigationRoutes
 
 class ScreenVideoLive() : ComponentActivity() {
 
-    // The YouTube video viewer object.
-    var view: YouTubePlayerView? = null
-
     // The trigger to open an URL in an external browser.
     private var doTriggerBrowserOpen = mutableStateOf(false)
 
@@ -72,6 +70,7 @@ class ScreenVideoLive() : ComponentActivity() {
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
+
         Scaffold (
             topBar = { this.getTopBar() }
                 ) {
@@ -83,10 +82,11 @@ class ScreenVideoLive() : ComponentActivity() {
                     // Embedding the YouTube video into the composable.
                     // SOURCE: https://dev.to/mozeago/jetpack-compose-loadinghow-to-load-a-youtube-video-or-youtube-livestream-channel-to-your-android-application-4ffc
                     val youtubeVideoID = GlobalSchema.ytViewerParameters["yt-id"]
-                    val ctx = LocalContext.current
+                    var view: YouTubePlayerView? = null
                     AndroidView(factory = {
-                        view = YouTubePlayerView(it)
-                        val fragment = view!!.addYouTubePlayerListener(
+                        GlobalSchema.ytView = YouTubePlayerView(it)
+                        GlobalSchema.ytView!!.enableBackgroundPlayback(false)
+                        GlobalSchema.ytView!!.addYouTubePlayerListener(
                             object : AbstractYouTubePlayerListener() {
                                 override fun onReady(youTubePlayer: YouTubePlayer) {
                                     super.onReady(youTubePlayer)
@@ -94,7 +94,7 @@ class ScreenVideoLive() : ComponentActivity() {
                                 }
                             }
                         )
-                        view!!
+                        GlobalSchema.ytView!!
                     })
 
                     Text(GlobalSchema.ytViewerParameters["title"]!!, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
@@ -124,7 +124,7 @@ class ScreenVideoLive() : ComponentActivity() {
         // Ensures that we always land where we started.
         BackHandler {
             GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
-            view!!.release()
+            GlobalSchema.ytView!!.release()
         }
     }
 
@@ -147,7 +147,7 @@ class ScreenVideoLive() : ComponentActivity() {
             navigationIcon = {
                 IconButton(onClick = {
                     GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
-                    view!!.release()
+                    GlobalSchema.ytView!!.release()
                 }) { Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = "") }
             },
             actions = {

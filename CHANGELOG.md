@@ -1,12 +1,13 @@
 # GKI Salatiga+ Changelog
 
-## Alpha Development: Next Release
+## v0.1.6-alpha (13) --- 2024-07-30
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle
 - New: Added transition animation (fade) between screens
 - Fix: Changed WebView external icon ti "OpenAsNew"
 - Fix: Enabled zooming by pinching in WebView
 - Fix: Element colors now follow main theme
+- Fix: YouTube viewer throws NPE when pressing "back"
 
 ## v0.1.5-alpha (12) --- 2024-07-27
 

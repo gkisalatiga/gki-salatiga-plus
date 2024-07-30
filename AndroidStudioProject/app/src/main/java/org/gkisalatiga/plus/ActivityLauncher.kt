@@ -59,6 +59,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
@@ -87,10 +88,6 @@ class ActivityLauncher : ComponentActivity() {
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        // Disable dark mode because the coding for dark theme is complicated.
-        // SOURCE: https://stackoverflow.com/q/68044843
-        /*AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)*/
 
         // Enable transparent status bar.
         // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
@@ -134,6 +131,10 @@ class ActivityLauncher : ComponentActivity() {
         // Should be performed within "onCreate" to avoid the following error:
         // java.lang.IllegalStateException: System services not available to Activities before onCreate()
         GlobalSchema.clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+        // Prepares the global YouTube viewer.
+        // Prevents NPE.
+        GlobalSchema.ytView = YouTubePlayerView(this)
 
         // Retrieving the latest JSON metadata.
         initMetaData()
@@ -226,24 +227,6 @@ class ActivityLauncher : ComponentActivity() {
             mainNavController.navigate(GlobalSchema.pushScreen.value)
         }
 
-        // Watch for the state change in the parameter "pushScreen".
-        // SOURCE: https://stackoverflow.com/a/73129228
-        /*key(GlobalSchema.pushScreen.value) {
-
-            when(GlobalSchema.pushScreen.value) {
-                NavigationRoutes().SCREEN_MAIN -> { ScreenMain().getComposable() }
-                NavigationRoutes().SCREEN_ABOUT -> { ScreenAbout().getComposable() }
-                NavigationRoutes().SCREEN_PRERECORDED -> { ScreenVideo().getComposable() }
-                NavigationRoutes().SCREEN_LIVE -> { ScreenVideoLive().getComposable() }
-                NavigationRoutes().SCREEN_FORMS -> { ScreenForms().getComposable() }
-                NavigationRoutes().SCREEN_YKB -> { ScreenYKB().getComposable() }
-                NavigationRoutes().SCREEN_VIDEO_LIST -> { ScreenVideoList().getComposable() }
-                NavigationRoutes().SCREEN_WARTA -> { ScreenWarta().getComposable() }
-                NavigationRoutes().SCREEN_LITURGI -> { ScreenLiturgi().getComposable() }
-                NavigationRoutes().SCREEN_WEBVIEW -> { ScreenWebView().getComposable() }
-                NavigationRoutes().SCREEN_INTERNAL_HTML -> { ScreenInternalHTML().getComposable() }
-            }
-        }*/
     }
 
     /**
