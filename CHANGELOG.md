@@ -4,7 +4,7 @@
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle
 - New: Added transition animation (fade) between screens
-- Fix: Changed WebView external icon ti "OpenAsNew"
+- Fix: Changed WebView external icon to "OpenAsNew"
 - Fix: Enabled zooming by pinching in WebView
 - Fix: Element colors now follow main theme
 - Fix: YouTube viewer throws NPE when pressing "back"
