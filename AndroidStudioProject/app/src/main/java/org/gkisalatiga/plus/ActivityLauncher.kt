@@ -261,6 +261,8 @@ class ActivityLauncher : ComponentActivity() {
             updateStaticData = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old. It will be updated soon.")
+        } else {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is up-to-date.")
         }
 
         // Upon successful data download, we manage the app's internal variable storage
@@ -285,7 +287,7 @@ class ActivityLauncher : ComponentActivity() {
 
                 // Obtain the fallback static zip data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback zipped static data ...")
-                Extractor().initFallbackStaticData()
+                Extractor(this).initFallbackStaticData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -307,7 +309,13 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
 
                     // Make the attempt to fetch the online static data.
-                    if (updateStaticData) Extractor().initStaticData()
+                    if (updateStaticData) {
+                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Fetching the latest static data zipfile ...")
+                        Extractor(this).initStaticData()
+                    } else {
+                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
+                        Extractor(this).initExtractLocation()
+                    }
 
                     // Init the services sections, mitigating java.util.ConcurrentModificationException.
                     initServicesSection()

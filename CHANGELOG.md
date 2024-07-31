@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Next Alpha Release
+
+- Fix: Fixed church profile menus not showing when there is no static data update
+
 ## v0.1.7-alpha (14) --- 2024-07-31
 
 - Info: The screen orientation is now locked to portrait mode
