@@ -66,12 +66,9 @@ class ScreenInternalHTML() : ComponentActivity() {
     @Composable
     @SuppressLint("SetJavaScriptEnabled", "ComposableNaming")
     private fun getMainContent() {
-        // Which church profile does the user want to display?
-        val targetNode: String = GlobalSchema.targetStaticJSONNode
 
-        // Declare the local HTML content that will be displayed.
-        // Retrieve this HTML content (as string) from the JSON data.
-        val mainHTMLContent: String = AppDatabase().getMainData().getJSONObject("static").getString(targetNode)
+        // Declare the local HTML path that will be displayed.
+        val indexHTMLPath = GlobalSchema.targetIndexHTMLPath
 
         /* Displaying the web view.
          * SOURCE: https://medium.com/@kevinnzou/using-webview-in-jetpack-compose-bbf5991cfd14 */
@@ -93,7 +90,7 @@ class ScreenInternalHTML() : ComponentActivity() {
                     ): Boolean {
                         // Prevents redirection into some arbitrary external site.
                         Log.d("Groaker-Test", "Redirection URL: ${url.toString()}")
-                        wv.loadData(mainHTMLContent, "text/html", "UTF-8")
+                        wv.loadUrl("file://$indexHTMLPath")
                         return false
                     }
                 }
@@ -108,11 +105,15 @@ class ScreenInternalHTML() : ComponentActivity() {
                 // Enables JavaScript.
                 // SOURCE: https://stackoverflow.com/a/69373543
                 wv.settings.javaScriptEnabled = true
+
+                // Allow opening local file paths.
+                // SOURCE: https://www.perplexity.ai/search/can-webview-access-html-in-the-dECz59cCQLugKCIpo.5dqg
+                wv.settings.allowFileAccess = true
             }
         }, update = {
             // Load the local HTML content.
             // SOURCE: https://stackoverflow.com/a/13816680
-            it.loadData(mainHTMLContent, "text/html", "UTF-8")
+            it.loadUrl("file://$indexHTMLPath")
         })
     }
 

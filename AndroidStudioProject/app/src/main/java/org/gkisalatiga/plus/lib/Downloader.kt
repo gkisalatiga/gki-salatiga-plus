@@ -23,6 +23,7 @@ import java.util.concurrent.Executors
  */
 class Downloader() {
 
+    // TODO: Remove this method
     /**
      * Downloads a file and save it as a private file in the app's private storage.
      * SOURCE: https://www.geeksforgeeks.org/how-to-load-any-image-from-url-without-using-any-dependency-in-android/

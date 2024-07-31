@@ -1,10 +1,17 @@
 # GKI Salatiga+ Changelog
 
+## v0.1.7-alpha (14) --- 2024-07-31
+
+- Info: The screen orientation is now locked to portrait mode
+- New: Added internal preferences/settings which are persistently saved across launches
+- New: Introduced the packed static data for zipping the "profile" menu
+- Improved: ScreenVideoLive now has better visual appearance and scrollable description box
+
 ## v0.1.6-alpha (13) --- 2024-07-30
 
 - Info: The extended Jetpack Compose material icon pack is now enabled in Gradle
 - New: Added transition animation (fade) between screens
-- Fix: Changed WebView external icon ti "OpenAsNew"
+- Fix: Changed WebView external icon to "OpenAsNew"
 - Fix: Enabled zooming by pinching in WebView
 - Fix: Element colors now follow main theme
 - Fix: YouTube viewer throws NPE when pressing "back"
