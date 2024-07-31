@@ -31,13 +31,12 @@ import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -48,12 +47,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -63,7 +62,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.AppPreferences
 import org.gkisalatiga.plus.lib.Downloader
+import org.gkisalatiga.plus.lib.Extractor
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
@@ -72,7 +73,6 @@ import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenVideoList
-import org.gkisalatiga.plus.screen.ScreenVideo
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
@@ -88,6 +88,9 @@ class ActivityLauncher : ComponentActivity() {
 
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Initializes the app's internally saved preferences.
+        initPreferences()
 
         // Enable transparent status bar.
         // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
@@ -137,18 +140,14 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.ytView = YouTubePlayerView(this)
 
         // Retrieving the latest JSON metadata.
-        initMetaData()
+        initData()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
             GKISalatigaPlusTheme {
 
-                // This variable allows one to control
-                // whether the splash screen should be displayed upon launch.
-                val showSplash = true
-
-                if (showSplash) {
+                if (!GlobalSchema.DEBUG_DISABLE_SPLASH_SCREEN) {
                     // Splash screen.
                     // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
                     Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
@@ -169,6 +168,20 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
+    }
+
+    /**
+     * This method reads the current saved preference associated with the app
+     * and pass it to the GlobalSchema so that other functions can use them.
+     */
+    private fun initPreferences() {
+        // Initializes the preferences.
+        AppPreferences(this).readAllPreferences()
+
+        // Increment the number of counts.
+        val now = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAUNCH_COUNTS] as Int
+        AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAUNCH_COUNTS, now + 1)
+        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(this, "Launches since install: $now", Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -210,7 +223,6 @@ class ActivityLauncher : ComponentActivity() {
         NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
             composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
             composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
-            composable(NavigationRoutes().SCREEN_PRERECORDED) { ScreenVideo().getComposable() }
             composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
             composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
@@ -232,12 +244,26 @@ class ActivityLauncher : ComponentActivity() {
     /**
      * This app prepares the downloading of JSON metadata.
      * It should always be performed at the beginning of app to ensure updated content.
+     * This function initializes the GZip-compressed Tarfile archive containing
+     * the static data of GKI Salatiga Plus.
      * ---
      * This function does not need to become a composable function since it requires no UI.
      */
-    private fun initMetaData() {
+    private fun initData() {
 
-        // Upon successful metadata download, we manage the app's internal variable storage
+        // Determine should we re-download the static data archive file from the repository,
+        // which could be huge in size. (We don't do it frequently.)
+        var updateStaticData = false
+        val lastUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE] as Long
+        val frequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY] as Long
+        val timeNowMillis = System.currentTimeMillis()
+        if (timeNowMillis > lastUpdate + frequency) {
+            updateStaticData = true
+            AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old. It will be updated soon.")
+        }
+
+        // Upon successful data download, we manage the app's internal variable storage
         // according to the downloaded JSON file's schema.
         // We also make any appropriate settings accordingly.
         // ---
@@ -247,9 +273,22 @@ class ActivityLauncher : ComponentActivity() {
             // Create the JSON manager object.
             val appDB = AppDatabase()
 
-            // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Loading the fallback JSON metadata ...")
-            GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
+            // Get the number of launches since install so that we can determine
+            // whether to use the fallback data.
+            val launches = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAUNCH_COUNTS] as Int
+
+            // Get fallback data only if first launch.
+            if (launches == 0) {
+                // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
+                GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
+
+                // Obtain the fallback static zip data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback zipped static data ...")
+                Extractor().initFallbackStaticData()
+            } else {
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
+            }
 
             // Init the services sections, mitigating java.util.ConcurrentModificationException.
             initServicesSection()
@@ -265,13 +304,17 @@ class ActivityLauncher : ComponentActivity() {
                 if (GlobalSchema.isJSONMetaDataInitialized.value) {
                     // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Successfully refreshed the JSON data!")
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
+
+                    // Make the attempt to fetch the online static data.
+                    if (updateStaticData) Extractor().initStaticData()
 
                     // Init the services sections, mitigating java.util.ConcurrentModificationException.
                     initServicesSection()
 
                     // It is finally set-up. Let's break free from this loop.
                     break
+
                 } else {
                     // Sleep for a couple of milliseconds before continuing.
                     // SOURCE: http://stackoverflow.com/questions/24104313/ddg#24104427
@@ -304,7 +347,7 @@ class ActivityLauncher : ComponentActivity() {
         // Retrieve the dict key of the list of services.
         val servicesDictionaryKey: JSONObject = json.getJSONObject("yt-video")
         for (l in servicesDictionaryKey.keys()) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TESTING) Log.d("Groaker-Test", "Current value of l in services dict.: $l")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of l in services dict.: $l")
             GlobalSchema.servicesNode.add(l!!)
         }
 
@@ -312,7 +355,7 @@ class ActivityLauncher : ComponentActivity() {
         // This is the list of services to display, corresponding to the JSONSchema node name.
         val helperTitleArray: JSONObject = json.getJSONObject("helper-title").getJSONObject("yt-video")
         for (l in GlobalSchema.servicesNode) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TESTING) Log.d("Groaker-Test", "Current value of added string in the helper array: ${helperTitleArray.getString(l)}")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of added string in the helper array: ${helperTitleArray.getString(l)}")
             GlobalSchema.servicesTitle.add(helperTitleArray.getString(l))
         }
 

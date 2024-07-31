@@ -22,23 +22,6 @@ class AppDatabase {
 
     private var _parsedJSONString: String = ""
 
-    /* TODO: Remove this function. */
-    /**
-     * Loads the debug JSON file for testing with the app's database dynamics.
-     * SOURCE: https://stackoverflow.com/a/2856501
-     * SOURCE: https://stackoverflow.com/a/39500046
-     */
-    public fun loadDebug(context: Context): AppDatabase {
-        val input: InputStream = context.resources.openRawResource(R.raw.debug_schema_sample)
-        val inputAsString: String = input.bufferedReader().use { it.readText() }
-
-        // Variable assignments
-        this._parsedJSONString = inputAsString
-
-        // Return this class so that it can be attached with other functions
-        return this
-    }
-
     /**
      * Loads a given JSON file (in the phone's absolute path, not the app's Android resource manager),
      * and parse them into string inside the class.
@@ -78,6 +61,13 @@ class AppDatabase {
     }
 
     /**
+     * Returns the Gzip-compressed fallback Tarfile static archive data.
+     */
+    public fun getFallbackStaticData(): Unit {
+
+    }
+
+    /**
      * Parse the specified JSON string and serialize it, then
      * return a JSON object that reads the database's main data.
      * SOURCE: https://stackoverflow.com/a/50468095
@@ -86,9 +76,12 @@ class AppDatabase {
      * Please run Downloader().initMetaData() before executing this function.
      */
     public fun getMainData(): JSONObject {
+        // Determines if we have already downloaded the JSON file.
+        val JSONExists = File(GlobalSchema.absolutePathToJSONMetaData).exists()
+
         // Load the downloaded JSON.
         // Prevents error-returning when this function is called upon offline.
-        if (GlobalSchema.isJSONMetaDataInitialized.value) {
+        if (GlobalSchema.isJSONMetaDataInitialized.value || JSONExists) {
             this.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
             return JSONObject(_parsedJSONString).getJSONObject("data")
         } else {

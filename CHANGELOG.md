@@ -1,7 +1,10 @@
 # GKI Salatiga+ Changelog
 
-## Next Alpha Release
+## v0.1.7-alpha (14) --- 2024-07-31
 
+- Info: The screen orientation is now locked to portrait mode
+- New: Added internal preferences/settings which are persistently saved across launches
+- New: Introduced the packed static data for zipping the "profile" menu
 - Improved: ScreenVideoLive now has better visual appearance and scrollable description box
 
 ## v0.1.6-alpha (13) --- 2024-07-30

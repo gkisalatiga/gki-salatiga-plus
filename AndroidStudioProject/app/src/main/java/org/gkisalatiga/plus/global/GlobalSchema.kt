@@ -45,6 +45,29 @@ class GlobalSchema : Application() {
         var globalJSONObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
+        /* The following parameter determines which Gzip-compressed Tarfile static source to look up to in order to update
+         * the application's static data.
+         * It cannot and should not be changed arbitrarily within the app code. */
+
+        val staticDataSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-static.zip"
+
+        // This is the filename which will save the above Gzip-compressed Tarfile static source.
+        val staticDataSavedFilename = "gkisplus-static.zip"
+
+        // Stores the absolute path of the downloaded (into internal app storage) Gzip-compressed Tarfile static.
+        var absolutePathToStaticData = ""
+
+        // The state of the initialization of the Gzip-compressed Tarfile static.
+        var isStaticDataDownloaded = mutableStateOf(false)
+        var isStaticDataExtracted = mutableStateOf(false)
+
+        // The variable associated with the string values and resource paths.
+        var staticDataTitleArray: ArrayList<String> = ArrayList<String>()
+        var staticDataBannerArray: ArrayList<String> = ArrayList<String>()
+        var staticDataJSONNodeArray: ArrayList<String> = ArrayList<String>()
+        var staticDataIndexHTMLArray: ArrayList<String> = ArrayList<String>()
+
+        /* ------------------------------------------------------------------------------------ */
         /* Initializing values that are preloaded during ActivityLauncher initializations. */
 
         // The list of JSON nodes corresponding to a service section.
@@ -64,8 +87,9 @@ class GlobalSchema : Application() {
 
         // Whether to display the debugger's logcat logging.
         const val DEBUG_ENABLE_LOG_CAT = true
-        const val DEBUG_ENABLE_LOG_CAT_DUMPER = true
-        const val DEBUG_ENABLE_LOG_CAT_TESTING = true
+
+        // Whether to hide the splash screen.
+        const val DEBUG_DISABLE_SPLASH_SCREEN = false
 
         /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
@@ -136,7 +160,7 @@ class GlobalSchema : Application() {
 
         // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,
         // as well as its content title.
-        var targetStaticJSONNode: String = ""
+        var targetIndexHTMLPath: String = ""
         var internalWebViewTitle: String = ""
 
         /* This parameter is required for  manipulating the composition and the app's view. */
@@ -146,6 +170,30 @@ class GlobalSchema : Application() {
 
         /* This is the clipboard manager. */
         var clipManager: ClipboardManager? = null
+
+        /* ------------------------------------------------------------------------------------ */
+        /* The following is the app-wide, private preferences stored across launches.
+         * All variables below must start with "pref" prefix.
+         * The companion constant name for SharedPreferences key should also be supplied. */
+
+        // This constants determines the shared preferences name.
+        const val NAME_SHARED_PREFERENCES: String = "gkisplus"
+
+        // In millisecond. So, divide by 1000 to get second, then 86400 to get days.
+        const val PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY = "static_data_freq"
+
+        // In millisecond. So, divide by 1000 to get second, then 86400 to get days.
+        const val PREF_KEY_LAST_STATIC_DATA_UPDATE = "static_data_last_update"
+
+        // Number of launches since last install/storage data clear.
+        const val PREF_KEY_LAUNCH_COUNTS = "launch_counts"
+
+        // The default pairing of saved preferences.
+        var preferencesKeyValuePairs: MutableMap<String, Any> = mutableMapOf(
+            PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY to 604800000.toLong(),  // --- 604800000 means "once every 7 days" in milisecond
+            PREF_KEY_LAST_STATIC_DATA_UPDATE to Long.MIN_VALUE,
+            PREF_KEY_LAUNCH_COUNTS to -1
+        )
 
     }
 }

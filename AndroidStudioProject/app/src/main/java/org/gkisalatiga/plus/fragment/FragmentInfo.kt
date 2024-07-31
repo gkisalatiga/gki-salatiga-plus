@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,55 +46,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import java.io.File
 
-/**
- * @param submenu determines which service tab is opened upon load.
- */
-class FragmentInfo() : ComponentActivity() {
-
-    // Defines the label of each "church info" card.
-    private val cardLabels = listOf(
-        R.string.card_info_church_profile,
-        R.string.card_info_church_pastor,
-        R.string.card_info_church_assembly,
-        R.string.card_info_church_ministry,
-        R.string.card_info_church_biblestudy,
-        R.string.card_info_church_contact,
-    )
-
-    // Defines the icon description in each of the "church info" card.
-    private val cardIconDescriptions = listOf(
-        R.string.card_desc_info_church_profile,
-        R.string.card_desc_info_church_pastor,
-        R.string.card_desc_info_church_assembly,
-        R.string.card_desc_info_church_ministry,
-        R.string.card_desc_info_church_biblestudy,
-        R.string.card_desc_info_church_contact,
-    )
-
-    // Defines and locates the featured image for each card in the "church info" fragment.
-    private val cardFeaturedImages = listOf(
-        R.drawable.about_background_gkis,
-        R.drawable.about_background_pendeta,
-        R.drawable.about_background_mj,
-        R.drawable.about_background_bapel,
-        R.drawable.about_background_pawilayah,
-        R.drawable.about_background_medsos,
-    )
-
-    // Defines the JSON static ("data/static") node for displaying the local HTML content.
-    private val cardJSONNodes = listOf(
-        "church_profile",
-        "pastor",
-        "assembly",
-        "ministry",
-        "bible_study",
-        "social_media"
-    )
+class FragmentInfo : ComponentActivity() {
 
     @Composable
     public fun getComposable() {
@@ -114,21 +74,18 @@ class FragmentInfo() : ComponentActivity() {
             /* Display the individual "church info" card. */
             Column ( modifier = Modifier.padding(top = 10.dp) ) {
                 // Assumes cardRoutes, cardIcons, cardLabels, and cardIconDescriptions all have the same size.
-                cardLabels.forEachIndexed { index, resID ->
-
-                    // The title of the church profile (e.g., "Pastor", "Ministry", etc.)
-                    val title = stringResource(cardLabels[index])
+                (GlobalSchema.staticDataTitleArray).forEachIndexed { index, title ->
 
                     Card(
                         onClick = {
-                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: resource ID #$resID!", Toast.LENGTH_SHORT).show()
+                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title!", Toast.LENGTH_SHORT).show()
 
                             // Set this screen as the anchor point for "back"
                             GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
 
                             // Display the church profile internal webview.
                             // i.e., offline HTML code without any internet download.
-                            GlobalSchema.targetStaticJSONNode = cardJSONNodes[index]
+                            GlobalSchema.targetIndexHTMLPath = GlobalSchema.staticDataIndexHTMLArray[index]
                             GlobalSchema.internalWebViewTitle = title
                             GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_INTERNAL_HTML
                         },
@@ -137,15 +94,19 @@ class FragmentInfo() : ComponentActivity() {
                         ) {
 
                         // Displaying the text-overlaid image.
-                        Box () {
+                        Box {
                             /* The background featured image. */
                             // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/customize
                             // ---
                             val contrast = 1.1f  // --- 0f..10f (1 should be default)
                             val brightness = 0.0f  // --- -255f..255f (0 should be default)
                             Image(
-                                painter = painterResource(cardFeaturedImages[index]),
-                                contentDescription = stringResource(cardIconDescriptions[index]),
+                                // Load local path image.
+                                // SOURCE: https://stackoverflow.com/a/70827897
+                                painter = rememberAsyncImagePainter(
+                                    File(GlobalSchema.staticDataBannerArray[index])
+                                ),
+                                contentDescription = "Profile page: $title",
                                 modifier = Modifier.fillMaxWidth(),
                                 contentScale = ContentScale.Crop,
                                 colorFilter = ColorFilter.colorMatrix(ColorMatrix(
