@@ -18,7 +18,7 @@ import java.io.FileOutputStream
 import java.net.UnknownHostException
 import java.util.concurrent.Executors
 
-class Extractor() {
+class Extractor(private val ctx: Context) {
 
     /**
      * Stores and pre-initializes essential string values and variables related to the profile info.
@@ -32,7 +32,7 @@ class Extractor() {
         GlobalSchema.staticDataIndexHTMLArray.clear()
         GlobalSchema.staticDataBannerArray.clear()
 
-        val baseExtractedData = (GlobalSchema.context).getDir("Archive", Context.MODE_PRIVATE).absolutePath
+        val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
         val parentNode = AppDatabase().getMainData().getJSONObject("static")
         for (l in parentNode.keys()) {
             // Extract the static data's title list and node names.
@@ -61,23 +61,23 @@ class Extractor() {
         executor.execute {
 
             // Opening the zip file.
-            val zipInputStream = (GlobalSchema.context).resources.openRawResource(R.raw.fallback_static_data)
+            val zipInputStream = ctx.resources.openRawResource(R.raw.fallback_static_data)
 
             // Convert InputStream to File.
             // SOURCE: https://www.perplexity.ai/search/what-is-the-recommended-way-to-hN7TmOn5TtS31c_ebAmLyA
             val savedFilename = GlobalSchema.staticDataSavedFilename
-            val zipOutputFile = File((GlobalSchema.context).getFileStreamPath(savedFilename).absolutePath)
+            val zipOutputFile = File(ctx.getFileStreamPath(savedFilename).absolutePath)
             val zipOutputStream = FileOutputStream(zipOutputFile)
             zipInputStream.copyTo(zipOutputStream)
             zipInputStream.close(); zipOutputStream.close()
 
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initFallbackStaticData] Saved zip path: ${(GlobalSchema.context).getFileStreamPath(savedFilename).absolutePath}")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initFallbackStaticData] Saved zip path: ${ctx.getFileStreamPath(savedFilename).absolutePath}")
 
             // This is now the zip file as "File" object.
             val staticZipFile = zipOutputFile
 
             // Creating the private extractor folder.
-            val extractFolder = (GlobalSchema.context).getDir("Archive", Context.MODE_PRIVATE).absolutePath
+            val extractFolder = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initFallbackStaticData] Extract zip folder: $extractFolder")
 
             // Extracting the zip file.
@@ -122,7 +122,7 @@ class Extractor() {
                 val decodedData: ByteArray = streamIn.readBytes()
 
                 // Creating the private file.
-                val fileCreator = (GlobalSchema.context).getDir("Archive", Context.MODE_PRIVATE)
+                val fileCreator = ctx.getDir("Archive", Context.MODE_PRIVATE)
                 val privateFile = File(fileCreator, GlobalSchema.staticDataSavedFilename)
 
                 // Writing into the file.
@@ -146,11 +146,11 @@ class Extractor() {
 
             // This is now the zip file as "File" object.
             val savedFilename = GlobalSchema.staticDataSavedFilename
-            val staticZipFile = File((GlobalSchema.context).getFileStreamPath(savedFilename).absolutePath)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initStaticData] Saved zip path: ${(GlobalSchema.context).getFileStreamPath(savedFilename).absolutePath}")
+            val staticZipFile = File(ctx.getFileStreamPath(savedFilename).absolutePath)
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initStaticData] Saved zip path: ${ctx.getFileStreamPath(savedFilename).absolutePath}")
 
             // Creating the private extractor folder.
-            val extractFolder = (GlobalSchema.context).getDir("Archive", Context.MODE_PRIVATE).absolutePath
+            val extractFolder = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initStaticData] Extract zip folder: $extractFolder")
 
             // Extracting the zip file.
@@ -166,6 +166,20 @@ class Extractor() {
             // Break free from this thread.
             executor.shutdown()
         }
+    }
+
+    /**
+     * Initializes the location of the extraction of the static zip file.
+     */
+    public fun initExtractLocation(): String {
+        val fileCreator = ctx.getDir("Archive", Context.MODE_PRIVATE)
+        val extractPath = File(fileCreator, GlobalSchema.staticDataSavedFilename).absolutePath
+        GlobalSchema.absolutePathToStaticData = extractPath
+
+        // Initializing the extract variables pointing to the cached static files.
+        initVariables()
+
+        return extractPath
     }
 
 }
