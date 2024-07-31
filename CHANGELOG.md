@@ -3,6 +3,7 @@
 ## Next Alpha Release
 
 - Fix: Fixed church profile menus not showing when there is no static data update
+- Fix: OutOfMemoryError when scaling large images on Xiaomi Mi-4c (By moving all images to drawable-nodpi. See: https://stackoverflow.com/a/77082456)
 
 ## v0.1.7-alpha (14) --- 2024-07-31
 
