@@ -66,7 +66,7 @@ class FragmentServices() : ComponentActivity() {
         // Enabling vertical scrolling, and setting the layout to center both vertically and horizontally.
         // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
         // SOURCE: https://stackoverflow.com/a/72769561
-        val scrollState = rememberScrollState()
+        val scrollState = GlobalSchema.fragmentServicesScrollState!!
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,

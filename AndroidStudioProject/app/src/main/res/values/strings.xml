@@ -2,7 +2,7 @@
     <!-- Constant strings for app-related names -->
     <string name="app_name">GKI Salatiga Plus (Alpha)</string>
     <string name="app_name_alias">GKI Salatiga+ (Alpha)</string>
-    <string name="title_activity_main">GKI Salatiga+ (Alpha)</string>
+    <string name="title_activity_main">GKI Salatiga+</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
     <string name="bottomnav_menu_home">Beranda</string>
@@ -74,6 +74,9 @@
     <string name="webview_visit_link_cancel_btn">Batalkan</string>
     <string name="webview_visit_link_proceed_btn">Lanjutkan</string>
     <string name="webview_visit_link_link_copied">Tautan berhasil disalin!</string>
+
+    <!-- Constant string used in poster displayer. -->
+    <string name="poster_dialog_close_text">Tutup</string>
 
     <!-- Constant string used in pre-recorded and live video view. -->
     <string name="yt_visit_link_confirmation_title">Buka di pemutar YouTube?</string>

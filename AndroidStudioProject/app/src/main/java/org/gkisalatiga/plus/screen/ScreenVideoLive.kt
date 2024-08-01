@@ -11,11 +11,14 @@ package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
 import android.content.ClipData
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
@@ -31,10 +34,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,13 +50,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
@@ -65,79 +73,51 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 
-import org.gkisalatiga.plus.lib.NavigationRoutes
 
-class ScreenVideoLive() : ComponentActivity() {
+class ScreenVideoLive : ComponentActivity() {
 
     // The trigger to open an URL in an external browser.
-    private var doTriggerBrowserOpen = mutableStateOf(false)
+    private val doTriggerBrowserOpen = mutableStateOf(false)
 
     // Controls, from an outside composable, whether to display the link confirmation dialog.
-    private var showLinkConfirmationDialog = mutableStateOf(false)
+    private val showLinkConfirmationDialog = mutableStateOf(false)
+
+    // The current full screen state of the video player.
+    private val isFullscreen = mutableStateOf(false)
+
+    // The current duration of the YouTube player.
+    private val currentSecond = mutableFloatStateOf(0.0f)
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ScreenVideoLive.getComposable] Are we full screen?: ${isFullscreen.value}. Duration: $currentSecond")
 
-        Scaffold (
-            topBar = { this.getTopBar() }
-                ) {
+        // Opens a specific composable element based on the fullscreen state.
+        if (isFullscreen.value) {
+            getFullscreenPlayer()
 
-            // Display the necessary content.
-            Box ( modifier= Modifier
-                .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
-                .background(color = colorResource(R.color.brown_900))
-                .fillMaxHeight()) {
-                Column {
-
-                    // Embedding the YouTube video into the composable.
-                    // SOURCE: https://dev.to/mozeago/jetpack-compose-loadinghow-to-load-a-youtube-video-or-youtube-livestream-channel-to-your-android-application-4ffc
-                    val youtubeVideoID = GlobalSchema.ytViewerParameters["yt-id"]
-                    var view: YouTubePlayerView? = null
-                    AndroidView(factory = {
-                        GlobalSchema.ytView = YouTubePlayerView(it)
-                        GlobalSchema.ytView!!.enableBackgroundPlayback(false)
-                        GlobalSchema.ytView!!.addYouTubePlayerListener(
-                            object : AbstractYouTubePlayerListener() {
-                                override fun onReady(youTubePlayer: YouTubePlayer) {
-                                    super.onReady(youTubePlayer)
-                                    youTubePlayer.loadVideo(youtubeVideoID!!, 0f)
-                                }
-                            }
-                        )
-                        GlobalSchema.ytView!!
-                    })
-                    //jeff 10.25
-                    Spacer(Modifier.height(8.dp))
-                    Text(GlobalSchema.ytViewerParameters["title"]!!,Modifier.absolutePadding(left = 20.dp, right = 20.dp), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.White)
-                    Text(GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc))
-                    Spacer(Modifier.height(10.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .absolutePadding(left = 10.dp, right = 10.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .height(300.dp)
-                            .background(color = colorResource(R.color.grey_1))
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            Text(GlobalSchema.ytViewerParameters["desc"]!!, Modifier.absolutePadding(left = 10.dp, right = 10.dp), fontSize = 14.sp, lineHeight = 1.em, color = Color.White)
-                        }
-                        // Add other composables inside the Box if needed
-                    }
-
-                }
+            // Exits the fullscreen mode.
+            BackHandler {
+                // Save the current second's duration.
+                currentSecond.floatValue = GlobalSchema.ytTracker.currentSecond
+                isFullscreen.value = false
             }
+        } else {
+            getNormalPlayer()
 
+            // Ensures that we always land where we started.
+            BackHandler {
+                GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
+                GlobalSchema.ytView!!.release()
+            }
         }
 
         // Display the external link open confirm dialog.
@@ -152,12 +132,6 @@ class ScreenVideoLive() : ComponentActivity() {
 
                 doTriggerBrowserOpen.value = false
             }
-        }
-
-        // Ensures that we always land where we started.
-        BackHandler {
-            GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
-            GlobalSchema.ytView!!.release()
         }
     }
 
@@ -246,6 +220,141 @@ class ScreenVideoLive() : ComponentActivity() {
                     }
                 }
             )
+        }
+    }
+
+    /**
+     * The normal YouTube player, which shows the video description.
+     */
+    @Composable
+    private fun getNormalPlayer() {
+        Scaffold (
+            topBar = { this.getTopBar() },
+            floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    isFullscreen.value = true
+                    currentSecond.value = GlobalSchema.ytTracker.currentSecond
+                }) {
+                    Icon(Icons.Default.Fullscreen, "")
+                }
+            }
+        ) {
+
+            // Display the necessary content.
+            Box ( modifier= Modifier
+                .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
+                .background(color = colorResource(R.color.brown_900))
+                .fillMaxHeight()) {
+                Column {
+
+                    // Enable full screen button.
+                    // SOURCE: https://github.com/PierfrancescoSoffritti/android-youtube-player?tab=readme-ov-file#full-screen
+                    val iFramePlayerOptions: IFramePlayerOptions = IFramePlayerOptions.Builder()
+                        .controls(1)
+                        .fullscreen(0)
+                        .build()
+
+                    // Embedding the YouTube video into the composable.
+                    // SOURCE: https://dev.to/mozeago/jetpack-compose-loadinghow-to-load-a-youtube-video-or-youtube-livestream-channel-to-your-android-application-4ffc
+                    val youtubeVideoID = GlobalSchema.ytViewerParameters["yt-id"]
+                    var view: YouTubePlayerView? = null
+                    AndroidView(factory = {
+                        GlobalSchema.ytView = YouTubePlayerView(it)
+
+                        // We need to initialize manually in order to pass IFramePlayerOptions to the player
+                        GlobalSchema.ytView!!.enableAutomaticInitialization = false
+
+                        // Add the fullscreen listener.
+                        /*GlobalSchema.ytView!!.addFullscreenListener(object : FullscreenListener {
+                            override fun onEnterFullscreen(fullscreenView: View, exitFullscreen: () -> Unit) {
+                                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ScreenVideoLive.getComposable] Entering full screen mode at time: ${GlobalSchema.ytTracker.currentSecond} ...")
+
+                                isFullscreen.value = true
+                                currentSecond.floatValue = GlobalSchema.ytTracker.currentSecond
+                            }
+
+                            override fun onExitFullscreen() {
+                                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ScreenVideoLive.getComposable] Leaving full screen mode at time: ${GlobalSchema.ytTracker.currentSecond} ...")
+
+                                isFullscreen.value = false
+                                currentSecond.floatValue = GlobalSchema.ytTracker.currentSecond
+                            }
+                        })*/
+
+                        // Initialize the YouTube player.
+                        // SOURCE: https://github.com/PierfrancescoSoffritti/android-youtube-player/blob/master/core-sample-app/src/main/java/com/pierfrancescosoffritti/androidyoutubeplayer/core/sampleapp/examples/fullscreenExample/FullscreenExampleActivity.kt
+                        GlobalSchema.ytView!!.initialize(
+                            object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    super.onReady(youTubePlayer)
+                                    youTubePlayer.loadVideo(youtubeVideoID!!, currentSecond.floatValue)
+                                    youTubePlayer.addListener(GlobalSchema.ytTracker)
+                                }
+                            }, iFramePlayerOptions
+                        )
+
+                        // Display the video.
+                        GlobalSchema.ytView!!
+                    })
+
+                    //jeff 10.25
+                    Spacer(Modifier.height(8.dp))
+                    Text(GlobalSchema.ytViewerParameters["title"]!!,Modifier.absolutePadding(left = 20.dp, right = 20.dp), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.White)
+                    Text(GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc))
+                    Spacer(Modifier.height(10.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .absolutePadding(left = 10.dp, right = 10.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .height(300.dp)
+                            .background(color = colorResource(R.color.grey_1))
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            Text(GlobalSchema.ytViewerParameters["desc"]!!, Modifier.absolutePadding(left = 10.dp, right = 10.dp), fontSize = 14.sp, lineHeight = 1.em, color = Color.White)
+                        }
+                        // Add other composables inside the Box if needed
+                    }
+                }  // --- end of scrollable column.
+            }  // --- end of box.
+        }  // --- end of scaffold.
+    }
+
+    // The rotated canvas' parent's size.
+    var parentH = 0
+    var parentW = 0
+
+    /**
+     * The fullscreen player.
+     */
+    @Composable
+    private fun getFullscreenPlayer() {
+        /* The parent canvas, filled to screen's max size. Not rotated.
+         * This is rendered only so that we know the screen's size. */
+        // SOURCE: https://stackoverflow.com/q/67138343
+        Box (Modifier
+            .fillMaxSize()
+            .onSizeChanged {
+                parentH = it.height
+                parentW = it.width
+            }
+            .background(Color.Transparent)
+        ) {}
+
+        /* The fullscreen canvas, rotated to landscape configuration. */
+        Box (
+            modifier = Modifier
+                // .graphicsLayer(rotationZ = 90.0f)
+                .background(Color.Yellow)
+                .width(parentH.dp)
+                .height(parentW.dp),
+        ) {
+            Text("This is a prototype for fullscreen display. Press back to exit.", fontSize = 24.sp)
         }
     }
 

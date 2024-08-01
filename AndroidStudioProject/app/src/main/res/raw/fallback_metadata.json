@@ -1,10 +1,10 @@
 {
     "meta": {
-        "update-count": 38,
-        "last-update": 1722382869,
-        "last-updated-item": "static",
-        "version-name": "0.1.7-alpha",
-        "version-code": 14
+        "update-count": 41,
+        "last-update": 1722444455,
+        "last-updated-item": "carousel",
+        "version-code": "0.1.7-alpha",
+        "version-build": 14
     },
     "data": {
         "url-profile": {
@@ -18,6 +18,14 @@
         },
         "yt-video": {
             "saren": [
+                {
+                    "title": "SaRen Pagi | 1 Agustus 2024",
+                    "date": "2024-07-31",
+                    "desc": "Dibawakan oleh Bapak I Made Satya Arnawa",
+                    "link": "https://www.youtube.com/watch?v=iGUTIHiN5es",
+                    "thumbnail": "https://i2.ytimg.com/vi/iGUTIHiN5es/hqdefault.jpg",
+                    "is_live": 0
+                },
                 {
                     "title": "SaRen Pagi | 31 Jul 2024",
                     "date": "2024-07-30",
@@ -96,14 +104,6 @@
                     "desc": "Dibawakan oleh Pdt. Helen Ruth Manurung",
                     "link": "https://www.youtube.com/watch?v=frC0Vj7qYbc",
                     "thumbnail": "https://i3.ytimg.com/vi/frC0Vj7qYbc/hqdefault.jpg",
-                    "is_live": 0
-                },
-                {
-                    "title": "SaRen Pagi | 19 Jul 2024",
-                    "date": "2024-07-18",
-                    "desc": "Dibawakan oleh Ibu Wahyu Pujiati",
-                    "link": "https://www.youtube.com/watch?v=hOYF059QydY",
-                    "thumbnail": "https://i1.ytimg.com/vi/hOYF059QydY/hqdefault.jpg",
                     "is_live": 0
                 }
             ],
@@ -499,10 +499,10 @@
             ]
         },
         "static": {
-            "00_profil_gereja": "Profil GKI Salatiga",
-            "10_pendeta": "Kependetaan",
             "20_majelis_jemaat": "Majelis Jemaat",
             "30_badan_pelayanan": "Badan Pelayanan",
+            "00_profil_gereja": "Profil GKI Salatiga",
+            "10_pendeta": "Kependetaan",
             "40_pa_wilayah": "PA Wilayah"
         },
         "agenda": {
@@ -621,6 +621,35 @@
                 "account-holder": "Tan Ik Hay"
             }
         ],
+        "carousel": {
+            "00_komisi_anak": {
+                "banner": "banner.jpeg",
+                "title": "Bergabunglah dengan Komisi Anak",
+                "type": "poster",
+                "date-created": "2024-07-12",
+                "poster-image": "poster.jpg",
+                "poster-caption": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu venenatis metus, eu dictum nisl. Aenean vestibulum enim orci, eget pellentesque nunc dignissim eu. Cras quam lorem, condimentum porta quam nec, pulvinar pellentesque ante. Maecenas cursus orci sed euismod commodo. Vestibulum erat urna, condimentum nec tortor ut, lobortis scelerisque diam. Morbi cursus aliquet ligula, vitae vestibulum ligula tempor sed. Donec congue, felis et egestas fringilla, risus libero interdum ante, sed fringilla arcu nulla eget ante. Sed ac ornare lectus."
+            },
+            "10_contoh_video_youtube": {
+                "banner": "banner.jpg",
+                "title": "Hanya Contoh Saja Bor!",
+                "type": "yt",
+                "date-created": "2024-07-22",
+                "yt-title": "Ibadah Minggu 28 Juli 2024 - Gereja Kristen Indonesia (GKI) Cinere",
+                "yt-date": "2024-07-28",
+                "yt-desc": "Tema Ibadah : \"Solidaritas yang Menular\"\nBacaan Alkitab : 2 Raja-Raja 4:42-44; Mazmur 145:10-18; Efesus 3:14-21; Yohanes 6:1-21\nDilayani oleh : Pdt. Kristian Dewantara (GKI Sarua Indah)\nLiturgi dapat di unduh : https://drive.google.com/file/d/1Hp8oczoYFVdJMOGGP19lAw16DclVFYwP/view?usp=sharing",
+                "yt-link": "https://www.youtube.com/watch?v=rGBAbI7HYKE",
+                "yt-thumbnail": "https://i.ytimg.com/vi/rGBAbI7HYKE/hqdefault.jpg",
+                "yt-is_live": 0
+            },
+            "20_artikel_renungan": {
+                "banner": "banner.png",
+                "title": "Renungan Hari Ini",
+                "type": "article",
+                "date-created": "2024-07-31",
+                "article-url": "https://alkitab.mobi/renungan/sh/"
+            }
+        },
         "helper-title": {
             "yt-video": {
                 "saren": "Sapaan dan Renungan Pagi",

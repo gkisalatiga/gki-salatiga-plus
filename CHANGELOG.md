@@ -1,8 +1,13 @@
 # GKI Salatiga+ Changelog
 
-## Next Alpha Release
+## v0.1.8-alpha (15) --- 2024-08-01
 
+- Info: The fullscreen YouTube viewer is now being prototyped
+- New: Added "clickable logo" in ScreenAbout
+- New: Carousel banner now has three action types: YouTube video, internet article, and poster display
+- Fix: Main menu fragments now remember scroll state across navigations
 - Fix: Fixed church profile menus not showing when there is no static data update
+- Fix: LazyVerticalGrid in FragmentHome is now replaced with mathematically calculated rows and columns in order to increase stability
 - Fix: OutOfMemoryError when scaling large images on Xiaomi Mi-4c (By moving all images to drawable-nodpi. See: https://stackoverflow.com/a/77082456)
 
 ## v0.1.7-alpha (14) --- 2024-07-31
