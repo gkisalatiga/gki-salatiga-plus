@@ -81,7 +81,7 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.ui.theme.Brown2
+import org.gkisalatiga.plus.ui.theme.Brown1
 
 class ScreenMain : ComponentActivity() {
 
@@ -252,7 +252,7 @@ class ScreenMain : ComponentActivity() {
                             colors = NavigationBarItemColors(
                                 selectedIconColor = Color.Unspecified,
                                 selectedTextColor = Color.Unspecified,
-                                selectedIndicatorColor = Brown2,
+                                selectedIndicatorColor = Brown1,
                                 unselectedIconColor = Color.Unspecified,
                                 unselectedTextColor = Color.Unspecified,
                                 disabledIconColor = Color.Unspecified,
