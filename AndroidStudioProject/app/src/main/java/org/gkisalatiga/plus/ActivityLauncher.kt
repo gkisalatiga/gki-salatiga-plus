@@ -54,6 +54,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -87,11 +90,31 @@ import java.util.concurrent.TimeUnit
 
 class ActivityLauncher : ComponentActivity() {
 
+    override fun onPause() {
+        super.onPause()
+        GlobalSchema.isRunningInBackground.value = true
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.onPause] App is now in background.")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        GlobalSchema.isRunningInBackground.value = false
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.onResume] App has been restored to foreground.")
+    }
+
     @SuppressLint("MutableCollectionMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        // SOURCE: https://stackoverflow.com/a/53669865
+        // ProcessLifecycleOwner.get().lifecycle.addObserver(this);
+
         // Initializes the app's internally saved preferences.
         initPreferences()
+
+        // Configure the behavior of the hidden system bars and configure the immersive mode (hide status bar and navigation bar).
+        // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         // Enable transparent status bar.
         // SOURCE: https://youtu.be/Ruu44ZUhkBM?si=KTtR2GjZdqMa-rBs
@@ -117,7 +140,7 @@ class ActivityLauncher : ComponentActivity() {
         val defaultScreenLaunch = NavigationRoutes().SCREEN_MAIN
         val defaultFragmentLaunch = NavigationRoutes().FRAG_MAIN_HOME
         val defaultServicesSubmenu = NavigationRoutes().SUB_BLANK
-        val defaultNewTopBarBackground = R.drawable.topbar_greetings_home
+        val defaultNewTopBarBackground = R.drawable.topbar_greetings_background
 
         // Setting some of the most important default values of the global schema.
         // (i.e., the composable navigation direction.)
@@ -151,6 +174,16 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.fragmentHomeScrollState = rememberScrollState()
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
+
+            // Listen to the request to hide the phone's bars.
+            // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
+            key (GlobalSchema.phoneBarsVisibility.value) {
+                if (GlobalSchema.phoneBarsVisibility.value) {
+                    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+                } else {
+                    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+                }
+            }
 
             GKISalatigaPlusTheme {
 
