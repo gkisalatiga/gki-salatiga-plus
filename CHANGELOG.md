@@ -1,9 +1,13 @@
 # GKI Salatiga+ Changelog
 
+## Next Alpha Release
+
+- Fix: Fixed YouTube player not resetting to "time = 0" when opening a new video
+
 ## v0.1.9-alpha (16) --- 2024-08-02
 
 - Info: The YouTube player now automatically pauses when the app is minimized to background
-- New: The YouTube video viewer now has a fully functional full screen player.
+- New: The YouTube video viewer now has a fully functional full screen player
 - Fix: Fixed current screen state not saved when the phone's orientation changes
 
 ## v0.1.8-alpha (15) --- 2024-08-01

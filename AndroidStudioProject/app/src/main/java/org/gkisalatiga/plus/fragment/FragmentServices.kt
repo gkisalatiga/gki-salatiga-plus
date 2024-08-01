@@ -175,6 +175,7 @@ class FragmentServices() : ComponentActivity() {
                         GlobalSchema.ytViewerParameters["title"] = title!!
                         GlobalSchema.ytViewerParameters["date"] = date
                         GlobalSchema.ytViewerParameters["desc"] = desc!!
+                        GlobalSchema.ytCurrentSecond.floatValue = 0.0f
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },

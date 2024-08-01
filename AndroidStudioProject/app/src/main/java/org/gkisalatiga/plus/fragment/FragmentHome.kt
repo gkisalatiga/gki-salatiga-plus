@@ -246,6 +246,7 @@ class FragmentHome : ComponentActivity() {
                                     GlobalSchema.ytViewerParameters["title"] = title!!
                                     GlobalSchema.ytViewerParameters["date"] = StringFormatter().convertDateFromJSON(date)
                                     GlobalSchema.ytViewerParameters["desc"] = desc!!
+                                    GlobalSchema.ytCurrentSecond.floatValue = 0.0f
                                     GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                                     GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                                 }
