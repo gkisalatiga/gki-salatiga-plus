@@ -43,6 +43,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,7 +53,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -72,6 +72,7 @@ import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
+import org.gkisalatiga.plus.screen.ScreenPosterViewer
 import org.gkisalatiga.plus.screen.ScreenVideoList
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
@@ -145,6 +146,12 @@ class ActivityLauncher : ComponentActivity() {
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
+
+            // Initializes the scroll states.
+            GlobalSchema.fragmentHomeScrollState = rememberScrollState()
+            GlobalSchema.fragmentServicesScrollState = rememberScrollState()
+            GlobalSchema.fragmentInfoScrollState = rememberScrollState()
+
             GKISalatigaPlusTheme {
 
                 if (!GlobalSchema.DEBUG_DISABLE_SPLASH_SCREEN) {
@@ -231,6 +238,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_LITURGI) { ScreenLiturgi().getComposable() }
             composable(NavigationRoutes().SCREEN_WEBVIEW) { ScreenWebView().getComposable() }
             composable(NavigationRoutes().SCREEN_INTERNAL_HTML) { ScreenInternalHTML().getComposable() }
+            composable(NavigationRoutes().SCREEN_POSTER_VIEWER) { ScreenPosterViewer().getComposable() }
         }
 
         // Watch for the state change in the parameter "pushScreen".
@@ -251,18 +259,32 @@ class ActivityLauncher : ComponentActivity() {
      */
     private fun initData() {
 
+        val timeNowMillis = System.currentTimeMillis()
+
         // Determine should we re-download the static data archive file from the repository,
         // which could be huge in size. (We don't do it frequently.)
         var updateStaticData = false
-        val lastUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE] as Long
-        val frequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY] as Long
-        val timeNowMillis = System.currentTimeMillis()
-        if (timeNowMillis > lastUpdate + frequency) {
+        val lastStaticDataUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE] as Long
+        val staticDataUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY] as Long
+        if (timeNowMillis > lastStaticDataUpdate + staticDataUpdateFrequency) {
             updateStaticData = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old. It will be updated soon.")
         } else {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is up-to-date.")
+        }
+
+        // Determine should we re-download the carousel banner archive file from the repository,
+        // which could be huge in size. (We don't do it frequently.)
+        var updateCarouselBanner = false
+        val lastCarouselBannerUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE] as Long
+        val carouselBannerUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY] as Long
+        if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {
+            updateCarouselBanner = true
+            AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE, timeNowMillis)
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old. It will be updated soon.")
+        } else {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is up-to-date.")
         }
 
         // Upon successful data download, we manage the app's internal variable storage
@@ -288,6 +310,10 @@ class ActivityLauncher : ComponentActivity() {
                 // Obtain the fallback static zip data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback zipped static data ...")
                 Extractor(this).initFallbackStaticData()
+
+                // Obtain the fallback carousel banner data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
+                Extractor(this).initFallbackCarouselBanner()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -314,7 +340,16 @@ class ActivityLauncher : ComponentActivity() {
                         Extractor(this).initStaticData()
                     } else {
                         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
-                        Extractor(this).initExtractLocation()
+                        Extractor(this).initStaticExtractLocation()
+                    }
+
+                    // Make the attempt to fetch the online carousel banner data.
+                    if (updateCarouselBanner) {
+                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Fetching the latest carousel banner zipfile ...")
+                        Extractor(this).initCarouselData()
+                    } else {
+                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
+                        Extractor(this).initCarouselExtractLocation()
                     }
 
                     // Init the services sections, mitigating java.util.ConcurrentModificationException.

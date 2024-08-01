@@ -10,76 +10,112 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.graphics.Paint.Align
-import android.os.Bundle
-import android.os.PersistableBundle
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.unit.sp
 import org.gkisalatiga.plus.R
-import org.gkisalatiga.plus.fragment.FragmentHome
-import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
-import org.gkisalatiga.plus.lib.AppDatabase
-
 import org.gkisalatiga.plus.lib.NavigationRoutes
+
 
 class ScreenAbout() : ComponentActivity() {
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
+        val ctx = LocalContext.current
+
         Log.d("Groaker", "Last selected fragment of main screen: ${GlobalSchema.lastMainScreenPagerPage.value}")
+
+        // Obtain the app's essential information.
+        // SOURCE: https://stackoverflow.com/a/6593822
+        val pInfo: PackageInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0)
+        val vName = pInfo.versionName
+        val vCode = pInfo.versionCode
+
+        // Get app name.
+        // SOURCE: https://stackoverflow.com/a/15114434
+        val applicationInfo: ApplicationInfo = ctx.getApplicationInfo()
+        val stringId = applicationInfo.labelRes
+        val appName = if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else ctx.getString(stringId)
 
         Scaffold (
             topBar = { getTopBar() }
                 ) {
-            Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()).fillMaxSize() ) {
-                Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
-                    Text("Dibuat oleh Sam, Jeffrey, dan Joaquim")
-                    Text("Semoga di-approve sama MJ \uD83D\uDDFF :v")
+
+            val scrollState = rememberScrollState()
+            Column (
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)) {
+                /* Show app logo, name, and version. */
+                Box (Modifier.padding(vertical = 15.dp)) {
+                    Surface (
+                        shape = CircleShape,
+                        modifier = Modifier.size(100.dp),
+                        onClick = {
+                            /* You know what this is. */
+                            if (GlobalSchema.DEBUG_ENABLE_EASTER_EGG) {
+                                Toast.makeText(ctx, "\uD83D\uDC23", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    ) {
+                        Image(painterResource(R.mipmap.ic_launcher_foreground), "",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
+                Text(appName, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Text(vName, fontSize = 18.sp)
+
+                Spacer(Modifier.height(20.dp))
+                Text("Dibuat oleh Sam, Jeffrey, dan Joaquim")
+                Text("Semoga di-approve sama MJ \uD83D\uDDFF :v")
             }
+
         }
 
         // Ensure that when we are at the first screen upon clicking "back",

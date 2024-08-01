@@ -16,12 +16,14 @@ import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.mutableStateOf
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.json.JSONObject
 
 class GlobalSchema : Application() {
-    override fun onCreate() { super.onCreate() }
 
     // Initializing the data schema of the app that will be shared across composables
     // and that will course the navigation of screens.
@@ -45,19 +47,18 @@ class GlobalSchema : Application() {
         var globalJSONObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
-        /* The following parameter determines which Gzip-compressed Tarfile static source to look up to in order to update
-         * the application's static data.
+        /* The following parameter determines which zipped static source to look up to in order to update the application's static data.
          * It cannot and should not be changed arbitrarily within the app code. */
 
         val staticDataSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-static.zip"
 
-        // This is the filename which will save the above Gzip-compressed Tarfile static source.
+        // This is the filename which will save the above ZIP-compressed static source.
         val staticDataSavedFilename = "gkisplus-static.zip"
 
-        // Stores the absolute path of the downloaded (into internal app storage) Gzip-compressed Tarfile static.
+        // Stores the absolute path of the downloaded (into internal app storage) ZIP-compressed static data (folder).
         var absolutePathToStaticData = ""
 
-        // The state of the initialization of the Gzip-compressed Tarfile static.
+        // The state of the initialization of the ZIP-compressed static data.
         var isStaticDataDownloaded = mutableStateOf(false)
         var isStaticDataExtracted = mutableStateOf(false)
 
@@ -66,6 +67,26 @@ class GlobalSchema : Application() {
         var staticDataBannerArray: ArrayList<String> = ArrayList<String>()
         var staticDataJSONNodeArray: ArrayList<String> = ArrayList<String>()
         var staticDataIndexHTMLArray: ArrayList<String> = ArrayList<String>()
+
+        /* ------------------------------------------------------------------------------------ */
+        /* The following parameter determines which zipped carousel data should be loaded into the main screen.
+         * It cannot and should not be changed arbitrarily within the app code. */
+
+        val carouselBannerSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-carousel.zip"
+        val carouselBannerSavedFilename = "gkisplus-carousel.zip"
+
+        // Stores the absolute path of the downloaded (into internal app storage) ZIP-compressed static data.
+        var absolutePathToCarouselBanner = ""
+
+        // The state of the initialization of the ZIP-compressed carousel banner data (folder).
+        var isCarouselBannerDownloaded = mutableStateOf(false)
+        var isCarouselBannerExtracted = mutableStateOf(false)
+
+        // The variable associated with the string values and resource paths.
+        var carouselBannerJSONNodeArray: ArrayList<String> = ArrayList<String>()
+        var carouselBannerBannerArray: ArrayList<String> = ArrayList<String>()
+        var carouselBannerTypeArray: ArrayList<String> = ArrayList<String>()
+        var carouselBannerBaseFolderArray: ArrayList<String> = ArrayList<String>()
 
         /* ------------------------------------------------------------------------------------ */
         /* Initializing values that are preloaded during ActivityLauncher initializations. */
@@ -80,7 +101,7 @@ class GlobalSchema : Application() {
         /* Initializing the debugging toggles. */
 
         // Whether to enable the easter egg feature of the app and display it to the user.
-        const val DEBUG_ENABLE_EASTER_EGG = false
+        const val DEBUG_ENABLE_EASTER_EGG = true
 
         // Whether to display the debugger's toast.
         const val DEBUG_ENABLE_TOAST = true
@@ -124,13 +145,19 @@ class GlobalSchema : Application() {
         /* The global YouTubeViewer element. */
         var ytView: YouTubePlayerView? = null
 
-        /* ------------------------------------------------------------------------------------ */
-        /* The following mutable variables are associated with internet downloads.
-         * Their contents change dynamically according to a given download state. */
+        /* The global YouTube tracker. */
+        val ytTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
-        val downloadedPathOf = mutableListOf(
-            ""
-        )
+        /* The remembered scroll states. */
+        var fragmentHomeScrollState: ScrollState? = null
+        var fragmentServicesScrollState: ScrollState? = null
+        var fragmentInfoScrollState: ScrollState? = null
+
+        /* The poster dialog state in FragmentHome. */
+        val fragmentHomePosterDialogState = mutableStateOf(false)
+
+        /* ------------------------------------------------------------------------------------ */
+        /* The following variable determines the status of internet connection. */
 
         // The status of internet connection.
         var isConnectedToInternet: Boolean = false
@@ -163,6 +190,11 @@ class GlobalSchema : Application() {
         var targetIndexHTMLPath: String = ""
         var internalWebViewTitle: String = ""
 
+        // Controls the state of the poster dialog.
+        val posterDialogTitle = mutableStateOf("")
+        val posterDialogCaption = mutableStateOf("")
+        val posterDialogImageSource = mutableStateOf("")
+
         /* This parameter is required for  manipulating the composition and the app's view. */
         // TODO: Find a way to use the app's context across functions without memory leak.
         @SuppressLint("StaticFieldLeak")
@@ -183,15 +215,23 @@ class GlobalSchema : Application() {
         const val PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY = "static_data_freq"
 
         // In millisecond. So, divide by 1000 to get second, then 86400 to get days.
+        const val PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY = "carousel_banner_freq"
+
+        // In millisecond. So, divide by 1000 to get second, then 86400 to get days.
         const val PREF_KEY_LAST_STATIC_DATA_UPDATE = "static_data_last_update"
+
+        // In millisecond. So, divide by 1000 to get second, then 86400 to get days.
+        const val PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE = "carousel_banner_last_update"
 
         // Number of launches since last install/storage data clear.
         const val PREF_KEY_LAUNCH_COUNTS = "launch_counts"
 
         // The default pairing of saved preferences.
         var preferencesKeyValuePairs: MutableMap<String, Any> = mutableMapOf(
-            PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY to 604800000.toLong(),  // --- 604800000 means "once every 7 days" in milisecond
+            PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY to 604800000.toLong(),  // --- 604800000 means "once every 7 days" in millisecond
+            PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY to 86400000.toLong(),  // --- 86400000 means "once every 1 day" in millisecond
             PREF_KEY_LAST_STATIC_DATA_UPDATE to Long.MIN_VALUE,
+            PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE to Long.MIN_VALUE,
             PREF_KEY_LAUNCH_COUNTS to -1
         )
 

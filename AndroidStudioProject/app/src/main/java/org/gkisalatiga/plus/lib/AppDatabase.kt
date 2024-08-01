@@ -61,13 +61,6 @@ class AppDatabase {
     }
 
     /**
-     * Returns the Gzip-compressed fallback Tarfile static archive data.
-     */
-    public fun getFallbackStaticData(): Unit {
-
-    }
-
-    /**
      * Parse the specified JSON string and serialize it, then
      * return a JSON object that reads the database's main data.
      * SOURCE: https://stackoverflow.com/a/50468095

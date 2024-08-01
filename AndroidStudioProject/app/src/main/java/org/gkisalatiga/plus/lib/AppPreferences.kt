@@ -26,6 +26,8 @@ class AppPreferences(private val ctx: Context) {
 
     /**
      * Read the saved preferences and store them (temporarily) in the GlobalSchema.
+     * Assumes it is ran at the very beginning of the app, before the GlobalSchema is modifier
+     * by any other function.
      */
     public fun readAllPreferences() {
 
