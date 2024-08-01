@@ -201,10 +201,10 @@ class ActivityLauncher : ComponentActivity() {
 
         val scale = remember { androidx.compose.animation.core.Animatable(1.6f) }
         LaunchedEffect(key1 = true) {
-            scale.animateTo(targetValue = 0.4f, animationSpec = tween(durationMillis = 1000, easing = { FastOutSlowInEasing.transform(it) /*OvershootInterpolator(2f).getInterpolation(it)*/ }))
+            scale.animateTo(targetValue = 0.5f, animationSpec = tween(durationMillis = 950, easing = { FastOutSlowInEasing.transform(it) /*OvershootInterpolator(2f).getInterpolation(it)*/ }))
 
             // Determines the duration of the splash screen.
-            delay(250)
+            delay(100)
             splashNavController.navigate("main_screen")
         }
 

@@ -7,6 +7,6 @@
 
     <!-- Dimension definitions for the new top bar layout. -->
     <dimen name="new_topbar_canvas_padding">20.dp</dimen>
-    <dimen name="new_topbar_canvas_height">200.dp</dimen>
-    <dimen name="new_topbar_content_top_y_offset">125.dp</dimen>
+    <dimen name="new_topbar_canvas_height">140.dp</dimen>
+    <dimen name="new_topbar_content_top_y_offset">118.dp</dimen>
 </resources>
