@@ -86,10 +86,9 @@ class ScreenVideoLive() : ComponentActivity() {
         Scaffold (
             topBar = { this.getTopBar() }
                 ) {
-
             // Display the necessary content.
             Box ( modifier= Modifier
-                .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
+                .padding(top = it.calculateTopPadding(), bottom = 0.dp)
                 .background(color = colorResource(R.color.brown_900))
                 .fillMaxHeight()) {
                 Column {
