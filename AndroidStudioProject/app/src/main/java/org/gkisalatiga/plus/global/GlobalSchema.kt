@@ -164,6 +164,16 @@ class GlobalSchema : Application() {
         /* The poster dialog state in FragmentHome. */
         val fragmentHomePosterDialogState = mutableStateOf(false)
 
+        /* The top offset of fragments in the ScreenMain. */
+        const val minScreenMainTopOffset = 50.0f
+        const val maxScreenMainTopOffset = 325.0f
+        val screenMainContentTopOffset = mutableFloatStateOf(maxScreenMainTopOffset)
+
+        /* The top offset of the main menu's welcome image (in the top bar). */
+        const val minScreenMainWelcomeImageTopOffset = -(maxScreenMainTopOffset - minScreenMainTopOffset) / 2
+        const val maxScreenMainWelcomeImageTopOffset = 0.0f
+        val screenMainWelcomeImageTopOffset = mutableFloatStateOf(maxScreenMainWelcomeImageTopOffset)
+
         /* ------------------------------------------------------------------------------------ */
         /* The following variable determines the status of internet connection. */
 

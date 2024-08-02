@@ -11,8 +11,8 @@ android {
         applicationId "org.gkisalatiga.plus"
         minSdk 21
         targetSdk 33
-        versionCode 16
-        versionName "0.1.9-alpha"
+        versionCode 17
+        versionName "0.2.0-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -117,7 +117,7 @@ dependencies {
 
     // Add more material icons.
     // SOURCE: https://stackoverflow.com/a/65665564
-    implementation "androidx.compose.material:material-icons-extended"
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Allow lifecycle observation and activity/fragment watching.
     // SOURCE: http://stackoverflow.com/questions/52369540/ddg#53669865

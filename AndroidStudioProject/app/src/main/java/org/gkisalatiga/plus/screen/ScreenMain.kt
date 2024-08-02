@@ -32,8 +32,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -47,7 +49,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -59,12 +60,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -95,8 +100,9 @@ class ScreenMain : ComponentActivity() {
         NavigationRoutes().FRAG_MAIN_INFO,
     )
 
-    // The calculated status bar's height, for determining the "top bar"'s top padding.
+    // The calculated status bar's height, for determining the "top bar"'s top padding. (Also the bottom nav bar.)
     private var calculatedTopPadding = 0.dp
+    private var calculatedBottomPadding = 0.dp
 
     // Used by the bottom nav to command the scrolling of the horizontal pager.
     private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
@@ -111,8 +117,7 @@ class ScreenMain : ComponentActivity() {
     private var newTopBarBackground = mutableIntStateOf(GlobalSchema.lastNewTopBarBackground.value)
 
     @Composable
-    @OptIn(ExperimentalMaterial3Api::class)
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
         // Initializing the horizontal pager.
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
@@ -139,24 +144,125 @@ class ScreenMain : ComponentActivity() {
             floatingActionButtonPosition = FabPosition.Center,
         ) {
             calculatedTopPadding = it.calculateTopPadding()
+            calculatedBottomPadding = it.calculateBottomPadding()
 
             // Setting up the layout of all of the fragments.
-            // Then wrapping each fragment in AnimatedVisibility so that we can manually control their visibility.
-            Box (Modifier.padding(bottom = it.calculateBottomPadding())) {
-                Box {
+            // Then wrap each fragment in AnimatedVisibility so that we can manually control their visibility.
+            Box (Modifier.padding(bottom = calculatedBottomPadding)) {
+
+                // Using nested scroll to handle mutliple scrolling surfaces.
+                // SOURCE: https://medium.com/androiddevelopers/understanding-nested-scrolling-in-jetpack-compose-eb57c1ea0af0
+                // SOURCE: https://developer.android.com/develop/ui/compose/touch-input/pointer-input/scroll#nested-scrolling
+                val minContentOffset = GlobalSchema.minScreenMainTopOffset
+                val maxContentOffset = GlobalSchema.maxScreenMainTopOffset
+                val minImageOffset = GlobalSchema.minScreenMainWelcomeImageTopOffset
+                val maxImageOffset = GlobalSchema.maxScreenMainWelcomeImageTopOffset
+                val nestedScrollConnection = remember {
+                    object : NestedScrollConnection {
+                        override fun onPreScroll(
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+                            val delta = available.y
+
+                            // Determines if the delta is positive (scroll up, delta direction is downward) or negative (scroll down, delta direction is upward).
+                            val isDeltaNegative = if (delta < 0) true else false
+
+                            // Calculating the top offset of the main content.
+                            val currentContentOffset = GlobalSchema.screenMainContentTopOffset.floatValue
+                            val targetContentOffset = (currentContentOffset + delta / 2).coerceIn(minContentOffset, maxContentOffset)
+
+                            // Applying the main content's top offset.
+                            if (isDeltaNegative) GlobalSchema.screenMainContentTopOffset.floatValue = targetContentOffset
+
+                            // Calculating the top offset of the welcome image.
+                            val currentImageOffset = GlobalSchema.screenMainWelcomeImageTopOffset.floatValue
+                            val targetImageOffset = (currentImageOffset + delta / 4).coerceIn(minImageOffset, maxImageOffset)
+
+                            // Applying the welcome image's top offset.
+                            if (isDeltaNegative) GlobalSchema.screenMainWelcomeImageTopOffset.floatValue = targetImageOffset
+
+                            // Determining how much delta should be spared to be consumed by the fragment's scrollable.
+                            val returnDelta =
+                                if (isDeltaNegative && currentContentOffset == minContentOffset) 0.0f
+                                else if (!isDeltaNegative) 0.0f
+                                else delta
+
+                            // Debugging the output values.
+                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
+
+                            // Give out the delta to the fragment's scrollable.
+                            return Offset(0.0f, returnDelta)
+                        }
+
+                        override fun onPostScroll(
+                            consumed: Offset,
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+                            val delta = available.y
+
+                            // Determines if the delta is positive (scroll up, delta direction is downward) or negative (scroll down, delta direction is upward).
+                            val isDeltaNegative = if (delta < 0) true else false
+
+                            // Calculating the top offset of the main content.
+                            val currentContentOffset = GlobalSchema.screenMainContentTopOffset.floatValue
+                            val targetContentOffset = (currentContentOffset + delta / 2).coerceIn(minContentOffset, maxContentOffset)
+
+                            // Applying the main content's top offset.
+                            if (!isDeltaNegative) GlobalSchema.screenMainContentTopOffset.floatValue = targetContentOffset
+
+                            // Calculating the top offset of the welcome image.
+                            val currentImageOffset = GlobalSchema.screenMainWelcomeImageTopOffset.floatValue
+                            val targetImageOffset = (currentImageOffset + delta / 4).coerceIn(minImageOffset, maxImageOffset)
+
+                            // Applying the welcome image's top offset.
+                            if (!isDeltaNegative) GlobalSchema.screenMainWelcomeImageTopOffset.floatValue = targetImageOffset
+
+                            val returnDelta =
+                                if (!isDeltaNegative && currentContentOffset == maxContentOffset) 0.0f
+                                else if (isDeltaNegative) 0.0f
+                                else delta
+
+                            // Debugging the output values.
+                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
+
+                            // Give out the delta to the fragment's scrollable.
+                            return Offset(0.0f, returnDelta)
+                        }
+                    }
+                }
+
+                // This box handles mouse input so that the fragment can be scrolled down,
+                // covering the new "top bar" when the user swipes up.
+                // SOURCE: https://developer.android.com/develop/ui/compose/touch-input/pointer-input/drag-swipe-fling
+                Box (
+                    modifier = Modifier
+                        // Using nested scroll to handle mutliple scrolling surfaces.
+                        // SOURCE: https://medium.com/androiddevelopers/understanding-nested-scrolling-in-jetpack-compose-eb57c1ea0af0
+                        .nestedScroll(nestedScrollConnection)
+                ) {
                     // Shows the new top bar.
-                    getTopBar()
+                    // Wrap in a LazyColumn so that scrolling events in this element will get caught by the nestedScrollConnection.
+                    LazyColumn {
+                        item { getTopBar() }
+                    }
 
                     // Shows the main content.
                     Surface (
-                        modifier = Modifier.padding(top = LocalContext.current.resources.getDimension(R.dimen.new_topbar_content_top_y_offset).dp).fillMaxSize().zIndex(10f),
+                        modifier = Modifier.offset(y = (GlobalSchema.screenMainContentTopOffset.floatValue).dp).fillMaxSize().zIndex(10f),
+                        // modifier = Modifier.padding(top = LocalContext.current.resources.getDimension(R.dimen.new_topbar_content_top_y_offset).dp).fillMaxSize().zIndex(10f),
                         shape = RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp)
                     ) {
                         // Enabling pager for managing and layouting multiple fragments in a given screen.
                         // SOURCE: https://www.composables.com/foundation/horizontalpager
                         HorizontalPager(
                             state = horizontalPagerState,
-                            modifier = Modifier.fillMaxSize().padding(top = 0.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 0.dp)
+                                // This needs to be set as a "side effect" of setting a non-zero value to "minScreenMainTopOffset"
+                                .padding(bottom = GlobalSchema.minScreenMainTopOffset.dp),
                             // Without this property, the left-right page scrolling would be insanely laggy!
                             beyondViewportPageCount = 2
                         ) { page ->
@@ -167,8 +273,8 @@ class ScreenMain : ComponentActivity() {
                             }
                         }
                     }
-                }
-            }
+                }  // --- end of box 2.
+            }  // --- end of box 1.
 
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.
@@ -270,12 +376,13 @@ class ScreenMain : ComponentActivity() {
 
                                 bottomNavPagerScrollTo.intValue = index
                             }
-                        )
-                    }
-                }
+                        )  // --- end of nav bar item.
 
-            }
-        }
+                    }
+                }  // --- end of key.
+
+            }  // --- end of row.
+        }  // --- end of BottomAppBar.
     }
 
     @Composable
@@ -291,12 +398,15 @@ class ScreenMain : ComponentActivity() {
     }
 
     @Composable
+    @SuppressLint("UseOfNonLambdaOffsetOverload")
     private fun getTopBar() {
 
         /* Drawing canvas for the new top bar layout. */
         Box ( modifier = Modifier
             .height(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_height).dp)
-            .fillMaxWidth() ) {
+            .fillMaxWidth()
+            .offset(y = GlobalSchema.screenMainWelcomeImageTopOffset.floatValue.dp)
+        ) {
 
             /* Drawing the top bar greetings banner background. */
             // SOURCE: https://stackoverflow.com/a/70965281

@@ -221,7 +221,7 @@ class ActivityLauncher : ComponentActivity() {
         // Increment the number of counts.
         val now = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAUNCH_COUNTS] as Int
         AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAUNCH_COUNTS, now + 1)
-        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(this, "Launches since install: $now", Toast.LENGTH_SHORT).show()
+        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(this, "Launches since install: ${now + 1}", Toast.LENGTH_SHORT).show()
     }
 
     /**

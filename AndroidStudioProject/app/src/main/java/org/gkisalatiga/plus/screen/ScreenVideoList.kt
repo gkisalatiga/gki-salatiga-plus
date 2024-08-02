@@ -159,6 +159,7 @@ class ScreenVideoList : ComponentActivity() {
                         GlobalSchema.ytViewerParameters["date"] = date
                         GlobalSchema.ytViewerParameters["desc"] = desc
                         GlobalSchema.ytViewerParameters["thumbnail"] = thumbnail
+                        GlobalSchema.ytCurrentSecond.floatValue = 0.0f
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
