@@ -177,6 +177,7 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.fragmentHomeScrollState = rememberScrollState()
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
+            GlobalSchema.screenAgendaScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
             // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive

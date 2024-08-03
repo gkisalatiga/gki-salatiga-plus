@@ -22,14 +22,24 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,11 +49,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.StringFormatter
+import java.util.ArrayList
 
 class ScreenAgenda() : ComponentActivity() {
 
@@ -72,8 +87,57 @@ class ScreenAgenda() : ComponentActivity() {
     @Composable
     private fun getMainContent() {
 
-        Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Sample Agenda content.")
+        // The agenda node.
+        val agendaJSONNode = AppDatabase().getMainData().getJSONObject("agenda")
+
+        // Enlist the list of title, corresponding to name of days.
+        val dayTitleList = agendaJSONNode.keys()
+
+        // The column's saved scroll state.
+        val scrollState = GlobalSchema.screenAgendaScrollState!!
+        Column (
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier.verticalScroll(scrollState).fillMaxSize().padding(20.dp)
+        ) {
+            // Iterate through every day list.
+            var isFirstElement = true
+            for (key in dayTitleList) {
+
+                if (isFirstElement) isFirstElement = false else Spacer(Modifier.height(20.dp))
+
+                // Get the day's name in current locale; then display the day title.
+                val dayInLocale = StringFormatter().dayLocaleInIndonesian[key]!!
+                Text(dayInLocale, modifier = Modifier, fontWeight = FontWeight.Bold, fontSize = 26.sp, overflow = TextOverflow.Ellipsis)
+
+                // Obtain this day's list of events.
+                val todayNode = agendaJSONNode.getJSONArray(key)
+
+                // Iterating through every event agenda on this day.
+                for (index in 0 until todayNode.length()) {
+                    // Draw the list item for the current event.
+                    // SOURCE: https://www.composables.com/material/listitem
+                    ListItem(
+                        headlineContent = { Text( todayNode.getJSONObject(index).getString("name"), fontWeight = FontWeight.Bold ) },
+                        overlineContent = { Text( todayNode.getJSONObject(index).getString("time") ) },
+                        supportingContent = {
+                            Column {
+                                Row {
+                                    Icon(Icons.Default.Place, "")
+                                    Spacer(Modifier.width(5.dp))
+                                    Text( todayNode.getJSONObject(index).getString("place") )
+                                }
+                                Row (verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Groups, "")
+                                    Spacer(Modifier.width(5.dp))
+                                    Text( todayNode.getJSONObject(index).getString("representative") )
+                                }
+                            }
+                        }
+                    )
+                    HorizontalDivider()
+                }
+            }
         }
 
     }

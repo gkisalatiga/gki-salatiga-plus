@@ -29,6 +29,17 @@ class StringFormatter {
         "12" to "Desember"
     )
 
+    // List of local day names in Indonesian.
+    public val dayLocaleInIndonesian = mapOf<String, String>(
+        "mon" to "Senin",
+        "tue" to "Selasa",
+        "wed" to "Rabu",
+        "thu" to "Kamis",
+        "fri" to "Jumat",
+        "sat" to "Sabtu",
+        "sun" to "Minggu"
+    )
+
     /**
      * Convert YYYY-MM-DD date format used in the JSON metadata
      * into locale date, similar to "31 Desember 2000"
