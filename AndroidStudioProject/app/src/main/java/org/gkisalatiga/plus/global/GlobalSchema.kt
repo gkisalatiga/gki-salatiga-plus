@@ -160,6 +160,8 @@ class GlobalSchema : Application() {
         var fragmentHomeScrollState: ScrollState? = null
         var fragmentServicesScrollState: ScrollState? = null
         var fragmentInfoScrollState: ScrollState? = null
+        var screenAgendaScrollState: ScrollState? = null
+        var screenPersembahanScrollState: ScrollState? = null
 
         /* The poster dialog state in FragmentHome. */
         val fragmentHomePosterDialogState = mutableStateOf(false)

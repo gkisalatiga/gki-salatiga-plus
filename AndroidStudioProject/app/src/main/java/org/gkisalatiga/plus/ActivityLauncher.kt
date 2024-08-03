@@ -71,10 +71,13 @@ import org.gkisalatiga.plus.lib.Extractor
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
+import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenForms
+import org.gkisalatiga.plus.screen.ScreenGaleri
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
+import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
 import org.gkisalatiga.plus.screen.ScreenVideoList
 import org.gkisalatiga.plus.screen.ScreenVideoLive
@@ -174,6 +177,8 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.fragmentHomeScrollState = rememberScrollState()
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
+            GlobalSchema.screenAgendaScrollState = rememberScrollState()
+            GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
             // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
@@ -265,6 +270,9 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
             composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
             composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
+            composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
+            composable(NavigationRoutes().SCREEN_PERSEMBAHAN) { ScreenPersembahan().getComposable() }
+            composable(NavigationRoutes().SCREEN_GALERI) { ScreenGaleri().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
