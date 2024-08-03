@@ -18,6 +18,9 @@
     <string name="screenprerecord_title">GKI Salatiga+ Series</string>
     <string name="screenlive_title">GKI Salatiga+ Live Stream</string>
     <string name="screenforms_title">Formidable</string>
+    <string name="screenoffertory_title">Persembahan</string>
+    <string name="screengallery_title">Galeri GKI Salatiga</string>
+    <string name="screenagenda_title">Agenda Mingguan</string>
     <string name="screenykb_title">Yayasan Komunikasi Bersama</string>
     <string name="screenwarta_title">Warta Jemaat</string>
     <string name="screenliturgi_title">Tata Ibadah</string>
@@ -38,6 +41,7 @@
     <string name="btn_mainmenu_kml">Lagu Pujian</string>
     <string name="btn_mainmenu_offertory">Persembahan</string>
     <string name="btn_mainmenu_form">Formulir</string>
+    <string name="btn_mainmenu_gallery">Galeri</string>
 
     <!-- Constant strings for image description of the main menu's action buttons -->
     <string name="btn_desc_mainmenu_wj">Buka menu warta jemaat</string>
@@ -48,6 +52,7 @@
     <string name="btn_desc_mainmenu_kml">Buka menu lagu pujian</string>
     <string name="btn_desc_mainmenu_offertory">Buka menu persembahan</string>
     <string name="btn_desc_mainmenu_form">Buka menu formulir</string>
+    <string name="btn_desc_mainmenu_gallery">Buka menu galeri</string>
 
     <!-- Constant string for describing the banner image in the "Info/About Church" fragment. -->
     <string name="info_church_img_description">Gereja Kristen Indonesia Salatiga</string>

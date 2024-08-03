@@ -37,6 +37,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.material.icons.filled.Today
+import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,6 +60,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -59,6 +68,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -79,12 +89,11 @@ class FragmentHome : ComponentActivity() {
     private val btnRoutes = listOf(
         NavigationRoutes().SCREEN_WARTA,
         NavigationRoutes().SCREEN_LITURGI,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
+        NavigationRoutes().SCREEN_AGENDA,
+        NavigationRoutes().SCREEN_PERSEMBAHAN,
         NavigationRoutes().SCREEN_YKB,
-        NavigationRoutes().SCREEN_BLANK,
-        NavigationRoutes().SCREEN_BLANK,
         NavigationRoutes().SCREEN_FORMS,
+        NavigationRoutes().SCREEN_GALERI,
     )
 
     // The following defines the label of each visible menu button.
@@ -92,11 +101,10 @@ class FragmentHome : ComponentActivity() {
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_wj),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_liturgi),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_saren),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_kml),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_offertory),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_form),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_gallery),
     )
 
     // The following defines each visible menu button's icon description.
@@ -104,23 +112,22 @@ class FragmentHome : ComponentActivity() {
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_wj),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_liturgi),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_saren),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_kml),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_offertory),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_form),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_gallery),
     )
 
     // The following defines the icons used for the visible menu buttons.
+    // Find the icons here: https://fonts.google.com/icons
     private val btnIcons = listOf(
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
-        R.drawable.baseline_newspaper_48,
+        Icons.Default.CheckBoxOutlineBlank,  // --- we don't need icon for this entry.
+        Icons.Default.CheckBoxOutlineBlank,  // --- we don't need icon for this entry.
+        Icons.Default.Today,
+        Icons.Default.QrCodeScanner,
+        Icons.AutoMirrored.Default.MenuBook,
+        Icons.Default.QuestionAnswer,
+        Icons.Default.Wallpaper
     )
 
     @Composable
@@ -306,6 +313,9 @@ class FragmentHome : ComponentActivity() {
                 }
             }
 
+            // The modifier that applies to both the actual buttons and the spacers.
+            val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).height(125.dp)
+
             // The menu array after "popping" the first two elements.
             val subArray = btnRoutes.subList(2, btnRoutes.size)
 
@@ -315,7 +325,7 @@ class FragmentHome : ComponentActivity() {
             val rows = ceil((subArray.size / columns).toDouble()).toInt()
 
             var index = 0
-            for (j in 0 until rows) {
+            for (j in 0..rows) {
                 Row {
                     while (index < subArray.size) {
                         val offsetIndex = index + 2
@@ -325,10 +335,11 @@ class FragmentHome : ComponentActivity() {
                             onClick = {
                                 // This will be triggered when the main menu button is clicked.
                                 if (btnRoutes[offsetIndex] != NavigationRoutes().SCREEN_BLANK) {
+                                    GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                                     GlobalSchema.pushScreen.value = btnRoutes[offsetIndex]
                                 }
                             },
-                            modifier = Modifier.weight(1f).padding(5.dp).height(100.dp),
+                            modifier = buttonSpacerModifier,
                             shape = RoundedCornerShape(10.dp),
                             contentPadding = PaddingValues(5.dp)
                         ) {
@@ -336,13 +347,14 @@ class FragmentHome : ComponentActivity() {
                             Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
                                 // The main menu action button icon.
                                 Icon(
-                                    painter = painterResource(btnIcons[offsetIndex]),
+                                    btnIcons[offsetIndex],
                                     contentDescription = btnDescriptions[offsetIndex],
-                                    tint = Color.White
+                                    tint = Color.White,
+                                    modifier = Modifier.size(50.dp)
                                 )
                                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                 // The text.
-                                Text(btnLabels[offsetIndex], textAlign = TextAlign.Center)
+                                Text(btnLabels[offsetIndex], textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             }
                         }
 
@@ -350,6 +362,15 @@ class FragmentHome : ComponentActivity() {
                         index += 1
                         if (index % columns == 0) break
                     }
+
+                    // Add spacer for non-even button rows. (Visual improvement.)
+                    // Only applies to the last row.
+                    if (j == rows) {
+                        repeat(columns - (subArray.size % columns)) {
+                            Spacer(buttonSpacerModifier)
+                        }
+                    }
+
                 }
             }  // --- end of for loop.
         }  // --- end of scrollable column.
