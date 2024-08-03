@@ -2,7 +2,7 @@
 
 ## Next Alpha Update
 
-- New: Added new screen: agenda
+- New: Added new screens: agenda and offertory (persembahan)
 - Improved: Added representative icons to main menu items
 
 ## v0.2.0-alpha (17) --- 2024-08-03

@@ -90,6 +90,9 @@
     <string name="yt_visit_link_proceed_btn">Lanjutkan</string>
     <string name="yt_visit_link_link_copied">Tautan video berhasil disalin!</string>
 
+    <!-- Constant string used in the offertory view. -->
+    <string name="offertory_number_copied">Nomor rekening berhasil disalin!</string>
+
     <!-- Constant string used in the new top bar layout. -->
     <string name="new_topbar_greetings">Shalom!</string>
     <string name="new_topbar_person_name">Jemaat dan simpatisan terkasih</string>

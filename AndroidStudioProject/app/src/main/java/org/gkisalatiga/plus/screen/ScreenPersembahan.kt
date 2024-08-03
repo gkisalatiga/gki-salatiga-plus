@@ -10,40 +10,50 @@
 
 package org.gkisalatiga.plus.screen
 
-import android.annotation.SuppressLint
-import android.util.Log
-import android.view.View
-import android.view.View.OnLongClickListener
-import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.content.ClipData
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.unit.dp
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.json.JSONObject
 
 class ScreenPersembahan() : ComponentActivity() {
 
@@ -69,13 +79,64 @@ class ScreenPersembahan() : ComponentActivity() {
     }
 
     @Composable
-    @SuppressLint("SetJavaScriptEnabled", "ComposableNaming")
     private fun getMainContent() {
+        val ctx = LocalContext.current
 
-        Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Sample Persembahan content.")
-        }
+        // The JSON node.
+        val persembahanJSONArray = AppDatabase().getMainData().getJSONArray("offertory")
 
+        // The column's saved scroll state.
+        val scrollState = GlobalSchema.screenPersembahanScrollState!!
+        Column (
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier.verticalScroll(scrollState).fillMaxSize().padding(20.dp)
+        ) {
+            /* Display the banner image. */
+            val imgSource = R.drawable.banner_persembahan
+            val imgDescription = "Menu banner"
+            Surface (
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp)
+            ) {
+                Image(
+                    painter = painterResource(imgSource),
+                    contentDescription = imgDescription,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+
+            // Iterate through every offertory option.
+            var isFirstElement = true
+            for (index in 0 until persembahanJSONArray.length()) {
+                if (isFirstElement) {
+                    HorizontalDivider()
+                    isFirstElement = false
+                }
+
+                val currentNode = persembahanJSONArray[index] as JSONObject
+                val notificationString = stringResource(R.string.offertory_number_copied)
+                ListItem(
+                    leadingContent = { Icon(Icons.Default.QrCodeScanner, "", modifier = Modifier.size(60.dp)) },
+                    overlineContent = { Text( currentNode.getString("bank-name") ) },
+                    headlineContent = {
+                        val headlineText = "${currentNode.getString("bank-abbr")} ${currentNode.getString("bank-number")}"
+                        Text(headlineText, fontWeight = FontWeight.Bold)
+                    },
+                    supportingContent = { Text("a.n. ${currentNode.getString("account-holder")}") },
+                    modifier = Modifier.clickable(onClick = {
+                        // Attempt to copy text to clipboard.
+                        // SOURCE: https://www.geeksforgeeks.org/clipboard-in-android/
+                        val clipData = ClipData.newPlainText("text", currentNode.getString("bank-number").replace(".", ""))
+                        GlobalSchema.clipManager!!.setPrimaryClip(clipData)
+
+                        Toast.makeText(ctx, notificationString, Toast.LENGTH_SHORT).show()
+                    })
+                )
+                HorizontalDivider()
+            }
+        }  // --- end of scrollable column.
     }
 
     @Composable
