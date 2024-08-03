@@ -135,7 +135,13 @@ class ScreenAgenda() : ComponentActivity() {
                 val todayNode = agendaJSONNode.getJSONArray(key)
 
                 // Iterating through every event agenda on this day.
+                var isFirstRowElement = true
                 for (index in 0 until todayNode.length()) {
+                    if (isFirstRowElement) {
+                        HorizontalDivider()
+                        isFirstRowElement = false
+                    }
+
                     // Draw the list item for the current event.
                     // SOURCE: https://www.composables.com/material/listitem
                     ListItem(

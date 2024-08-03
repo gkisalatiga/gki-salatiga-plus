@@ -1,8 +1,9 @@
 # GKI Salatiga+ Changelog
 
-## Next Alpha Update
+## v0.2.1-alpha (18) --- 2024-08-04
 
 - New: Added new screens: agenda and offertory (persembahan)
+- New: Added social media call-to-action (CTA) buttons in the FragmentAbout
 - Improved: Added representative icons to main menu items
 
 ## v0.2.0-alpha (17) --- 2024-08-03
