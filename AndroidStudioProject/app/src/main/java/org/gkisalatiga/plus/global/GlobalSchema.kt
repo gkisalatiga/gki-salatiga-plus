@@ -90,6 +90,11 @@ class GlobalSchema : Application() {
         var carouselBannerBaseFolderArray: ArrayList<String> = ArrayList<String>()
 
         /* ------------------------------------------------------------------------------------ */
+        /* Values and constants used in the "offertory" menu. */
+
+        const val offertoryQRISImageSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/images/qris_gkis.png"
+
+        /* ------------------------------------------------------------------------------------ */
         /* Initializing values that are preloaded during ActivityLauncher initializations. */
 
         // The list of JSON nodes corresponding to a service section.
