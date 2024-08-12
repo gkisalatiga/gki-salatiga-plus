@@ -22,7 +22,7 @@
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.GKISalatigaPlus"
             android:usesCleartextTraffic="true"
-            android:screenOrientation="sensor"
+            android:screenOrientation="unspecified"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
