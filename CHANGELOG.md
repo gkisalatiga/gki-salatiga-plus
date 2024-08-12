@@ -1,5 +1,10 @@
 # GKI Salatiga+ Changelog
 
+## Next Major Release: The Beta Update
+
+- New: Added QRIS code image to the "Offertory" menu
+- Fix: Fixed app rotating even with the auto-rotate turned off
+
 ## v0.2.1-alpha (18) --- 2024-08-04
 
 - New: Added new screens: agenda and offertory (persembahan)

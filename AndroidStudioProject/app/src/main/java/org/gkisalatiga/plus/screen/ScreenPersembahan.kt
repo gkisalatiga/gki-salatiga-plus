@@ -15,7 +15,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,13 +45,17 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
@@ -88,24 +94,49 @@ class ScreenPersembahan() : ComponentActivity() {
         // The column's saved scroll state.
         val scrollState = GlobalSchema.screenPersembahanScrollState!!
         Column (
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
             modifier = Modifier.verticalScroll(scrollState).fillMaxSize().padding(20.dp)
         ) {
+            /* QRIS title. */
+            Text(
+                stringResource(R.string.section_title_qris),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+            )
+
             /* Display the banner image. */
-            val imgSource = R.drawable.banner_persembahan
-            val imgDescription = "Menu banner"
             Surface (
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp)
+                modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                Image(
-                    painter = painterResource(imgSource),
-                    contentDescription = imgDescription,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
+                Box {
+                    /* The base background for the transparent PNG. */
+                    Box (Modifier.background(Color(0xffffffff)).matchParentSize()) {}
+
+                    /* The transparent QR code. */
+                    AsyncImage(
+                        GlobalSchema.offertoryQRISImageSource,
+                        contentDescription = "The QRIS code image to GKI Salatiga offertory account",
+                        error = painterResource(R.drawable.thumbnail_loading),
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillWidth
+                    )
+                }
             }
+
+            /* Other payment method title. */
+            Text(
+                stringResource(R.string.section_title_other_payment_method),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+            )
 
             // Iterate through every offertory option.
             var isFirstElement = true

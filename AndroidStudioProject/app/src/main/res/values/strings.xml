@@ -91,6 +91,8 @@
     <string name="yt_visit_link_link_copied">Tautan video berhasil disalin!</string>
 
     <!-- Constant string used in the offertory view. -->
+    <string name="section_title_qris">QRIS GKI Salatiga</string>
+    <string name="section_title_other_payment_method">Metode Transfer Bank</string>
     <string name="offertory_number_copied">Nomor rekening berhasil disalin!</string>
 
     <!-- Constant string used in the new top bar layout. -->
