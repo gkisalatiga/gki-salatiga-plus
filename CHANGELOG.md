@@ -4,6 +4,7 @@
 
 - New: Added QRIS code image to the "Offertory" menu
 - Fix: Fixed app rotating even with the auto-rotate turned off
+- Fix: Fixed banner carousel does not extract the latest zip file
 
 ## v0.2.1-alpha (18) --- 2024-08-04
 

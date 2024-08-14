@@ -10,6 +10,7 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.util.Log
@@ -55,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import java.io.File
 
 
 class ScreenAbout() : ComponentActivity() {
@@ -99,6 +101,15 @@ class ScreenAbout() : ComponentActivity() {
                             /* You know what this is. */
                             if (GlobalSchema.DEBUG_ENABLE_EASTER_EGG) {
                                 Toast.makeText(ctx, "\uD83D\uDC23", Toast.LENGTH_SHORT).show()
+                            }
+
+                            /* DEBUG: Enlisting the archive folder content recursively. */
+                            // SOURCE: https://www.baeldung.com/kotlin/list-files-recursively
+                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
+                                val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
+                                File(baseExtractedData).walk().forEach { f ->
+                                    Log.d("Groaker-Dump", f.absolutePath)
+                                }
                             }
                         }
                     ) {
