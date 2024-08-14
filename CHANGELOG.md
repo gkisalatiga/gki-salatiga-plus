@@ -1,6 +1,6 @@
 # GKI Salatiga+ Changelog
 
-## Next Major Release: The Beta Update
+## v0.2.2-beta (19) --- 2024-08-14
 
 - New: Added QRIS code image to the "Offertory" menu
 - Fix: Fixed app rotating even with the auto-rotate turned off
