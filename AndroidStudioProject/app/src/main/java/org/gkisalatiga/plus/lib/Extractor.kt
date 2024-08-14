@@ -70,8 +70,10 @@ class Extractor(private val ctx: Context) {
             // Extract the static data's node names.
             GlobalSchema.carouselBannerJSONNodeArray.add(l)
         }
-        // Sorting.
-        GlobalSchema.carouselBannerJSONNodeArray.sort()
+
+        // Sorting by ascending alphanumerical order.
+        // (Please don't turn this on; the banner order should be according to the JSON schema's key order)
+        // GlobalSchema.carouselBannerJSONNodeArray.sort()
 
         for (l in GlobalSchema.carouselBannerJSONNodeArray) {
             val registeredBannerFile = parentNode.getJSONObject(l).getString("banner")
@@ -312,7 +314,7 @@ class Extractor(private val ctx: Context) {
 
                 // This is now the zip file as "File" object.
                 val savedFilename = GlobalSchema.carouselBannerSavedFilename
-                val carouselZipFile = File(ctx.getFileStreamPath(savedFilename).absolutePath)
+                val carouselZipFile = File(fileCreator, GlobalSchema.carouselBannerSavedFilename)
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Zip", "[Extractor.initCarouselData] Saved zip path: ${ctx.getFileStreamPath(savedFilename).absolutePath}")
 
                 // Creating the private extractor folder.
