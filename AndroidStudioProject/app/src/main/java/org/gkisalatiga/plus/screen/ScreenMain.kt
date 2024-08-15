@@ -131,8 +131,8 @@ class ScreenMain : ComponentActivity() {
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
 
         // Connects the horizontal pager with the bottom bar.
-        LaunchedEffect(horizontalPagerState.currentPage) {
-            GlobalSchema.lastMainScreenPagerPage.value = fragRoutes[horizontalPagerState.currentPage]
+        LaunchedEffect(horizontalPagerState.targetPage) {
+            GlobalSchema.lastMainScreenPagerPage.value = fragRoutes[horizontalPagerState.targetPage]
         }
 
         Scaffold (
@@ -301,7 +301,7 @@ class ScreenMain : ComponentActivity() {
                 ) {
                     // Since we are in the main screen but not at fragment one,
                     // navigate the app to fragment one.
-                    bottomNavPagerScrollTo.intValue = 0
+                    scope.launch { horizontalPagerState.animateScrollToPage(0) }
                 } else {
                     // Do nothing.
                 }

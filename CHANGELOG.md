@@ -8,6 +8,7 @@
 - Fix: Fixed app not displaying cached images and static menus when going offline
 - Fix: Fixed bottom bar item flickering when transitioning from one fragment to another in ScreenMain
 - Fix: Temporary fix for full screen video player displaying white paddings
+- Fix: BackHandler not responding to "back button press" on main screen
 
 ## v0.2.2-beta (19) --- 2024-08-14
 
