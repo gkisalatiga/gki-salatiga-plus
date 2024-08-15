@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Next Beta Update
+
+- Fix: Fixed app not displaying cached images and static menus when going offline
+
 ## v0.2.2-beta (19) --- 2024-08-14
 
 - New: Added QRIS code image to the "Offertory" menu

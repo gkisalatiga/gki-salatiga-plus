@@ -371,6 +371,7 @@ class ActivityLauncher : ComponentActivity() {
                 Downloader().initMetaData()
 
                 if (GlobalSchema.isJSONMetaDataInitialized.value) {
+
                     // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
@@ -399,10 +400,35 @@ class ActivityLauncher : ComponentActivity() {
                     // It is finally set-up. Let's break free from this loop.
                     break
 
+                } else if (GlobalSchema.isConnectedToInternet == false && launches != 0 && !GlobalSchema.isOfflineCachedDataLoaded) {
+
+                    /* The app is offline, but this is not first launch.
+                     * Therefore, the fallback metadata and zip files are assumed
+                     * to have been extracted. We'll use this data. */
+
+                    // Assign the JSON data globally.
+                    GlobalSchema.globalJSONObject = appDB.getMainData()
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
+
+                    // Load the cached static data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
+                    Extractor(this).initStaticExtractLocation()
+
+                    // Load the cached carousel banners.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
+                    Extractor(this).initCarouselExtractLocation()
+
+                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
+                    initServicesSection()
+
+                    /* We do not break up with this infinite while loop until we are connected to the internet. */
+                    // But we still set this flag to "true" to avoid infinite extraction loop.
+                    GlobalSchema.isOfflineCachedDataLoaded = true
+
                 } else {
                     // Sleep for a couple of milliseconds before continuing.
                     // SOURCE: http://stackoverflow.com/questions/24104313/ddg#24104427
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(5);
                     continue
                 }
 

@@ -187,6 +187,9 @@ class GlobalSchema : Application() {
         // The status of internet connection.
         var isConnectedToInternet: Boolean = false
 
+        // Used in the loading of cached data when the app is not connected to the internet.
+        var isOfflineCachedDataLoaded: Boolean = false
+
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */
 
