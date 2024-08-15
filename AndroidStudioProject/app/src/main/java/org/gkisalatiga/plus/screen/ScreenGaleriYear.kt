@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,13 +26,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,19 +48,28 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.lib.StringFormatter
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ScreenGaleriYear : ComponentActivity() {
@@ -67,7 +80,6 @@ class ScreenGaleriYear : ComponentActivity() {
         Scaffold (
             topBar = { this.getTopBar() }
                 ) {
-
             // Display the necessary content.
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
                 getMainContent()
@@ -114,56 +126,56 @@ class ScreenGaleriYear : ComponentActivity() {
         Column (
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
-            modifier = Modifier.verticalScroll(scrollState).fillMaxSize().padding(20.dp)
+            modifier = Modifier.verticalScroll(scrollState).fillMaxSize()
         ) {
-            /* Display the banner image. */
-            val imgSource = R.drawable.banner_gallery
-            val imgDescription = "Menu banner"
-            Surface (
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp)
-            ) {
-                Image(
-                    painter = painterResource(imgSource),
-                    contentDescription = imgDescription,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
+            // Display the main content.
+            Column (Modifier.fillMaxSize().padding(20.dp)) {
 
-            Log.d("Groaker-Test", "Current object (3): ${enumeratedGalleryList}")
+                Log.d("Groaker-Test", "Current object (3): ${enumeratedGalleryList}")
 
-            /* Draw the form selection elements. */
-            enumeratedGalleryList.forEach {
-                Log.d("Groaker-Test", "Current object (4): ${it}")
+                /* Draw the form selection elements. */
+                enumeratedGalleryList.forEach {
+                    Log.d("Groaker-Test", "Current object (4): ${it}")
 
-                // Determining the text title.
-                val title = it["title"].toString()
+                    // Determining the text title.
+                    val title = it["title"].toString()
 
-                // Displaying the individual card.
-                Card(
-                    onClick = {
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "Opening gallery album year: $title", Toast.LENGTH_SHORT).show()
+                    // Determining the featured image ID.
+                    val featuredImageID = (it["photos"] as JSONArray).getJSONObject(0).getString("id")
 
-                        /*// Set this screen as the anchor point for "back"
-                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR
+                    // Displaying the individual card.
+                    Card(
+                        onClick = {
+                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "Opening gallery album year: $title", Toast.LENGTH_SHORT).show()
 
-                        // Navigate to the WebView viewer.
-                        GlobalSchema.targetGalleryYear = it.toString()
-                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR*/
-                    },
-                    modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
-                ) {
-                    Row ( modifier = Modifier.padding(5.dp).fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically ) {
-                        Text(title, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(3f))
-                        Spacer( modifier = Modifier.weight(1f) )
-                        // The "arrow forward" icon.
-                        Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(vertical = 5.dp).padding(end = 5.dp).fillMaxHeight())
-                    }
-                }  // --- end of card.
-            }  // --- end of forEach.
+                            // Set this screen as the anchor point for "back"
+                            GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR
 
-        }  // --- end of column.
+                            // Navigate to the WebView viewer.
+                            GlobalSchema.displayedAlbumTitle = title
+                            GlobalSchema.displayedAlbumStory = it["story"].toString()
+                            GlobalSchema.displayedFeaturedImageID = featuredImageID
+                            GlobalSchema.targetAlbumContent = it["photos"] as JSONArray
+                            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_GALERI_LIST
+                        },
+                        modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
+                    ) {
+                        Row ( modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically ) {
+                            AsyncImage(
+                                model = StringFormatter().getGoogleDriveThumbnail(featuredImageID, 160),
+                                contentDescription = title,
+                                error = painterResource(R.drawable.thumbnail_loading),
+                                modifier = Modifier.fillMaxSize().weight(2f),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer( modifier = Modifier.weight(0.4f) )
+                            Text(title, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(7f))
+                        }
+                    }  // --- end of card.
+                }  // --- end of forEach.
+
+            }  // --- end of column (2).
+        }  // --- end of column (1).
 
     }
 

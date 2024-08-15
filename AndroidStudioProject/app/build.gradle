@@ -119,6 +119,10 @@ dependencies {
     // SOURCE: https://stackoverflow.com/a/65665564
     implementation("androidx.compose.material:material-icons-extended")
 
+    // For displaying icons on tabs?
+    // SOURCE: https://stackoverflow.com/q/78398074
+    implementation(platform("androidx.compose:compose-bom"))
+
     // Allow lifecycle observation and activity/fragment watching.
     // SOURCE: http://stackoverflow.com/questions/52369540/ddg#53669865
     // implementation "android.arch.lifecycle:extensions:1.1.1"

@@ -28,6 +28,8 @@ public data class NavigationRoutes (
     val SCREEN_AGENDA: String = "nav_screen_agenda",
     val SCREEN_PERSEMBAHAN: String = "nav_screen_offertory",
     val SCREEN_GALERI: String = "nav_screen_gallery",
+    val SCREEN_GALERI_LIST: String = "nav_screen_gallerylist",
+    val SCREEN_GALERI_VIEW: String = "nav_screen_galleryview",
     val SCREEN_GALERI_YEAR: String = "nav_screen_galleryyear",
     val SCREEN_BLANK: String = "nav_screen_blank",
 
@@ -39,6 +41,8 @@ public data class NavigationRoutes (
     val FRAG_MAIN_NEWS: String = "nav_frag_news",
     val FRAG_MAIN_EVENTS: String = "nav_frag_events",
     val FRAG_MAIN_INFO: String = "nav_frag_info",
+    val FRAG_GALLERY_LIST: String = "nav_gallery_list",
+    val FRAG_GALLERY_STORY: String = "nav_gallery_story",
     val FRAG_PROFILE_CHURCH: String = "nav_frag_church",
     val FRAG_PROFILE_PASTOR: String = "nav_frag_pastorate",
     val FRAG_PROFILE_ASSEMBLY: String = "nav_frag_assembly",

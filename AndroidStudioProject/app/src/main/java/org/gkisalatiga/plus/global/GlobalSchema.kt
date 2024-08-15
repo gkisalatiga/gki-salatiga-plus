@@ -17,11 +17,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import org.json.JSONArray
 import org.json.JSONObject
 
 class GlobalSchema : Application() {
@@ -29,6 +31,19 @@ class GlobalSchema : Application() {
     // Initializing the data schema of the app that will be shared across composables
     // and that will course the navigation of screens.
     companion object {
+
+        // SAF create document code.
+        val GALLERY_SAVER_CODE = 40
+
+        // SAF GallerySaver -> GDrive URL to download.
+        var targetGoogleDrivePhotoURL = ""
+
+        // Whether to display the download progress indicator.
+        val showScreenGaleriViewDownloadProgress = mutableStateOf(false)
+        val showScreenGaleriViewAlertDialog = mutableStateOf(false)
+        var targetSaveFilename = ""
+        var txtScreenGaleriViewAlertDialogTitle = ""
+        var txtScreenGaleriViewAlertDialogSubtitle = ""
 
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which JSON API source to look up to in order to update the application content.
@@ -171,6 +186,7 @@ class GlobalSchema : Application() {
         val ytCurrentSecond = mutableFloatStateOf(0.0f)
 
         /* The remembered scroll states. */
+        var fragmentGalleryListScrollState: LazyGridState? = null
         var fragmentHomeScrollState: ScrollState? = null
         var fragmentServicesScrollState: ScrollState? = null
         var fragmentInfoScrollState: ScrollState? = null
@@ -243,6 +259,15 @@ class GlobalSchema : Application() {
 
         // Determines which gallery folder year to display in the "gallery" menu.
         var targetGalleryYear: String = ""
+
+        // These variables apply to "ScreenGaleriList".
+        var displayedAlbumTitle: String = ""
+        var displayedAlbumStory: String = ""
+        var displayedFeaturedImageID: String = ""
+        var targetAlbumContent: JSONArray? = null
+
+        // These variables apply to ScreenGaleriView.
+        var galleryViewerStartPage: Int = 0
 
         // Controls the state of the poster dialog.
         val posterDialogTitle = mutableStateOf("")

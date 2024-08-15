@@ -2,6 +2,7 @@
 
 ## Next Beta Update
 
+- New: The event documentation gallery feature has now been introduced
 - Fix: Fixed app not displaying cached images and static menus when going offline
 - Fix: Fixed bottom bar item flickering when transitioning from one fragment to another in ScreenMain
 
