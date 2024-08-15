@@ -20,7 +20,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
@@ -29,8 +31,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -55,16 +59,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -89,6 +96,9 @@ class ScreenVideoLive : ComponentActivity() {
 
     // Controls, from an outside composable, whether to display the link confirmation dialog.
     private val showLinkConfirmationDialog = mutableStateOf(false)
+
+    // The calculated top bar padding.
+    private var calculatedTopPadding: Dp = 0.dp
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -245,6 +255,7 @@ class ScreenVideoLive : ComponentActivity() {
                 }
             }*/
         ) {
+            calculatedTopPadding = it.calculateTopPadding()
 
             // Display the necessary content.
             Box ( modifier= Modifier
@@ -258,7 +269,7 @@ class ScreenVideoLive : ComponentActivity() {
                     //jeff 10.25
                     Spacer(Modifier.height(8.dp))
                     Text(GlobalSchema.ytViewerParameters["title"]!!,Modifier.absolutePadding(left = 20.dp, right = 20.dp), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.White)
-                    Text(GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc))
+                    Text("Diunggah pada " + GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc))
                     Spacer(Modifier.height(10.dp))
 
                     Box(
@@ -289,8 +300,29 @@ class ScreenVideoLive : ComponentActivity() {
     @Composable
     private fun getFullscreenPlayer() {
         /* The fullscreen canvas, rotated to landscape configuration. */
-        Box (Modifier.fillMaxHeight().wrapContentSize().padding(45.dp)) {
-            getVideo()
+        val localConfig = LocalConfiguration.current
+        Box (Modifier
+            .background(Color.Black)
+            .fillMaxSize()
+            //.wrapContentSize()
+            //.padding(45.dp)
+            // .padding(calculatedTopPadding/2)
+        ) {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .sizeIn(maxHeight = localConfig.screenHeightDp.dp)
+                    .fillMaxWidth()
+            ) {
+                getVideo()
+            }
+            /*LazyColumn {
+                item { getVideo() }
+            }*/
+            //Box (Modifier.sizeIn(maxHeight = localConfig.screenHeightDp.dp).fillMaxWidth()) {
+                //getVideo()
+            //}
         }
     }
 
