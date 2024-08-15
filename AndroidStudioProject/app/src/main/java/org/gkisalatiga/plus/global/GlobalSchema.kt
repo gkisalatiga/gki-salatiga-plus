@@ -203,7 +203,7 @@ class GlobalSchema : Application() {
         val fragmentHomePosterDialogState = mutableStateOf(false)
 
         /* The top offset of fragments in the ScreenMain. */
-        const val minScreenMainTopOffset = 50.0f
+        const val minScreenMainTopOffset = 0.0f
         const val maxScreenMainTopOffset = 325.0f
         val screenMainContentTopOffset = mutableFloatStateOf(maxScreenMainTopOffset)
 

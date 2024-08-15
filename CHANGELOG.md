@@ -1,6 +1,6 @@
 # GKI Salatiga+ Changelog
 
-## Next Beta Update
+## v0.3.0-beta (20) --- 2024-08-16
 
 - New: The event documentation gallery feature has now been introduced
 - New: The scheduled app's notification is introduced

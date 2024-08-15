@@ -389,7 +389,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Determine should we re-download the carousel banner archive file from the repository,
         // which could be huge in size. (We don't do it frequently.)
-        var updateCarouselBanner = false
+        var updateCarouselBanner = true
         val lastCarouselBannerUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE] as Long
         val carouselBannerUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY] as Long
         if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {

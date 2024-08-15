@@ -312,11 +312,11 @@ class ScreenVideoLive : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .sizeIn(maxHeight = localConfig.screenHeightDp.dp)
+                    // .sizeIn(maxHeight = localConfig.screenHeightDp.dp)
                     .fillMaxWidth()
             ) {
                 LazyColumn {
-                    getVideo()
+                    item { getVideo() }
                 }
             }
             /*LazyColumn {
