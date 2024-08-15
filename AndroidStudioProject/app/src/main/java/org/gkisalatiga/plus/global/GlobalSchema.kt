@@ -32,6 +32,10 @@ class GlobalSchema : Application() {
     // and that will course the navigation of screens.
     companion object {
 
+        /* ------------------------------------------------------------------------------------ */
+        /* The following schemas are used in Google Drive Gallery viewer
+         * and the SAF-based GDrive photo downloader. */
+
         // SAF create document code.
         val GALLERY_SAVER_CODE = 40
 
