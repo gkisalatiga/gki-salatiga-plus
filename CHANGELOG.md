@@ -3,6 +3,8 @@
 ## Next Beta Update
 
 - New: The event documentation gallery feature has now been introduced
+- New: The scheduled app's notification is introduced
+- New: Added OnBoot listener so that the app continues to display important notifications even after restarting the phone
 - Fix: Fixed app not displaying cached images and static menus when going offline
 - Fix: Fixed bottom bar item flickering when transitioning from one fragment to another in ScreenMain
 

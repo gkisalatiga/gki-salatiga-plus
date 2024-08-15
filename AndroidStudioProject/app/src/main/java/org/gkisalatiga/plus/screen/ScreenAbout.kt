@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.services.AlarmService
+import org.gkisalatiga.plus.services.NotificationService
 import java.io.File
 
 
@@ -102,6 +104,12 @@ class ScreenAbout() : ComponentActivity() {
                             if (GlobalSchema.DEBUG_ENABLE_EASTER_EGG) {
                                 Toast.makeText(ctx, "\uD83D\uDC23", Toast.LENGTH_SHORT).show()
                             }
+
+                            /* DEBUG: Testing notification trigger. */
+                            NotificationService.showDebugNotification(ctx)
+
+                            /* DEBUG: Testing the alarm receiver. */
+                            // AlarmService.test(ctx)
 
                             /* DEBUG: Enlisting the archive folder content recursively. */
                             // SOURCE: https://www.baeldung.com/kotlin/list-files-recursively

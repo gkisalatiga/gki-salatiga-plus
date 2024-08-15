@@ -30,8 +30,9 @@ package org.gkisalatiga.plus
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipboardManager
-import android.content.Context
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -67,8 +68,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.AppGallery
@@ -95,11 +94,11 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
+import org.gkisalatiga.plus.services.AlarmReceiver
+import org.gkisalatiga.plus.services.AlarmService
+import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
-import java.net.UnknownHostException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -201,6 +200,12 @@ class ActivityLauncher : ComponentActivity() {
 
         // Retrieving the latest JSON metadata.
         initData()
+
+        // Creating the notification channels.
+        initNotificationChannel()
+
+        // Initializing the scheduled alarms.
+        initScheduledAlarm()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
@@ -327,6 +332,34 @@ class ActivityLauncher : ComponentActivity() {
             mainNavController.navigate(GlobalSchema.pushScreen.value)
         }
 
+    }
+
+    /**
+     * Initializing the app's notification channels.
+     * This is only need on Android API 26+.
+     */
+    private fun initNotificationChannel() {
+        NotificationService.initFallbackDebugChannel(this)
+        NotificationService.initSarenNotificationChannel(this)
+        NotificationService.initYKBHarianNotificationChannel(this)
+    }
+
+    /**
+     * Initializing the "alarms" of GKI Salatiga+ app,
+     * which will trigger notifications and stuffs.
+     */
+    private fun initScheduledAlarm() {
+        // Enables on-boot trigger of alarm, overriding manifest values.
+        // SOURCE: https://developer.android.com/develop/background-work/services/alarms/schedule#boot
+        val receiver = ComponentName(this, AlarmReceiver::class.java)
+        this.packageManager.setComponentEnabledSetting(
+            receiver,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
+
+        // Initializing the alarm services.
+        AlarmService.initSarenAlarm(this)
     }
 
     /**
