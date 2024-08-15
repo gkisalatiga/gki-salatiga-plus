@@ -65,6 +65,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.AppGallery
 import org.gkisalatiga.plus.lib.AppPreferences
 import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.Extractor
@@ -74,6 +75,7 @@ import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenGaleri
+import org.gkisalatiga.plus.screen.ScreenGaleriYear
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
@@ -178,6 +180,8 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
             GlobalSchema.screenAgendaScrollState = rememberScrollState()
+            GlobalSchema.screenFormsScrollState = rememberScrollState()
+            GlobalSchema.screenGaleriScrollState = rememberScrollState()
             GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
@@ -273,6 +277,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
             composable(NavigationRoutes().SCREEN_PERSEMBAHAN) { ScreenPersembahan().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI) { ScreenGaleri().getComposable() }
+            composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
@@ -355,6 +360,10 @@ class ActivityLauncher : ComponentActivity() {
                 // Obtain the fallback carousel banner data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
                 Extractor(this).initFallbackCarouselBanner()
+
+                // Loading the fallback gallery data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
+                AppGallery.initFallbackGalleryData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -364,17 +373,22 @@ class ActivityLauncher : ComponentActivity() {
 
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
+            GlobalSchema.isGalleryDataInitialized.value = false
 
             while (true) {
 
-                // Make the attempt to download the JSON file.
+                // Make the attempt to download the JSON files.
                 Downloader().initMetaData()
+                Downloader().initGalleryData()
 
-                if (GlobalSchema.isJSONMetaDataInitialized.value) {
+                if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
 
                     // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
+
+                    // Also assign globally the gallery data.
+                    GlobalSchema.globalGalleryObject = AppGallery.getGalleryData()
 
                     // Make the attempt to fetch the online static data.
                     if (updateStaticData) {

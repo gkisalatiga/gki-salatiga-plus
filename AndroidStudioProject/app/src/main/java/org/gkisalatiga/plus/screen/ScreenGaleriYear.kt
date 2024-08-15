@@ -11,6 +11,7 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -25,21 +26,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -60,9 +57,9 @@ import androidx.compose.ui.unit.sp
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.lib.StringFormatter
+import org.json.JSONObject
 
-class ScreenGaleri : ComponentActivity() {
+class ScreenGaleriYear : ComponentActivity() {
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -82,6 +79,7 @@ class ScreenGaleri : ComponentActivity() {
         // SOURCE: https://stackoverflow.com/a/69151539
         BackHandler {
             GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
+            GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
         }
 
     }
@@ -92,20 +90,27 @@ class ScreenGaleri : ComponentActivity() {
         // The agenda node.
         val galleryNode = GlobalSchema.globalGalleryObject!!
 
-        // Enlist the list of years, corresponding to name of days.
-        val galleryYearList = mutableListOf(String())
-        galleryNode.keys().forEach {
-            galleryYearList.add(it)
+        // Enlist the list of albums in the currently selected year.
+        val galleryYearList = galleryNode.getJSONArray(GlobalSchema.targetGalleryYear)
+
+        // DEBUG. Always comment out.
+        Log.d("Groaker-Test", "Current object (1): ${galleryYearList}")
+
+        // Convert JSONArray to regular list. (JSONArray iterates from 1, not 0.)
+        val enumeratedGalleryList: MutableList<JSONObject> =  mutableListOf(JSONObject())
+        for (i in 0 until galleryYearList.length()) {
+            val curNode = galleryYearList[i] as JSONObject
+            enumeratedGalleryList.add(curNode)
+
+            // DEBUG. Always comment out.
+            Log.d("Groaker-Test", "Current object (2): ${curNode}")
         }
 
-        // Remove the first element; JSONArray starts at one.
-        galleryYearList.removeAt(0)
-
-        // Sort the list alphanumerically.
-        galleryYearList.sort()
+        // Remove the first item; JSONArrays start at 1.
+        enumeratedGalleryList.removeAt(0)
 
         // The column's saved scroll state.
-        val scrollState = GlobalSchema.screenGaleriScrollState!!
+        val scrollState = rememberScrollState()
         Column (
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
@@ -126,22 +131,26 @@ class ScreenGaleri : ComponentActivity() {
                 )
             }
 
+            Log.d("Groaker-Test", "Current object (3): ${enumeratedGalleryList}")
+
             /* Draw the form selection elements. */
-            galleryYearList.forEach {
+            enumeratedGalleryList.forEach {
+                Log.d("Groaker-Test", "Current object (4): ${it}")
+
                 // Determining the text title.
-                val title = "Kilas Balik Tahun " + it.toString()
+                val title = it["title"].toString()
 
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "Opening gallery folder year: $it", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "Opening gallery album year: $title", Toast.LENGTH_SHORT).show()
 
-                        // Set this screen as the anchor point for "back"
-                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_GALERI
+                        /*// Set this screen as the anchor point for "back"
+                        GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR
 
                         // Navigate to the WebView viewer.
-                        GlobalSchema.targetGalleryYear = it
-                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR
+                        GlobalSchema.targetGalleryYear = it.toString()
+                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_GALERI_YEAR*/
                     },
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
                 ) {
@@ -162,6 +171,7 @@ class ScreenGaleri : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     private fun getTopBar() {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+        val topBarTitle = "Kilas Balik Tahun " + GlobalSchema.targetGalleryYear
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -169,7 +179,7 @@ class ScreenGaleri : ComponentActivity() {
             ),
             title = {
                 Text(
-                    stringResource(R.string.screengallery_title),
+                    topBarTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -177,6 +187,7 @@ class ScreenGaleri : ComponentActivity() {
             navigationIcon = {
                 IconButton(onClick = {
                     GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
+                    GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,

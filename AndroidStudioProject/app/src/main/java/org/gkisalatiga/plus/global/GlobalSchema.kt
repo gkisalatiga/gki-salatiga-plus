@@ -48,6 +48,15 @@ class GlobalSchema : Application() {
         var globalJSONObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
+        /* Determines the initialization of gallery JSON file. */
+
+        val gallerySource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-gallery.json"
+        val gallerySavedFilename = "gkisplus-gallery.json"
+        var absolutePathToGalleryData = ""
+        var isGalleryDataInitialized = mutableStateOf(false)
+        var globalGalleryObject: JSONObject? = null
+
+        /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which zipped static source to look up to in order to update the application's static data.
          * It cannot and should not be changed arbitrarily within the app code. */
 
@@ -166,7 +175,9 @@ class GlobalSchema : Application() {
         var fragmentServicesScrollState: ScrollState? = null
         var fragmentInfoScrollState: ScrollState? = null
         var screenAgendaScrollState: ScrollState? = null
+        var screenFormsScrollState: ScrollState? = null
         var screenPersembahanScrollState: ScrollState? = null
+        var screenGaleriScrollState: ScrollState? = null
 
         /* The poster dialog state in FragmentHome. */
         val fragmentHomePosterDialogState = mutableStateOf(false)
@@ -229,6 +240,9 @@ class GlobalSchema : Application() {
         // as well as its content title.
         var targetIndexHTMLPath: String = ""
         var internalWebViewTitle: String = ""
+
+        // Determines which gallery folder year to display in the "gallery" menu.
+        var targetGalleryYear: String = ""
 
         // Controls the state of the poster dialog.
         val posterDialogTitle = mutableStateOf("")
