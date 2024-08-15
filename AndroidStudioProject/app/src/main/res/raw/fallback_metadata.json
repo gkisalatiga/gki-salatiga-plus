@@ -1,17 +1,17 @@
 {
     "meta": {
-        "update-count": 41,
-        "last-update": 1722444455,
-        "last-updated-item": "carousel",
-        "version-code": "0.1.7-alpha",
-        "version-build": 14
+        "update-count": 143,
+        "last-update": 1723666599,
+        "last-updated-item": "yt-video/saren",
+        "last-actor": "GITHUB_ACTIONS",
+        "schema-version": "0.1.0"
     },
     "data": {
         "url-profile": {
             "fb": "https://www.facebook.com/gkisalatiga.111b",
             "insta": "https://www.instagram.com/gkisalatiga",
             "youtube": "https://www.youtube.com/@GKISalatiga",
-            "web": "https://gkisalatiga.org",
+            "web": "https://www.gkisalatiga.org",
             "linktree": "https://linktr.ee/gkisalatiga",
             "whatsapp": "https://wa.me/6285228909700",
             "email": "gkisalatiga@gmail.com"
@@ -19,101 +19,117 @@
         "yt-video": {
             "saren": [
                 {
-                    "title": "SaRen Pagi | 1 Agustus 2024",
-                    "date": "2024-07-31",
-                    "desc": "Dibawakan oleh Bapak I Made Satya Arnawa",
-                    "link": "https://www.youtube.com/watch?v=iGUTIHiN5es",
-                    "thumbnail": "https://i2.ytimg.com/vi/iGUTIHiN5es/hqdefault.jpg",
+                    "title": "SaRen Pagi | 16 Agu 2024",
+                    "date": "2024-08-14",
+                    "desc": "Dibawakan oleh Ibu Raema Andreyana",
+                    "link": "https://www.youtube.com/watch?v=KuCk3Klr274",
+                    "thumbnail": "https://i4.ytimg.com/vi/KuCk3Klr274/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 31 Jul 2024",
-                    "date": "2024-07-30",
-                    "desc": "Dibawakan oleh Ibu Apriani Dorkas Rambu A",
-                    "link": "https://www.youtube.com/watch?v=go1Gjpo5ptU",
-                    "thumbnail": "https://i4.ytimg.com/vi/go1Gjpo5ptU/hqdefault.jpg",
+                    "title": "SaRen Pagi | 15 Agu 2024 | Merdeka dari Menggerutu",
+                    "date": "2024-08-14",
+                    "desc": "Dibawakan oleh Ibu Liana Poedjihastuti",
+                    "link": "https://www.youtube.com/watch?v=9SrpSfk4xt4",
+                    "thumbnail": "https://i2.ytimg.com/vi/9SrpSfk4xt4/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 30 Jul 2024 | Pelajaran dari Kasus Simei",
-                    "date": "2024-07-29",
-                    "desc": "Dibawakan oleh Pdt. Yefta Setiawan Krisgunadi",
-                    "link": "https://www.youtube.com/watch?v=MJflz4otsEk",
-                    "thumbnail": "https://i2.ytimg.com/vi/MJflz4otsEk/hqdefault.jpg",
+                    "title": "SaRen Pagi | 14 Agu 2024",
+                    "date": "2024-08-13",
+                    "desc": "Dibawakan oleh Pnt. Catur Winarno",
+                    "link": "https://www.youtube.com/watch?v=Rqo8jfsJAQA",
+                    "thumbnail": "https://i3.ytimg.com/vi/Rqo8jfsJAQA/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 29 Jul 2024",
-                    "date": "2024-07-28",
-                    "desc": "Dibawakan oleh Sdri. Chrissandhy",
-                    "link": "https://www.youtube.com/watch?v=mnXIBzB9gNw",
-                    "thumbnail": "https://i2.ytimg.com/vi/mnXIBzB9gNw/hqdefault.jpg",
+                    "title": "SaRen Pagi | 13 Agu 2024",
+                    "date": "2024-08-12",
+                    "desc": "dibawakan oleh Sdri. Gabrilia Dewi",
+                    "link": "https://www.youtube.com/watch?v=vrT5nZmq-Lk",
+                    "thumbnail": "https://i3.ytimg.com/vi/vrT5nZmq-Lk/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 27 Jul 2024 | Pengendalian Diri",
-                    "date": "2024-07-26",
-                    "desc": "Dibawakan oleh Pnt. Nadia Sitaresmi",
-                    "link": "https://www.youtube.com/watch?v=88VktV_rjQI",
-                    "thumbnail": "https://i1.ytimg.com/vi/88VktV_rjQI/hqdefault.jpg",
+                    "title": "SaRen Pagi | 12 Agu 2024",
+                    "date": "2024-08-11",
+                    "desc": "Dibawakan oleh Ibu Retno Triandhini",
+                    "link": "https://www.youtube.com/watch?v=8Bk6zaaTW1E",
+                    "thumbnail": "https://i1.ytimg.com/vi/8Bk6zaaTW1E/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 26 Jul 2024",
-                    "date": "2024-07-25",
-                    "desc": "Dibawakan oleh Ibu Sintarini Utomo",
-                    "link": "https://www.youtube.com/watch?v=qzwsNlCWa2s",
-                    "thumbnail": "https://i2.ytimg.com/vi/qzwsNlCWa2s/hqdefault.jpg",
+                    "title": "SaRen Pagi | 10 Agu 2024",
+                    "date": "2024-08-09",
+                    "desc": "Dibawakan oleeh Pnt. Benny Kailola",
+                    "link": "https://www.youtube.com/watch?v=fMrEIZfh_Ic",
+                    "thumbnail": "https://i3.ytimg.com/vi/fMrEIZfh_Ic/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 25 Jul 2024",
-                    "date": "2024-07-24",
-                    "desc": "Dibawakan oleh Pdt.Christina Elisabeth Parinsi",
-                    "link": "https://www.youtube.com/watch?v=8f3j1D-D6wY",
-                    "thumbnail": "https://i1.ytimg.com/vi/8f3j1D-D6wY/hqdefault.jpg",
+                    "title": "SaRen Pagi | 9 Agu 2024 | Berharga di Mata Allah",
+                    "date": "2024-08-08",
+                    "desc": "Dibawakan oleh Sdri. Phoebe Bernadette",
+                    "link": "https://www.youtube.com/watch?v=JWMkxNdebyQ",
+                    "thumbnail": "https://i3.ytimg.com/vi/JWMkxNdebyQ/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 24 Jul 2024",
-                    "date": "2024-07-23",
-                    "desc": "Dibawakan oleh Pdt Kristiani Setyaningsih Santoso",
-                    "link": "https://www.youtube.com/watch?v=5ZKk-vj8gsk",
-                    "thumbnail": "https://i2.ytimg.com/vi/5ZKk-vj8gsk/hqdefault.jpg",
+                    "title": "SaRen Pagi | 8 Agu 2024 | Sahabat Yesus",
+                    "date": "2024-08-07",
+                    "desc": "Dibawakan oleh Ibu Renny Handayani",
+                    "link": "https://www.youtube.com/watch?v=45uc5Bj5oxo",
+                    "thumbnail": "https://i1.ytimg.com/vi/45uc5Bj5oxo/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 23 Jul 2024",
-                    "date": "2024-07-22",
-                    "desc": "Dibawakan oleh Ibu Evelina Purnama & Bpk Budi Santoso",
-                    "link": "https://www.youtube.com/watch?v=n4bFH8O_HG0",
-                    "thumbnail": "https://i3.ytimg.com/vi/n4bFH8O_HG0/hqdefault.jpg",
+                    "title": "SaRen Pagi | 7 Agu 2024 | Kita Sudah Merdeka",
+                    "date": "2024-08-06",
+                    "desc": "Dibawakan oleh Ibu Yedida Christa Pujianti",
+                    "link": "https://www.youtube.com/watch?v=V57hq_fmBTg",
+                    "thumbnail": "https://i3.ytimg.com/vi/V57hq_fmBTg/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 22 Jul 2024",
-                    "date": "2024-07-21",
-                    "desc": "Dibawakan oleh Pnt.Ervien Dian Widyawati",
-                    "link": "https://www.youtube.com/watch?v=vzqVrvEuPtU",
-                    "thumbnail": "https://i3.ytimg.com/vi/vzqVrvEuPtU/hqdefault.jpg",
+                    "title": "SaRen Pagi | 6 Agu 2024 | Peringatan Pada Momen Kasih Mula-mula",
+                    "date": "2024-08-05",
+                    "desc": "Dibawakan oleh Ibu Enny Kartikaningsih",
+                    "link": "https://www.youtube.com/watch?v=2jb9P1rhoqU",
+                    "thumbnail": "https://i3.ytimg.com/vi/2jb9P1rhoqU/hqdefault.jpg",
                     "is_live": 0
                 },
                 {
-                    "title": "SaRen Pagi | 20 Jul 2024 | Mengecap Kebaikan Tuhan",
-                    "date": "2024-07-19",
-                    "desc": "Dibawakan oleh Pdt. Helen Ruth Manurung",
-                    "link": "https://www.youtube.com/watch?v=frC0Vj7qYbc",
-                    "thumbnail": "https://i3.ytimg.com/vi/frC0Vj7qYbc/hqdefault.jpg",
+                    "title": "SaRen Pagi | 5 Agu 2024",
+                    "date": "2024-08-04",
+                    "desc": "Dubawakan oleh Pdt. Em. Yahya Wijaya",
+                    "link": "https://www.youtube.com/watch?v=ORcSiB_8pjc",
+                    "thumbnail": "https://i4.ytimg.com/vi/ORcSiB_8pjc/hqdefault.jpg",
                     "is_live": 0
                 }
             ],
             "umum": [
                 {
+                    "title": "Ibadah Minggu GKI Salatiga | 11 Agustus 2024 | Percayalah Kepada Allah",
+                    "date": "2024-08-10",
+                    "desc": "*KEBAKTIAN MINGGU GKI Salatiga 11 Agustus 2024; Pukul 07:00 WIB\n\nTema: Percayalah Kepada Allah\n\nBerita Anugerah: Roma 5:8-9\nBacaan I: 1 Raja-raja 19:4-8\nTanggapan: Mazmur 34:2-9\nBacaan II: Efesus 4:25-5:2\nBacaan Injil: Yohanes 6:35, 41-51\nPersembahan: 1 Tesalonika 5:18\nNyanyian: KK 7:1-3 ; Percayalah kepada Tuhan; KJ 242:1-2; KJ 280; KJ 450:1, 3&5; NKB116: 1, 3 & 5\n\nPelayan Firman: Pdt. Helen Ruth Manurung\nKoordinator Ibadah dan Persembahan: Pnt. Nadia Sitaresmi\nKredo dan Warta : Pnt. Catur Winarno\nSambut Tamu: Pnt. Desemy Ch. N. Ballo\n\nPemandu Liturgi: Anik Gunawan\nLektor 1: Diastri Ariati\nLektor 2: Ruth Yuniati\n\nPemusik:  Chronicles\nPNK / Pemazmur: Eriyani / Benaya\n\nPaduan Suara : PS. Immanuel\n\nTim Multimedia: Amelia; Hermawan; Evan; Alvin; Kia\n\nUsher dan Kolektan: Wilayah VI\n\nFlorist : Tim Ruskus\n\n*Kidung Jemaat dan Pelengkap Kidung Jemaat: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Yayasan Musik Gereja Indonesia (Yamuger) @yamugerindonesia\n\n*Nyanyikanlah Kidung Baru: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Sinode Am GKI",
+                    "link": "https://www.youtube.com/watch?v=zCZSb2lqSD4",
+                    "thumbnail": "https://i.ytimg.com/vi/zCZSb2lqSD4/hqdefault_live.jpg",
+                    "is_live": 1
+                },
+                {
+                    "title": "Ibadah Minggu GKI Salatiga | 4 Agustus 2024 | Arahkanlah Hatimu Kepada Allah",
+                    "date": "2024-08-07",
+                    "desc": "*KEBAKTIAN MINGGU GKI Salatiga 4 Agustus 2024; Pukul 07:00 WIB\n\nTema: Arahkanlah Hatimu Kepada Allah\n\nBerita Anugerah: Roma 3:23-25a\nBacaan I: Keluaran 16:2-4; 9-15\nTanggalan: Mazmur 78:23-29\nBacaan II: Efesus 4:1-16\nBacaan Injil: Yohanes 6:24-25\nPersembahan: Kolose 3:17\nNyanyian: KK 46:1,3; PKJ: 103:1-3; KJ 363:1-3; NKB 196\n\nPelayan Firman: Sdri. Phoebe Bernadette\nKoordinator Ibadah dan Persembahan: Pnt. Sandy M. Santoso\nKredo dan Warta : Pnt. Paul A.W. Gulo\nSambut Tamu: Pnt. Nadia Sitaresmi\n\nPemandu Liturgi: Iryatun Trikorini\nLektor 1: Samuel Arif B. Sulistyo\nLektor 2: Yedida Christa Pujianti\n\nPemusik: Band KR\nPNK / Pemazmur: Jeffrey / Inggrid\n\nPersembahan Pujian: Bpk. Yosep\n\nTim Multimedia: Purnomo; Tunggul  Laras; Evan; Iwandi; Okta; Erio; Jeffry\n\nUsher dan Kolektan: Tim Samaria: (Amelia Syallom A.; Candra Novita; Bunyati)\n\nFlorist : Tim Ruskus\n\n*Kidung Jemaat dan Pelengkap Kidung Jemaat: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Yayasan Musik Gereja Indonesia (Yamuger) @yamugerindonesia\n\n*Nyanyikanlah Kidung Baru: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Sinode Am GKI",
+                    "link": "https://www.youtube.com/watch?v=0T06WjLLEsE",
+                    "thumbnail": "https://i.ytimg.com/vi/0T06WjLLEsE/hqdefault.jpg",
+                    "is_live": 1
+                },
+                {
                     "title": "Ibadah Minggu GKI SALATIGA | 28 JULI 2024 | Solidaritas Yang Menular",
                     "date": "2024-07-28",
                     "desc": "Ibadah Minggu GKI SALATIGA | 28 JULI 2024 | Jam 07.00 WIB \n\nTema: Solidaritas Yang Menular\n\nBacaan I: 2 Raja-Raja 4:42-44\nTanggapan: Mazmur 145:10-18\nBacaan II: Efesus 3:14-21\nBacaan Injil: Yohanes 6:1-21\nBerita Anugrah: Efesus 4:32\nPersembahan: Matius 6:19-21\nNyanyian: PKJ 14; NKB 191; NKB 23; PKJ 277; KJ 424\n\nPelayan Firman: Pdt. Helen Ruth Manurung\nKoordinator Ibadah dan Persembahan: Pnt. Catur Winarno\nKredo dan Warta: Pnt. Yuliani Nugroho\nSambut Tamu: Pnt. Paul A.W. Gulo\n\nPemandu Liturgi: Ester Wurdiyanto W  \nLektor 1: Yohanes Tugiman\nLektor 2: Yuliyanti\nPemusik:  Band KP\nPNK/Pemazmur: Dhara / Andreas\n\nTim Multimedia: Budi, Revo,Wayan,Puguh\nTim Dokumentasi: Erio / Jeffrey\n\nUsher dan Kolektan: Wilayah XI\nFlorist: Tim Leather Leaf\n\n*Kidung Jemaat dan Pelengkap Kidung Jemaat: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Yayasan Musik Gereja Indonesia (Yamuger) @yamugerindonesia\n\n*Nyanyikanlah Kidung Baru: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Sinode Am GKI",
                     "link": "https://www.youtube.com/watch?v=rAMQeMu5Nn4",
-                    "thumbnail": "https://i.ytimg.com/vi/rAMQeMu5Nn4/hqdefault_live.jpg",
+                    "thumbnail": "https://i.ytimg.com/vi/rAMQeMu5Nn4/hqdefault.jpg",
                     "is_live": 1
                 },
                 {
@@ -251,25 +267,17 @@
                     "link": "https://www.youtube.com/watch?v=YquHwKujRjE",
                     "thumbnail": "https://i.ytimg.com/vi/YquHwKujRjE/hqdefault.jpg",
                     "is_live": 1
-                },
-                {
-                    "title": "Ibadah Minggu Paskah VII GKI SALATIGA| 12 Mei 2024 | Memilih untuk Hidup Benar",
-                    "date": "2024-05-11",
-                    "desc": "*Ibadah Minggu Paskah VII GKI Salatiga - Minggu, 12 Mei 2024 Jam 07:00 WIB\n\nTema: Memilih untuk Hidup Benar\nBacaan I : Kisah Para Rasul 1: 15-17, 21-26\nTanggapan: Mazmur 1\nBacaan II : 1 Yohanes 5 : 9 - 13\nBacaan Injil: Yohanes 17:6-19\nPersembahan : Ibrani 12:28\nNyanyian : NKB 3:1,2 ; Ku Mau Seperti-Mu Yesus, NKB 21:1,2 ; PKJ 153:1,2 ; NKB 87:1,3\n\nPelayan Firman: Pdt. Tunggul Barkat Gumelar (GKI Boyolali)\nKoordinator Ibadah dan Persembahan: Pnt. Gita Hastuti\nKredo dan Warta: Pnt. Desemy Ch. N. Ballo\nSambut Tamu:  Pnt. Maria Jeane T.S., Pnt. Paul A.W. Gulo\n\nPemandu Liturgi: Jumiyati\nLektor 1: Trevie Rumuat\nLektor 2: Yesy Chrisnawati\nPemusik: Band KR\n\nPNK/Pemazmur: Cinta/Benaya\n\nTim Multimedia: David Widiatmoko, Hermawan, Revo, Evang, Bobby\n\nUsher dan Kolektan: Wilayah I\nFlorist: Tim Rose\n\n*Kidung Jemaat dan Pelengkap Kidung Jemaat: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Yayasan Musik Gereja Indonesia (Yamuger) @yamugerindonesia\n\n*Nyanyikanlah Kidung Baru: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Sinode Am GKI",
-                    "link": "https://www.youtube.com/watch?v=YPkoqgTJP_A",
-                    "thumbnail": "https://i.ytimg.com/vi/YPkoqgTJP_A/hqdefault.jpg",
-                    "is_live": 1
-                },
-                {
-                    "title": "Ibadah Kenaikan Tuhan Yesus Kristus GKI SALATIGA| 9 Mei 2024 | Meneruskan Karya Ilahi Yesus di Dunia",
-                    "date": "2024-05-08",
-                    "desc": "*IBADAH KENAIKAN TUHAN YESUS KRISTUS - Kamis, 9 Mei 2024 Jam 09:00 WIB\n\nTema: Meneruskan Karya Ilahi Yesus di Dunia\nBacaan I : Kisah Para Rasul 1:1-11\nTanggapan: Mazmur 47\nBacaan II : Efesus 1:15-23\nBacaan Injil: Lukas 24:44-53\nPersembahan : Mazmur 57:10-11\nNyanyian : Dari Terbit Matahari; Hatiku Penuh Nyanyian; Ku Menang Ku Menang;\nKJ 225 :1, 2, 5, 6; KJ 184:1-3; Kasih-Nya Seperti Sungai; NKB 213:1-3\n\nPelayan Firman: Pdt. Em. Iman Santoso\nKoordinator Ibadah dan Persembahan: Pnt. Benny A. Kailola\nKredo dan Warta: Pnt. Sandy M. Santoso\nSambut Tamu: Pnt. Catur Winarno, Pnt. Maria Jeane T.S.\n\n\nPemandu Liturgi: Alia Khatarina\nLektor 1: Yuliyanti\nLektor 2: Irene Atharyani Soan\nPemusik: Elhanan\n\nPNK/Pemazmur: Jeffrey / Parahita\n\nTim Multimedia: Joshua A.G, Sabatdini, Iwandi, Alvin, Bayu Octa, Erio, Pnt. Yosua C.\n\nUsher dan Kolektan: Panitia Masa Raya Paskah\nFlorist: Tim Sunflower\n\n*Kidung Jemaat dan Pelengkap Kidung Jemaat: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Yayasan Musik Gereja Indonesia (Yamuger) @yamugerindonesia\n\n*Nyanyikanlah Kidung Baru: Hak cipta terjemahan dan hak cipta pengarang Indonesia dipegang oleh Sinode Am GKI",
-                    "link": "https://www.youtube.com/watch?v=iaZ78NxFup8",
-                    "thumbnail": "https://i.ytimg.com/vi/iaZ78NxFup8/hqdefault.jpg",
-                    "is_live": 1
                 }
             ],
             "es": [
+                {
+                    "title": "GKI Salatiga | English Service | Sunday, Aug. 4th. 2024 | 10 a.m. Jakarta Time",
+                    "date": "2024-08-02",
+                    "desc": "APPEAL TO THE HOLY SPIRIT\n1 Cor 6: 19\n\nLed by\nMrs. Anita Dudek\n\n\nUsher: Sita + Gita A.\nPL: Diane\nReader: Debora\nPrayer: Gita H.\nSL: Kezya\nPemusik: Bung and Friends + Lyka\nPPT: James\nMultiMedia: Pak Bamz",
+                    "link": "https://www.youtube.com/watch?v=uNlwgHjvYO4",
+                    "thumbnail": "https://i.ytimg.com/vi/uNlwgHjvYO4/hqdefault.jpg",
+                    "is_live": 1
+                },
                 {
                     "title": "GKI Salatiga | English Service | Sunday, March 3rd. 2024 | 9 a.m. Jakarta Time",
                     "date": "2024-03-01",
@@ -333,27 +341,25 @@
                     "link": "https://www.youtube.com/watch?v=gMt0l6YbSHw",
                     "thumbnail": "https://i.ytimg.com/vi/gMt0l6YbSHw/hqdefault.jpg",
                     "is_live": 1
-                },
-                {
-                    "title": "English Service GKI Salatiga | February 5, 2023 | \"Strength for the Weary\"",
-                    "date": "2023-02-06",
-                    "desc": "Sermon: Mr. Alexander Kirk\nLiturgist: Mega\nSong Leader: Lia, Angel\nPianist: Tedy\nMultimedia: Eddy, Daniel",
-                    "link": "https://www.youtube.com/watch?v=4VNkhF3tsBk",
-                    "thumbnail": "https://i.ytimg.com/vi/4VNkhF3tsBk/hqdefault.jpg",
-                    "is_live": 1
-                },
-                {
-                    "title": "English Service GKI Salatiga | December 11, 2022 | \"While You Wait\"",
-                    "date": "2022-12-10",
-                    "desc": "Sermon: Mrs. Keily Alvarez\nLiturgist: Diane Nuhamara\nSong Leader: Christa Tehusalawany\nPianist: Arvino\nMultimedia: Nathan",
-                    "link": "https://www.youtube.com/watch?v=w7VNdNrzoIk",
-                    "thumbnail": "https://i.ytimg.com/vi/w7VNdNrzoIk/hqdefault.jpg",
-                    "is_live": 1
                 }
             ]
         },
         "pdf": {
             "wj": [
+                {
+                    "title": "Warta Jemaat 11 Agustus 2024",
+                    "date": "2024-08-10",
+                    "link": "https://drive.google.com/file/d/1hIpsXG-LQIaJh_XHoPQGd7KmgVSvwFPZ/preview",
+                    "post-page": "https://gkisalatiga.org/warta-jemaat-11-agustus-2024/",
+                    "thumbnail": ""
+                },
+                {
+                    "title": "Warta Jemaat 4 Agustus 2024",
+                    "date": "2024-08-04",
+                    "link": "https://drive.google.com/file/d/1sIMdTk50arD-RRE9Qc5fGL8Pj0UigKxm/preview",
+                    "post-page": "https://gkisalatiga.org/warta-jemaat-4-agustus-2024/",
+                    "thumbnail": ""
+                },
                 {
                     "title": "Warta Jemaat 28 Juli 2024",
                     "date": "2024-07-27",
@@ -409,23 +415,23 @@
                     "link": "https://drive.google.com/file/d/1_Kk7wONLE-ZlOglSr_lHMvCk5_XTK9-u/preview",
                     "post-page": "https://gkisalatiga.org/warta-jemaat-9-juni-2024/",
                     "thumbnail": ""
-                },
-                {
-                    "title": "Warta Jemaat 2 Juni 2024",
-                    "date": "2024-06-01",
-                    "link": "https://drive.google.com/file/d/17VaKcOh8IBJ-rvfyjW0DvXmaaQG9_kKb/preview",
-                    "post-page": "https://gkisalatiga.org/warta-jemaat-2-juni-2024/",
-                    "thumbnail": ""
-                },
-                {
-                    "title": "Warta Jemaat 26 Mei 2024",
-                    "date": "2024-05-25",
-                    "link": "https://drive.google.com/file/d/1RPOr0syWBqkted17Y5PDSjUqoLFxqKi5/preview",
-                    "post-page": "https://gkisalatiga.org/warta-jemaat-26-mei-2024/",
-                    "thumbnail": ""
                 }
             ],
             "liturgi": [
+                {
+                    "title": "Tata Ibadah 11 Agustus 2024",
+                    "date": "2024-08-10",
+                    "link": "https://drive.google.com/file/d/1B3nsKhN70hw3i6aeZ4mWcYuzg5y-3O4O/preview",
+                    "post-page": "https://gkisalatiga.org/tata-ibadah-11-agustus-2024/",
+                    "thumbnail": ""
+                },
+                {
+                    "title": "Tata Ibadah 4 Agustus 2024",
+                    "date": "2024-08-04",
+                    "link": "https://drive.google.com/file/d/1wyP5ZPSv6UkfetvXiPDtkhOIgKm_uY7M/preview",
+                    "post-page": "https://gkisalatiga.org/tata-ibadah-4-agustus-2024/",
+                    "thumbnail": ""
+                },
                 {
                     "title": "Tata Ibadah 28 Juli 2024",
                     "date": "2024-07-27",
@@ -480,20 +486,6 @@
                     "date": "2024-06-08",
                     "link": "https://drive.google.com/file/d/1pDV5KYQ9D8p7Qsw_tJXzEnjMr-EAmugY/preview",
                     "post-page": "https://gkisalatiga.org/tata-ibadah-9-juni-2024/",
-                    "thumbnail": ""
-                },
-                {
-                    "title": "Tata Ibadah 2 Juni 2024",
-                    "date": "2024-06-01",
-                    "link": "https://drive.google.com/file/d/1WC9bauiLi63L6ghlzunKUP2ujTh9ip-x/preview",
-                    "post-page": "https://gkisalatiga.org/tata-ibadah-2-juni-2024/",
-                    "thumbnail": ""
-                },
-                {
-                    "title": "Tata Ibadah Minggu Trinitas 26 Mei 2024",
-                    "date": "2024-05-26",
-                    "link": "https://drive.google.com/file/d/1keeoHyZG_iqBQ0-iZUuWdOcF9xzRQ9Qf/preview",
-                    "post-page": "https://gkisalatiga.org/tata-ibadah-minggu-trinitas-26-mei-2024/",
                     "thumbnail": ""
                 }
             ]
@@ -564,6 +556,12 @@
                     "time": "20:00",
                     "place": "Ruang Kana",
                     "representative": "Komisi Remaja"
+                },
+                {
+                    "name": "Persiapan Mengajar Guru Sekolah Minggu",
+                    "time": "14:00",
+                    "place": "Ruang Kana",
+                    "representative": "Komisi Anak"
                 }
             ],
             "sun": [
@@ -572,17 +570,45 @@
                     "time": "07:00",
                     "place": "Gedung Utama GKI Salatiga",
                     "representative": "Majelis Jemaat"
+                },
+                {
+                    "name": "Kebaktian Umum II",
+                    "time": "09:30",
+                    "place": "Gedung Utama GKI Salatiga",
+                    "representative": "Majelis Jemaat"
+                },
+                {
+                    "name": "Kebaktian Umum III",
+                    "time": "16:30",
+                    "place": "Gedung Utama GKI Salatiga",
+                    "representative": "Majelis Jemaat"
                 }
             ]
         },
         "forms": [
             {
+                "title": "Update Data Anggota Jemaat dan Simpatisan GKI Salatiga",
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLSdhMVZ-AxgvaVX-VBPo5_XdL-0qUd4erO_rh5HFLM9u0pyTFA/viewform"
+            },
+            {
                 "title": "Pendaftaran Pelatihan KML GKI Salatiga",
                 "url": "https://docs.google.com/forms/d/e/1FAIpQLSedpmDo_7jJoRV_-uumteou7DfDrBb1QwHzbX_nSMqgqmdPdg/viewform"
             },
             {
-                "title": "Update Data Anggota Jemaat dan Simpatisan GKI Salatiga",
-                "url": "https://docs.google.com/forms/d/e/1FAIpQLSdhMVZ-AxgvaVX-VBPo5_XdL-0qUd4erO_rh5HFLM9u0pyTFA/viewform"
+                "title": "Permohonan Baptis Dewasa",
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLSeyRVzeZPFBFqveErKk2GVGNpRrAzjka0AJBD0jS_wLpL6plA/viewform"
+            },
+            {
+                "title": "Permohonan SIDI",
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLSciV_PHVbfYaZ_ejDM-5zvqpj0Zv0lYr_x_b9BzMR0jITRAhw/viewform"
+            },
+            {
+                "title": "Formulir Pendaftaran Katekisasi",
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLSejRemMDGCd5SgGPIgpNLWfRSp4sorSf7UR2EA7tEsXc8XsTQ/viewform"
+            },
+            {
+                "title": "Pembinaan Pranikah",
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLSchkEfQUk-EG6Aq7wEUY27AWRTosX4Yneg2uaZepsvTsEmjqg/viewform"
             }
         ],
         "ykb": [
@@ -600,28 +626,53 @@
             },
             {
                 "title": "Renungan Wasiat",
-                "url": "https://ykb-wasiat.org/wasiat"
+                "url": "https://www.ykb-wasiat.org/wasiat"
             },
             {
                 "title": "Renungan Usia Indah",
-                "url": "https://www.ykb-wasiat.org/jendela-hati/"
+                "url": "https://www.ykb-wasiat.org/jendela-hati"
             }
         ],
         "offertory": [
             {
                 "bank-name": "Bank Central Asia",
                 "bank-abbr": "BCA",
-                "bank-number": "088.12.34.567",
+                "bank-number": "088.12.345.67",
                 "account-holder": "GKI Salatiga"
             },
             {
                 "bank-name": "CIMB Niaga",
                 "bank-abbr": "CIMB",
-                "bank-number": "012.34.5678.9",
+                "bank-number": "012.34.567.89",
                 "account-holder": "Tan Ik Hay"
+            },
+            {
+                "bank-name": "Bank Mandiri",
+                "bank-abbr": "MANDIRI",
+                "bank-number": "643.15.624.3651",
+                "account-holder": "GKI Salatiga Komisi Anak"
             }
         ],
         "carousel": {
+            "item_1723620544136278628": {
+                "banner": "banner_1723620544136585718.jpg",
+                "title": "Jadi Mitra Allah",
+                "type": "yt",
+                "date-created": "2024-08-14",
+                "yt-title": "\"Menjadi Mitra Allah di Dunia\" | Lagu Tema HUT GKI Salatiga ke-80 | cipt. Siswanto Tri Utomo",
+                "yt-date": "2023-02-03",
+                "yt-desc": "\"Menjadi Mitra Allah di Dunia\" \n(Lagu Tema HUT GKI Salatiga ke-80)\ncipt. Siswanto Tri Utomo\narr. Siswanto Tri Utomo\n\nconductor: Eriyani Tenga Lunga\nTim Musik Chronicles \nExtra Miles Chamber Music\nSinger: Reina, Maldin, Dinda, Jeffrey, Andreas",
+                "yt-link": "https://www.youtube.com/watch?v=upuEZcYTziE&pp=ygUMZ2tpIHNhbGF0aWdh",
+                "yt-thumbnail": "https://i.ytimg.com/vi/upuEZcYTziE/maxresdefault.jpg",
+                "yt-is_live": 0
+            },
+            "1723617981758372387": {
+                "banner": "banner_1723617981758494905.png",
+                "title": "Yuo",
+                "type": "article",
+                "date-created": "2024-08-14",
+                "article-url": "https://www.perplexity.ai/search/android-cannot-extract-folder-l3HH_40DSEWYYoU9RB7lMw"
+            },
             "00_komisi_anak": {
                 "banner": "banner.jpeg",
                 "title": "Bergabunglah dengan Komisi Anak",
@@ -648,6 +699,26 @@
                 "type": "article",
                 "date-created": "2024-07-31",
                 "article-url": "https://alkitab.mobi/renungan/sh/"
+            },
+            "1723617345666460561": {
+                "banner": "banner_1723617345666897661.png",
+                "title": "Contoh 2",
+                "type": "poster",
+                "date-created": "2024-08-14",
+                "poster-image": "poster_1723617345670718616.png",
+                "poster-caption": "Lorem Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up Up Lorem Up"
+            },
+            "item_1723618195484752058": {
+                "banner": "banner_1723618195485864800.jpg",
+                "title": "abc",
+                "type": "yt",
+                "date-created": "2024-08-14",
+                "yt-title": "PESPARANA \"Harmoni Dalam Keberagaman\"  || GKI Klasis Magelang 2024",
+                "yt-date": "2024-03-11",
+                "yt-desc": "PESPARANA (Pesta Paduan Suara Gerejawi Anak) 2024\nTema : \"Harmoni Dalam Keberagaman\"\nGKI Klasis Magelang\nBalairung UKSW - Senin, 11 Maret 2024\nPukul 10.30 WIB\nDilayani oleh Pdt. Raharjo Widhipangreksa (GKI Tegalrejo, Salatiga)",
+                "yt-link": "https://www.youtube.com/watch?v=-iNvJ9i1_nY&pp=ygUMZ2tpIHNhbGF0aWdh",
+                "yt-thumbnail": "https://i.ytimg.com/vi/-iNvJ9i1_nY/maxresdefault.jpg",
+                "yt-is_live": 0
             }
         },
         "helper-title": {

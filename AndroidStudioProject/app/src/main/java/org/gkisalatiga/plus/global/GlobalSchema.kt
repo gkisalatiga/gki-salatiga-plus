@@ -17,11 +17,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import org.json.JSONArray
 import org.json.JSONObject
 
 class GlobalSchema : Application() {
@@ -29,6 +31,23 @@ class GlobalSchema : Application() {
     // Initializing the data schema of the app that will be shared across composables
     // and that will course the navigation of screens.
     companion object {
+
+        /* ------------------------------------------------------------------------------------ */
+        /* The following schemas are used in Google Drive Gallery viewer
+         * and the SAF-based GDrive photo downloader. */
+
+        // SAF create document code.
+        val GALLERY_SAVER_CODE = 40
+
+        // SAF GallerySaver -> GDrive URL to download.
+        var targetGoogleDrivePhotoURL = ""
+
+        // Whether to display the download progress indicator.
+        val showScreenGaleriViewDownloadProgress = mutableStateOf(false)
+        val showScreenGaleriViewAlertDialog = mutableStateOf(false)
+        var targetSaveFilename = ""
+        var txtScreenGaleriViewAlertDialogTitle = ""
+        var txtScreenGaleriViewAlertDialogSubtitle = ""
 
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which JSON API source to look up to in order to update the application content.
@@ -46,6 +65,15 @@ class GlobalSchema : Application() {
 
         // The JSONObject that can be globally accessed by any function and class in the app.
         var globalJSONObject: JSONObject? = null
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Determines the initialization of gallery JSON file. */
+
+        val gallerySource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-gallery.json"
+        val gallerySavedFilename = "gkisplus-gallery.json"
+        var absolutePathToGalleryData = ""
+        var isGalleryDataInitialized = mutableStateOf(false)
+        var globalGalleryObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which zipped static source to look up to in order to update the application's static data.
@@ -162,17 +190,20 @@ class GlobalSchema : Application() {
         val ytCurrentSecond = mutableFloatStateOf(0.0f)
 
         /* The remembered scroll states. */
+        var fragmentGalleryListScrollState: LazyGridState? = null
         var fragmentHomeScrollState: ScrollState? = null
         var fragmentServicesScrollState: ScrollState? = null
         var fragmentInfoScrollState: ScrollState? = null
         var screenAgendaScrollState: ScrollState? = null
+        var screenFormsScrollState: ScrollState? = null
         var screenPersembahanScrollState: ScrollState? = null
+        var screenGaleriScrollState: ScrollState? = null
 
         /* The poster dialog state in FragmentHome. */
         val fragmentHomePosterDialogState = mutableStateOf(false)
 
         /* The top offset of fragments in the ScreenMain. */
-        const val minScreenMainTopOffset = 50.0f
+        const val minScreenMainTopOffset = 0.0f
         const val maxScreenMainTopOffset = 325.0f
         val screenMainContentTopOffset = mutableFloatStateOf(maxScreenMainTopOffset)
 
@@ -186,6 +217,9 @@ class GlobalSchema : Application() {
 
         // The status of internet connection.
         var isConnectedToInternet: Boolean = false
+
+        // Used in the loading of cached data when the app is not connected to the internet.
+        var isOfflineCachedDataLoaded: Boolean = false
 
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */
@@ -226,6 +260,18 @@ class GlobalSchema : Application() {
         // as well as its content title.
         var targetIndexHTMLPath: String = ""
         var internalWebViewTitle: String = ""
+
+        // Determines which gallery folder year to display in the "gallery" menu.
+        var targetGalleryYear: String = ""
+
+        // These variables apply to "ScreenGaleriList".
+        var displayedAlbumTitle: String = ""
+        var displayedAlbumStory: String = ""
+        var displayedFeaturedImageID: String = ""
+        var targetAlbumContent: JSONArray? = null
+
+        // These variables apply to ScreenGaleriView.
+        var galleryViewerStartPage: Int = 0
 
         // Controls the state of the poster dialog.
         val posterDialogTitle = mutableStateOf("")

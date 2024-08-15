@@ -74,6 +74,18 @@ class StringFormatter {
         return a
     }
 
+    public fun getGoogleDriveDownloadURL(photoId: String): String {
+        return "https://drive.google.com/uc?export=download&id=$photoId"
+    }
+
+    /**
+     * Returns the statically generated thumbnail of photos stored in Google Drive.
+     * SOURCE: https://stackoverflow.com/questions/25648388/permanent-links-to-thumbnails-in-google-drive-api
+     */
+    public fun getGoogleDriveThumbnail(photoId: String, quality: Int = 80): String {
+        return "https://drive.google.com/thumbnail?authuser=0&sz=w$quality&id=$photoId"
+    }
+
     /**
      * Cleans a YouTube link by removing redundant parts.
      * @param url the link of the YouTube video.

@@ -135,4 +135,55 @@ class Downloader() {
         }
     }
 
+    /**
+     * Downloads and initiates the gallery JSON source file from the CDN.
+     * This function will then assign the downloaded JSON path to the appropriate global variable.
+     * Requires no argument and does not return any return value.
+     */
+    public fun initGalleryData() {
+        // Non-blocking the main GUI by creating a separate thread for the download
+        // Preparing the thread.
+        val executor = Executors.newSingleThreadExecutor()
+
+        // Fetching the data
+        Log.d("Groaker", "Attempting to download the gallery JSON file ...")
+        executor.execute {
+
+            try {
+                // Opening the file download stream.
+                val streamIn = java.net.URL(GlobalSchema.gallerySource).openStream()
+
+                // Coverting input stream (bytes) to string.
+                // SOURCE: http://stackoverflow.com/questions/49467780/ddg#49468129
+                val decodedData: ByteArray = streamIn.readBytes()
+
+                // Creating the private file.
+                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
+                val privateFile = File(fileCreator, GlobalSchema.gallerySavedFilename)
+
+                // Writing into the file.
+                val out = FileOutputStream(privateFile)
+                out.flush()
+                out.write(decodedData)
+                out.close()
+
+                // Notify all the other functions about the JSON file path.
+                GlobalSchema.absolutePathToGalleryData = privateFile.absolutePath
+                GlobalSchema.isGalleryDataInitialized.value = true
+
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Gallery was successfully downloaded into: ${privateFile.absolutePath}")
+
+                // We are connected to the internet!
+                GlobalSchema.isConnectedToInternet = true
+
+            } catch (e: UnknownHostException) {
+                GlobalSchema.isConnectedToInternet = false
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable when downloading the gallery data: $e")
+            }
+
+            // Break free from this thread.
+            executor.shutdown()
+        }
+    }
+
 }

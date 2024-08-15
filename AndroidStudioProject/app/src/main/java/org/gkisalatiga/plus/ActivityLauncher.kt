@@ -28,7 +28,11 @@
 package org.gkisalatiga.plus
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipboardManager
+import android.content.ComponentName
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -43,6 +47,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -65,15 +70,20 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.AppGallery
 import org.gkisalatiga.plus.lib.AppPreferences
 import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.Extractor
+import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenGaleri
+import org.gkisalatiga.plus.screen.ScreenGaleriList
+import org.gkisalatiga.plus.screen.ScreenGaleriView
+import org.gkisalatiga.plus.screen.ScreenGaleriYear
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
@@ -84,6 +94,9 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
+import org.gkisalatiga.plus.services.AlarmReceiver
+import org.gkisalatiga.plus.services.AlarmService
+import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 import org.json.JSONObject
 import java.util.concurrent.Executors
@@ -103,6 +116,25 @@ class ActivityLauncher : ComponentActivity() {
         super.onResume()
         GlobalSchema.isRunningInBackground.value = false
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.onResume] App has been restored to foreground.")
+    }
+
+    @SuppressLint("MissingSuperCall", "Recycle")
+    override fun onActivityResult(
+        requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (requestCode == GlobalSchema.GALLERY_SAVER_CODE && resultCode == Activity.RESULT_OK) {
+            // The result data contains a URI for the document or directory that
+            // the user selected.
+            resultData?.data?.also { uri ->
+                // Decode the URI path.
+                // SOURCE: https://www.perplexity.ai/search/kotlin-how-to-download-file-to-h.TAGPj2R5yOTTZ_d3ebKQ
+                val contentResolver = applicationContext.contentResolver
+                val outputStream = contentResolver.openOutputStream(uri)
+
+                // Perform operations on the document using its URI.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", uri.path!!)
+                GallerySaver().onSAFPathReceived(outputStream!!)
+            }
+        }
     }
 
     @SuppressLint("MutableCollectionMutableState")
@@ -169,15 +201,24 @@ class ActivityLauncher : ComponentActivity() {
         // Retrieving the latest JSON metadata.
         initData()
 
+        // Creating the notification channels.
+        initNotificationChannel()
+
+        // Initializing the scheduled alarms.
+        initScheduledAlarm()
+
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
 
             // Initializes the scroll states.
+            GlobalSchema.fragmentGalleryListScrollState = rememberLazyGridState()
             GlobalSchema.fragmentHomeScrollState = rememberScrollState()
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
             GlobalSchema.screenAgendaScrollState = rememberScrollState()
+            GlobalSchema.screenFormsScrollState = rememberScrollState()
+            GlobalSchema.screenGaleriScrollState = rememberScrollState()
             GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
@@ -273,6 +314,9 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
             composable(NavigationRoutes().SCREEN_PERSEMBAHAN) { ScreenPersembahan().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI) { ScreenGaleri().getComposable() }
+            composable(NavigationRoutes().SCREEN_GALERI_LIST) { ScreenGaleriList().getComposable() }
+            composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
+            composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
@@ -288,6 +332,34 @@ class ActivityLauncher : ComponentActivity() {
             mainNavController.navigate(GlobalSchema.pushScreen.value)
         }
 
+    }
+
+    /**
+     * Initializing the app's notification channels.
+     * This is only need on Android API 26+.
+     */
+    private fun initNotificationChannel() {
+        NotificationService.initFallbackDebugChannel(this)
+        NotificationService.initSarenNotificationChannel(this)
+        NotificationService.initYKBHarianNotificationChannel(this)
+    }
+
+    /**
+     * Initializing the "alarms" of GKI Salatiga+ app,
+     * which will trigger notifications and stuffs.
+     */
+    private fun initScheduledAlarm() {
+        // Enables on-boot trigger of alarm, overriding manifest values.
+        // SOURCE: https://developer.android.com/develop/background-work/services/alarms/schedule#boot
+        val receiver = ComponentName(this, AlarmReceiver::class.java)
+        this.packageManager.setComponentEnabledSetting(
+            receiver,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
+
+        // Initializing the alarm services.
+        AlarmService.initSarenAlarm(this)
     }
 
     /**
@@ -317,7 +389,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Determine should we re-download the carousel banner archive file from the repository,
         // which could be huge in size. (We don't do it frequently.)
-        var updateCarouselBanner = false
+        var updateCarouselBanner = true
         val lastCarouselBannerUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE] as Long
         val carouselBannerUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY] as Long
         if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {
@@ -355,6 +427,10 @@ class ActivityLauncher : ComponentActivity() {
                 // Obtain the fallback carousel banner data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
                 Extractor(this).initFallbackCarouselBanner()
+
+                // Loading the fallback gallery data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
+                AppGallery.initFallbackGalleryData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -364,16 +440,22 @@ class ActivityLauncher : ComponentActivity() {
 
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
+            GlobalSchema.isGalleryDataInitialized.value = false
 
             while (true) {
 
-                // Make the attempt to download the JSON file.
+                // Make the attempt to download the JSON files.
                 Downloader().initMetaData()
+                Downloader().initGalleryData()
 
-                if (GlobalSchema.isJSONMetaDataInitialized.value) {
+                if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
+
                     // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
+
+                    // Also assign globally the gallery data.
+                    GlobalSchema.globalGalleryObject = AppGallery.getGalleryData()
 
                     // Make the attempt to fetch the online static data.
                     if (updateStaticData) {
@@ -399,10 +481,35 @@ class ActivityLauncher : ComponentActivity() {
                     // It is finally set-up. Let's break free from this loop.
                     break
 
+                } else if (GlobalSchema.isConnectedToInternet == false && launches != 0 && !GlobalSchema.isOfflineCachedDataLoaded) {
+
+                    /* The app is offline, but this is not first launch.
+                     * Therefore, the fallback metadata and zip files are assumed
+                     * to have been extracted. We'll use this data. */
+
+                    // Assign the JSON data globally.
+                    GlobalSchema.globalJSONObject = appDB.getMainData()
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
+
+                    // Load the cached static data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
+                    Extractor(this).initStaticExtractLocation()
+
+                    // Load the cached carousel banners.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
+                    Extractor(this).initCarouselExtractLocation()
+
+                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
+                    initServicesSection()
+
+                    /* We do not break up with this infinite while loop until we are connected to the internet. */
+                    // But we still set this flag to "true" to avoid infinite extraction loop.
+                    GlobalSchema.isOfflineCachedDataLoaded = true
+
                 } else {
                     // Sleep for a couple of milliseconds before continuing.
                     // SOURCE: http://stackoverflow.com/questions/24104313/ddg#24104427
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(5);
                     continue
                 }
 
