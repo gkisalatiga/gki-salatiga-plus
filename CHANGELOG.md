@@ -3,6 +3,7 @@
 ## Next Beta Update
 
 - Fix: Fixed app not displaying cached images and static menus when going offline
+- Fix: Fixed bottom bar item flickering when transitioning from one fragment to another in ScreenMain
 
 ## v0.2.2-beta (19) --- 2024-08-14
 

@@ -61,6 +61,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -79,6 +80,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.fragment.FragmentHome
 import org.gkisalatiga.plus.fragment.FragmentInfo
@@ -107,34 +110,29 @@ class ScreenMain : ComponentActivity() {
     // Used by the bottom nav to command the scrolling of the horizontal pager.
     private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
 
-    // Determines the top bar title.
-    private var topBarTitle = (GlobalSchema.context).resources.getString(R.string.app_name_alias)
+    // Determines the top banner title.
+    private var topBannerTitle = (GlobalSchema.context).resources.getString(R.string.app_name_alias)
 
     // Controls the horizontal scrolling of the pager.
     private lateinit var horizontalPagerState: PagerState
 
     // Determines what background to show on the new top bar layout by user github.com/ujepx64.
-    private var newTopBarBackground = mutableIntStateOf(GlobalSchema.lastNewTopBarBackground.value)
+    private var newTopBannerBackground = mutableIntStateOf(GlobalSchema.lastNewTopBarBackground.value)
+
+    // The coroutine scope.
+    private lateinit var scope: CoroutineScope
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
+        scope = rememberCoroutineScope()
+
         // Initializing the horizontal pager.
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
 
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.intValue}")
-
-        // Listen to the bottom nav's request to change the horizontal pager page.
-        listenNavBarScrollPager()
-
-        // Listen to the change in the horizontal pager's page state.
-        // Then change the global page state accordingly.
-        key (horizontalPagerState.targetPage) {
-            GlobalSchema.lastMainScreenPagerPage.value = fragRoutes[horizontalPagerState.targetPage]
+        // Connects the horizontal pager with the bottom bar.
+        LaunchedEffect(horizontalPagerState.currentPage) {
+            GlobalSchema.lastMainScreenPagerPage.value = fragRoutes[horizontalPagerState.currentPage]
         }
 
         Scaffold (
@@ -245,7 +243,7 @@ class ScreenMain : ComponentActivity() {
                     // Shows the new top bar.
                     // Wrap in a LazyColumn so that scrolling events in this element will get caught by the nestedScrollConnection.
                     LazyColumn {
-                        item { getTopBar() }
+                        item { getTopBanner() }
                     }
 
                     // Shows the main content.
@@ -341,65 +339,41 @@ class ScreenMain : ComponentActivity() {
             // SOURCE: https://stackoverflow.com/q/70904979
             Row(modifier = Modifier.weight(1f, false)) {
 
-                // Ensures that the bottom nav and the horizontal pager are in sync.
-                key(GlobalSchema.lastMainScreenPagerPage.value) {
-                    navItems.forEachIndexed { index, item ->
+                navItems.forEachIndexed { index, item ->
 
-                        NavigationBarItem(
-                            icon = {
-                                if (fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index) {
-                                    Icon(bottomNavItemIconsSelected[index], contentDescription = item)
-                                } else {
-                                    Icon(bottomNavItemIconsInactive[index], contentDescription = item)
-                                }
-                                   },
-                            label = { Text(item) },
-                            selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
-                            colors = NavigationBarItemColors(
-                                selectedIconColor = Color.Unspecified,
-                                selectedTextColor = Color.Unspecified,
-                                selectedIndicatorColor = Brown1,
-                                unselectedIconColor = Color.Unspecified,
-                                unselectedTextColor = Color.Unspecified,
-                                disabledIconColor = Color.Unspecified,
-                                disabledTextColor = Color.Unspecified
-                            ),
-                            onClick = {
-                                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
-                                    Log.d("Groaker", "Triggered bottom nav button into index: $index")
-                                    Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pushScreen': ${GlobalSchema.pushScreen.value}")
-                                    Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'lastMainScreenFragment': ${GlobalSchema.lastMainScreenPagerPage.value}")
-                                    Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.currentPage': ${horizontalPagerState.currentPage}")
-                                    Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'pagerstate.targetPage': ${horizontalPagerState.targetPage}")
-                                    Log.d("Groaker", "[ScreenMain.getBottomBar] Current value of 'bottomNavPagerScrollTo': ${bottomNavPagerScrollTo.intValue}")
-                                }
-
-                                bottomNavPagerScrollTo.intValue = index
+                    NavigationBarItem(
+                        icon = {
+                            if (fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index) {
+                                Icon(bottomNavItemIconsSelected[index], contentDescription = item)
+                            } else {
+                                Icon(bottomNavItemIconsInactive[index], contentDescription = item)
                             }
-                        )  // --- end of nav bar item.
+                        },
+                        label = { Text(item) },
+                        selected = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) == index,
+                        colors = NavigationBarItemColors(
+                            selectedIconColor = Color.Unspecified,
+                            selectedTextColor = Color.Unspecified,
+                            selectedIndicatorColor = Brown1,
+                            unselectedIconColor = Color.Unspecified,
+                            unselectedTextColor = Color.Unspecified,
+                            disabledIconColor = Color.Unspecified,
+                            disabledTextColor = Color.Unspecified
+                        ),
+                        onClick = {
+                            scope.launch { horizontalPagerState.animateScrollToPage(index) }
+                        }
+                    )  // --- end of nav bar item.
 
-                    }
-                }  // --- end of key.
+                }
 
             }  // --- end of row.
         }  // --- end of BottomAppBar.
     }
 
     @Composable
-    private fun listenNavBarScrollPager() {
-        // Force recomposition of the horizontal pager.
-        // SOURCE: https://stackoverflow.com/a/77289069
-        LaunchedEffect(bottomNavPagerScrollTo.intValue) {
-            Log.d("Groaker", "Launching 'LaunchedEffect' on the horizontal pager state ...")
-
-            // Scroll to the desired pager page.
-            horizontalPagerState.animateScrollToPage(bottomNavPagerScrollTo.intValue)
-        }
-    }
-
-    @Composable
     @SuppressLint("UseOfNonLambdaOffsetOverload")
-    private fun getTopBar() {
+    private fun getTopBanner() {
 
         /* Drawing canvas for the new top bar layout. */
         Box ( modifier = Modifier
@@ -411,7 +385,7 @@ class ScreenMain : ComponentActivity() {
             /* Drawing the top bar greetings banner background. */
             // SOURCE: https://stackoverflow.com/a/70965281
             Image (
-                painter = painterResource(newTopBarBackground.intValue),
+                painter = painterResource(newTopBannerBackground.intValue),
                 contentDescription = "",
                 modifier = Modifier.matchParentSize(),
                 contentScale = ContentScale.Crop
@@ -464,7 +438,7 @@ class ScreenMain : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             // The app title.
-                            Text(topBarTitle, fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White)
+                            Text(topBannerTitle, fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White)
                             Spacer(Modifier.width(20.dp))
                             // The "next" button.
                             Icon(Icons.AutoMirrored.Default.KeyboardArrowRight, "", tint = Color.White)
