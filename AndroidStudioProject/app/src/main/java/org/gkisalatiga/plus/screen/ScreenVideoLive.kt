@@ -315,7 +315,9 @@ class ScreenVideoLive : ComponentActivity() {
                     .sizeIn(maxHeight = localConfig.screenHeightDp.dp)
                     .fillMaxWidth()
             ) {
-                getVideo()
+                LazyColumn {
+                    getVideo()
+                }
             }
             /*LazyColumn {
                 item { getVideo() }
