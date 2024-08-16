@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## v0.3.1-beta.2 (21) --- 2024-08-16
+
+- Fix: Fixed "targeting S+ version 31 and above" error on HyperOS devices
+
 ## v0.3.0-beta (20) --- 2024-08-16
 
 - New: The event documentation gallery feature has now been introduced

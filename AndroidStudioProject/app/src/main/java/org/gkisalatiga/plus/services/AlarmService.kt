@@ -32,7 +32,9 @@ class AlarmService {
             val notifyIntent = Intent(ctx, AlarmReceiver::class.java)
             notifyIntent.putExtra("host", AlarmRoutes.ALARM_SAREN)
 
-            val alarmIntent: PendingIntent = PendingIntent.getBroadcast(ctx, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            // Use "FLAG_MUTABLE" to avoid "targeting S+ version 31 and above" error.
+            // SOURCE: https://stackoverflow.com/a/69235587
+            val alarmIntent: PendingIntent = PendingIntent.getBroadcast(ctx, 0, notifyIntent, PendingIntent.FLAG_MUTABLE)
             val alarmMgr: AlarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             alarmMgr.setInexactRepeating(
@@ -62,7 +64,9 @@ class AlarmService {
             val notifyIntent = Intent(ctx, AlarmReceiver::class.java)
             notifyIntent.putExtra("host", AlarmRoutes.ALARM_YKB_HARIAN)
 
-            val alarmIntent: PendingIntent = PendingIntent.getBroadcast(ctx, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            // Use "FLAG_MUTABLE" to avoid "targeting S+ version 31 and above" error.
+            // SOURCE: https://stackoverflow.com/a/69235587
+            val alarmIntent: PendingIntent = PendingIntent.getBroadcast(ctx, 0, notifyIntent, PendingIntent.FLAG_MUTABLE)
             val alarmMgr: AlarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             alarmMgr.setInexactRepeating(
