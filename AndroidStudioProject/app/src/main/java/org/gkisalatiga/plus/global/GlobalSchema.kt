@@ -150,7 +150,7 @@ class GlobalSchema : Application() {
         const val DEBUG_DISABLE_DOWNLOADING_STATIC_DATA = true
 
         // Whether to disable downloading the carousel data zip file from the GitHub repository.
-        const val DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA = true
+        const val DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA = false
 
         /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
