@@ -295,6 +295,8 @@ class FragmentHome : ComponentActivity() {
 
             }
 
+            Spacer(Modifier.fillMaxWidth().height(10.dp))
+
             /* Displaying the top two menus. */
             Row {
                 btnRoutes.subList(0, 2).forEachIndexed { index, str ->
@@ -315,9 +317,11 @@ class FragmentHome : ComponentActivity() {
                 }
             }
 
+            Spacer(Modifier.fillMaxWidth().height(10.dp))
+
             // The modifier that applies to both the actual buttons and the spacers.
             // val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).height(125.dp)
-            val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).aspectRatio(1.0f)
+            val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).aspectRatio(0.88888f)
 
             // The menu array after "popping" the first two elements.
             val subArray = btnRoutes.subList(2, btnRoutes.size)
@@ -364,11 +368,13 @@ class FragmentHome : ComponentActivity() {
                                 Text(
                                     btnLabels[offsetIndex],
                                     textAlign = TextAlign.Center,
-                                    minLines = 2,
+                                    minLines = 1,
                                     maxLines = 2,
                                     overflow = TextOverflow.Visible,
                                     softWrap = true,
-                                    modifier = Modifier.fillMaxHeight(0.50f)
+                                    modifier = Modifier
+                                        // .fillMaxHeight(0.50f)
+                                        .padding(3.dp)
                                 )
                             }
                         }
