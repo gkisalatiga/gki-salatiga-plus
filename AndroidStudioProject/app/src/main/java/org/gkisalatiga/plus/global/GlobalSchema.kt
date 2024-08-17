@@ -146,6 +146,12 @@ class GlobalSchema : Application() {
         // Whether to hide the splash screen.
         const val DEBUG_DISABLE_SPLASH_SCREEN = false
 
+        // Whether to disable downloading the static data zip file from the GitHub repository.
+        const val DEBUG_DISABLE_DOWNLOADING_STATIC_DATA = true
+
+        // Whether to disable downloading the carousel data zip file from the GitHub repository.
+        const val DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA = true
+
         /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
          * These parameters must be individually a mutable state object.

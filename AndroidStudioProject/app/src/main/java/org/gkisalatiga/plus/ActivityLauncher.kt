@@ -387,10 +387,11 @@ class ActivityLauncher : ComponentActivity() {
         if (timeNowMillis > lastStaticDataUpdate + staticDataUpdateFrequency) {
             updateStaticData = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old. It will be updated soon.")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old.")
         } else {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is up-to-date.")
         }
+        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_STATIC_DATA) updateStaticData = false  // --- override.
 
         // Determine should we re-download the carousel banner archive file from the repository,
         // which could be huge in size. (We don't do it frequently.)
@@ -400,10 +401,11 @@ class ActivityLauncher : ComponentActivity() {
         if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {
             updateCarouselBanner = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old. It will be updated soon.")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old.")
         } else {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is up-to-date.")
         }
+        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA) updateCarouselBanner = false  // --- override.
 
         // Upon successful data download, we manage the app's internal variable storage
         // according to the downloaded JSON file's schema.
