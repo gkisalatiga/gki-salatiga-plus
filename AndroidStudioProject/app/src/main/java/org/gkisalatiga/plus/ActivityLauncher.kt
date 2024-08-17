@@ -32,6 +32,7 @@ import android.app.Activity
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -159,6 +160,10 @@ class ActivityLauncher : ComponentActivity() {
                 android.graphics.Color.TRANSPARENT
             )
         )
+
+        // Lock the screen's orientation to portrait mode only.
+        val targetOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        this.requestedOrientation = targetOrientation
 
         // Enable on-the-fly edit of drawable SVG vectors.
         // SOURCE: https://stackoverflow.com/a/38418049
