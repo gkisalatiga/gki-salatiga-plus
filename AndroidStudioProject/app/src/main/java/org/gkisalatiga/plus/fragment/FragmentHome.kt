@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -197,13 +199,13 @@ class FragmentHome : ComponentActivity() {
             // SOURCE: https://stackoverflow.com/a/75469260
             // ---
             // Create the box boundary.
-            Box (modifier = Modifier.height(232.dp).fillMaxWidth()) {
+            Box (modifier = Modifier.fillMaxWidth().aspectRatio(1.77778f)) {
 
                 /* Create the horizontal pager "carousel" */
                 HorizontalPager(
                     state = carouselPagerState,
                     beyondViewportPageCount = 1,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     // Navigate to the current iteration's JSON node.
                     val currentNode = AppDatabase()
@@ -214,7 +216,7 @@ class FragmentHome : ComponentActivity() {
                     /* Display the sample image. */
                     Surface (
                         shape = RoundedCornerShape(15.dp),
-                        modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp),
+                        modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).fillMaxWidth().aspectRatio(1.77778f),
                         onClick = {
                             if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You are clicking carousel banner no. ${it % actualPageCount}!", Toast.LENGTH_SHORT).show()
 
@@ -304,7 +306,7 @@ class FragmentHome : ComponentActivity() {
                         }
                     }) {
                         Column (modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Surface(shape = RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp), modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                            Surface(shape = RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp), modifier = Modifier.fillMaxWidth().aspectRatio(0.75f)) {
                                 Image(painter = painterResource(btnFeaturedCover[index]), "", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
                             }
                             Text(btnLabels[index], textAlign = TextAlign.Center, modifier = Modifier.padding(5.dp), fontWeight = FontWeight.Bold)
@@ -314,7 +316,8 @@ class FragmentHome : ComponentActivity() {
             }
 
             // The modifier that applies to both the actual buttons and the spacers.
-            val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).height(125.dp)
+            // val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).height(125.dp)
+            val buttonSpacerModifier = Modifier.weight(1f).padding(5.dp).aspectRatio(1.0f)
 
             // The menu array after "popping" the first two elements.
             val subArray = btnRoutes.subList(2, btnRoutes.size)
@@ -344,17 +347,29 @@ class FragmentHome : ComponentActivity() {
                             contentPadding = PaddingValues(5.dp)
                         ) {
                             // The main menu element wrapper.
-                            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
+                            Column (
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxSize()) {
                                 // The main menu action button icon.
                                 Icon(
                                     btnIcons[offsetIndex],
                                     contentDescription = btnDescriptions[offsetIndex],
                                     tint = Color.White,
-                                    modifier = Modifier.size(50.dp)
+                                    modifier = Modifier.fillMaxHeight(0.50f).aspectRatio(1.0f)
                                 )
-                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                // Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                // Spacer(Modifier.fillMaxHeight(0.10f))
                                 // The text.
-                                Text(btnLabels[offsetIndex], textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                Text(
+                                    btnLabels[offsetIndex],
+                                    textAlign = TextAlign.Center,
+                                    minLines = 2,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Visible,
+                                    softWrap = true,
+                                    modifier = Modifier.fillMaxHeight(0.50f)
+                                )
                             }
                         }
 

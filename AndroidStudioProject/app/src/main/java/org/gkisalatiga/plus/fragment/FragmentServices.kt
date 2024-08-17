@@ -14,9 +14,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -135,13 +137,15 @@ class FragmentServices() : ComponentActivity() {
 
         /* Displaying the section title. */
         Row (modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Text(sectionTitle, modifier = Modifier.fillMaxWidth().weight(4f), fontWeight = FontWeight.Bold, fontSize = 26.sp, overflow = TextOverflow.Ellipsis)
+            Text(sectionTitle, modifier = Modifier.fillMaxWidth().weight(4f), fontWeight = FontWeight.Bold, fontSize = 24.sp, overflow = TextOverflow.Ellipsis)
             Button(onClick = {
                 // Display the list of videos in this playlist.
                 GlobalSchema.videoListTargetNode = nodeName
                 GlobalSchema.videoListTitle = sectionTitle
                 GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
-            }, modifier = Modifier.fillMaxWidth().weight(1f)) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc") }
+            }, modifier = Modifier.fillMaxWidth().weight(1f).padding(0.dp)) {
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc", modifier = Modifier.fillMaxSize().aspectRatio(1.0f).padding(0.dp))
+            }
         }
 
         /* Displaying the individual item of this section. */
@@ -179,7 +183,8 @@ class FragmentServices() : ComponentActivity() {
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
                     },
-                    modifier = Modifier.fillMaxHeight().width(320.dp).height(232.dp).padding(horizontal = 5.dp),
+                    //modifier = Modifier.fillMaxHeight().width(320.dp).height(232.dp).padding(horizontal = 5.dp),
+                    modifier = Modifier.width(320.dp).aspectRatio(1.33334f).padding(horizontal = 5.dp),
                 ) {
                     Column {
                         // Displaying the image.
@@ -187,13 +192,13 @@ class FragmentServices() : ComponentActivity() {
                             model = imgSrc,
                             contentDescription = title,
                             error = painterResource(R.drawable.thumbnail_loading),
-                            modifier = Modifier.fillMaxWidth().height(160.dp),
+                            modifier = Modifier.fillMaxWidth().aspectRatio(1.77778f),
                             contentScale = ContentScale.Crop
                         )
                         // Displaying the content description of the card.
                         Column (modifier = Modifier.padding(10.dp)) {
                             Text(title!!, fontWeight = FontWeight.Bold, minLines = 1, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            Text(date)
+                            Text("Diunggah $date")
                         }
                     }
                 }

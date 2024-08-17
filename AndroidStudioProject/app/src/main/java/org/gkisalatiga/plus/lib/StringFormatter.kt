@@ -107,14 +107,32 @@ class StringFormatter {
     /**
      * Returns the link to the thumbnail of a given YouTube video,
      * according to the passed URL parameter.
-     * SOURCE: https://stackoverflow.com/a/55890696
+     *
+     * @param quality the quality of the YouTube thumbnail.
+     * Possible quality values:
+     * - 0: "default"   120x90
+     * - 1: "mq"        320x180
+     * - 2: "hq"        480x360
+     * - 3: "sq"        640x480
+     * - 4: "max"       1280x720
+     * Defaults to the highest possible quality ("hq")
      */
-    public fun getYouTubeThumbnailFromUrl(url: String): String {
+    public fun getYouTubeThumbnailFromUrl(url: String, quality: Int = 2): String {
         // First we extract the YouTube ID from the URL.
         val ytID = getYouTubeIDFromUrl(url)
 
+        // Determining the thumbnail quality parameter.
+        var qualityParam = "default"
+        when(quality) {
+            0 -> qualityParam = "default"
+            1 -> qualityParam = "mqdefault"
+            2 -> qualityParam = "hqdefault"
+            3 -> qualityParam = "sddefault"
+            4 -> qualityParam = "maxresdefault"
+        }
+
         // Then we return the "formatted" YouTube thumbnail URL.
         // SOURCE: https://stackoverflow.com/a/55890696
-        return "https://img.youtube.com/vi/$ytID/hqdefault.jpg"
+        return "https://img.youtube.com/vi/$ytID/$qualityParam.jpg"
     }
 }

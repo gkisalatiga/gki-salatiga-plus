@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -105,14 +107,14 @@ class ScreenVideoList : ComponentActivity() {
             val imgDescription = "Menu banner"
             Surface (
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp).height(225.dp)
+                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp).aspectRatio(1.77778f)
             ) {
                 AsyncImage(
                     videoListAsJSONArray.getJSONObject(0).getString("thumbnail")!!,
                     contentDescription = "",
                     error = painterResource(R.drawable.thumbnail_loading),
                     modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -170,15 +172,14 @@ class ScreenVideoList : ComponentActivity() {
                             model = thumbnail,
                             contentDescription = title,
                             error = painterResource(R.drawable.thumbnail_loading),
-                            modifier = Modifier.weight(1f).width(60.dp),
+                            modifier = Modifier.aspectRatio(1.77778f).fillMaxHeight(),
                             contentScale = ContentScale.Crop,
                         )
                         Text(title!!,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .weight(3f),
+                                .padding(horizontal = 10.dp),
                             minLines = 1,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
