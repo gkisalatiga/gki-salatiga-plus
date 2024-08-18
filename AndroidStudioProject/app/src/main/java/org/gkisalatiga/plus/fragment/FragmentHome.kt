@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.material.icons.filled.Subscriptions
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.AlertDialog
@@ -83,6 +84,7 @@ import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.lib.StringFormatter
 import java.io.File
 import kotlin.math.ceil
+import kotlin.math.round
 
 class FragmentHome : ComponentActivity() {
 
@@ -96,6 +98,7 @@ class FragmentHome : ComponentActivity() {
         NavigationRoutes().SCREEN_YKB,
         NavigationRoutes().SCREEN_FORMS,
         NavigationRoutes().SCREEN_GALERI,
+        NavigationRoutes().SCREEN_MEDIA,
     )
 
     // The following defines the label of each visible menu button.
@@ -107,6 +110,7 @@ class FragmentHome : ComponentActivity() {
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_form),
         (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_gallery),
+        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_media),
     )
 
     // The following defines each visible menu button's icon description.
@@ -118,6 +122,7 @@ class FragmentHome : ComponentActivity() {
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_form),
         (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_gallery),
+        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_media),
     )
 
     // The following defines the icons used for the visible menu buttons.
@@ -129,7 +134,8 @@ class FragmentHome : ComponentActivity() {
         Icons.Default.QrCodeScanner,
         Icons.AutoMirrored.Default.MenuBook,
         Icons.Default.QuestionAnswer,
-        Icons.Default.Wallpaper
+        Icons.Default.Wallpaper,
+        Icons.Default.Subscriptions,
     )
 
     @Composable
@@ -332,7 +338,11 @@ class FragmentHome : ComponentActivity() {
             val rows = ceil((subArray.size / columns).toDouble()).toInt()
 
             var index = 0
-            for (j in 0..rows) {
+            for (j in 0 .. rows) {
+
+                // Ensures that we don't draw an empty row when there is no data.
+                if (index == subArray.size) break
+
                 Row {
                     while (index < subArray.size) {
                         val offsetIndex = index + 2

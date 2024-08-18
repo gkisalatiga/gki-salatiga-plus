@@ -22,6 +22,7 @@
     <string name="screengallery_title">Galeri GKI Salatiga</string>
     <string name="screenagenda_title">Agenda Mingguan</string>
     <string name="screenykb_title">Yayasan Komunikasi Bersama</string>
+    <string name="screenmedia_title">Media Video GKI Salatiga</string>
     <string name="screenwarta_title">Warta Jemaat</string>
     <string name="screenliturgi_title">Tata Ibadah</string>
     <string name="screensaren_title">Sapaan dan Renungan Pagi</string>
@@ -42,6 +43,7 @@
     <string name="btn_mainmenu_offertory">Persembahan</string>
     <string name="btn_mainmenu_form">Formulir</string>
     <string name="btn_mainmenu_gallery">Galeri</string>
+    <string name="btn_mainmenu_media">Media</string>
 
     <!-- Constant strings for image description of the main menu's action buttons -->
     <string name="btn_desc_mainmenu_wj">Buka menu warta jemaat</string>
@@ -53,6 +55,7 @@
     <string name="btn_desc_mainmenu_offertory">Buka menu persembahan</string>
     <string name="btn_desc_mainmenu_form">Buka menu formulir</string>
     <string name="btn_desc_mainmenu_gallery">Buka menu galeri</string>
+    <string name="btn_desc_mainmenu_media">Buka menu media</string>
 
     <!-- Constant string for describing the banner image in the "Info/About Church" fragment. -->
     <string name="info_church_img_description">Gereja Kristen Indonesia Salatiga</string>
