@@ -70,6 +70,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -266,29 +267,40 @@ class ScreenVideoLive : ComponentActivity() {
 
                     getVideo()
 
-                    //jeff 10.25
-                    Spacer(Modifier.height(8.dp))
-                    Text(GlobalSchema.ytViewerParameters["title"]!!,Modifier.absolutePadding(left = 20.dp, right = 20.dp), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.White)
-                    Text("Diunggah pada " + GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc))
-                    Spacer(Modifier.height(10.dp))
+                    Column (Modifier.verticalScroll(rememberScrollState())) {
+                        //jeff 10.25
+                        Spacer(Modifier.height(15.dp))
+                        Text(GlobalSchema.ytViewerParameters["title"]!!,Modifier.absolutePadding(left = 20.dp, right = 20.dp), fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, color = Color.White)
+                        Text("Diunggah pada " + GlobalSchema.ytViewerParameters["date"]!!, Modifier.absolutePadding(left = 20.dp, right = 20.dp), color = Color(0xfffcfcfc), fontSize = 16.sp)
+                        Spacer(Modifier.height(15.dp))
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .absolutePadding(left = 10.dp, right = 10.dp)
-                            .clip(RoundedCornerShape(15.dp))
-                            .height(300.dp)
-                            .background(color = colorResource(R.color.grey_1))
-                    ) {
-                        Column(
+                        // the video desc
+                        Box(
                             modifier = Modifier
-                                .padding(10.dp)
-                                .verticalScroll(rememberScrollState())
+                                .fillMaxWidth()
+                                .absolutePadding(left = 10.dp, right = 10.dp)
+                                .padding(bottom = 20.dp)
+                                .clip(RoundedCornerShape(15.dp))
+                                .background(color = colorResource(R.color.grey_1))
+                                .fillMaxSize()
+                                .wrapContentSize()
                         ) {
-                            Text(GlobalSchema.ytViewerParameters["desc"]!!, Modifier.absolutePadding(left = 10.dp, right = 10.dp), fontSize = 14.sp, lineHeight = 1.em, color = Color.White)
+                            Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Top) {
+                                Text(
+                                    GlobalSchema.ytViewerParameters["desc"]!!,
+                                    Modifier
+                                        .absolutePadding(left = 10.dp, right = 10.dp)
+                                        .fillMaxWidth(),
+                                    fontSize = 14.sp,
+                                    lineHeight = 1.em,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Left
+                                )
+                            }
+                            // Add other composables inside the Box if needed.
                         }
-                        // Add other composables inside the Box if needed
                     }
+
                 }  // --- end of scrollable column.
             }  // --- end of box.
         }  // --- end of scaffold.

@@ -146,6 +146,12 @@ class GlobalSchema : Application() {
         // Whether to hide the splash screen.
         const val DEBUG_DISABLE_SPLASH_SCREEN = false
 
+        // Whether to disable downloading the static data zip file from the GitHub repository.
+        const val DEBUG_DISABLE_DOWNLOADING_STATIC_DATA = true
+
+        // Whether to disable downloading the carousel data zip file from the GitHub repository.
+        const val DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA = false
+
         /* ------------------------------------------------------------------------------------ */
         /* These parameters are used to navigate across screens, fragments, and submenus in the composables.
          * These parameters must be individually a mutable state object.
@@ -189,6 +195,9 @@ class GlobalSchema : Application() {
         val ytIsFullscreen = mutableStateOf(false)
         val ytCurrentSecond = mutableFloatStateOf(0.0f)
 
+        /* Determines what screen triggered the launching of "ScreenVideoList". */
+        var ytVideoListDispatcher: String = ""
+
         /* The remembered scroll states. */
         var fragmentGalleryListScrollState: LazyGridState? = null
         var fragmentHomeScrollState: ScrollState? = null
@@ -196,6 +205,7 @@ class GlobalSchema : Application() {
         var fragmentInfoScrollState: ScrollState? = null
         var screenAgendaScrollState: ScrollState? = null
         var screenFormsScrollState: ScrollState? = null
+        var screenMediaScrollState: ScrollState? = null
         var screenPersembahanScrollState: ScrollState? = null
         var screenGaleriScrollState: ScrollState? = null
 
@@ -251,9 +261,8 @@ class GlobalSchema : Application() {
         var webViewTargetURL: String = ""
         var webViewTitle: String = ""
 
-        // Determines what playlist to display when switching to "ScreenVideoList".
-        // This represents the JSON node under "data/yt-video".
-        var videoListTargetNode: String = ""
+        // Determines what YouTube playlist to display when switching to "ScreenVideoList".
+        var videoListContentArray: MutableList<JSONObject> = mutableListOf()
         var videoListTitle: String = ""
 
         // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,

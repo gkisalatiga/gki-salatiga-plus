@@ -32,6 +32,7 @@ import android.app.Activity
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -87,6 +88,8 @@ import org.gkisalatiga.plus.screen.ScreenGaleriYear
 import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
+import org.gkisalatiga.plus.screen.ScreenMedia
+import org.gkisalatiga.plus.screen.ScreenMinistry
 import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
 import org.gkisalatiga.plus.screen.ScreenVideoList
@@ -160,6 +163,10 @@ class ActivityLauncher : ComponentActivity() {
             )
         )
 
+        // Lock the screen's orientation to portrait mode only.
+        val targetOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        this.requestedOrientation = targetOrientation
+
         // Enable on-the-fly edit of drawable SVG vectors.
         // SOURCE: https://stackoverflow.com/a/38418049
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
@@ -219,6 +226,7 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.screenAgendaScrollState = rememberScrollState()
             GlobalSchema.screenFormsScrollState = rememberScrollState()
             GlobalSchema.screenGaleriScrollState = rememberScrollState()
+            GlobalSchema.screenMediaScrollState = rememberScrollState()
             GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
@@ -317,6 +325,8 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_GALERI_LIST) { ScreenGaleriList().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
+            composable(NavigationRoutes().SCREEN_MEDIA) { ScreenMedia().getComposable() }
+            composable(NavigationRoutes().SCREEN_MINISTRY) { ScreenMinistry().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
@@ -382,10 +392,11 @@ class ActivityLauncher : ComponentActivity() {
         if (timeNowMillis > lastStaticDataUpdate + staticDataUpdateFrequency) {
             updateStaticData = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old. It will be updated soon.")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old.")
         } else {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is up-to-date.")
         }
+        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_STATIC_DATA) updateStaticData = false  // --- override.
 
         // Determine should we re-download the carousel banner archive file from the repository,
         // which could be huge in size. (We don't do it frequently.)
@@ -395,10 +406,11 @@ class ActivityLauncher : ComponentActivity() {
         if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {
             updateCarouselBanner = true
             AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old. It will be updated soon.")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old.")
         } else {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is up-to-date.")
         }
+        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA) updateCarouselBanner = false  // --- override.
 
         // Upon successful data download, we manage the app's internal variable storage
         // according to the downloaded JSON file's schema.
@@ -434,9 +446,6 @@ class ActivityLauncher : ComponentActivity() {
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
-
-            // Init the services sections, mitigating java.util.ConcurrentModificationException.
-            initServicesSection()
 
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
@@ -475,9 +484,6 @@ class ActivityLauncher : ComponentActivity() {
                         Extractor(this).initCarouselExtractLocation()
                     }
 
-                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
-                    initServicesSection()
-
                     // It is finally set-up. Let's break free from this loop.
                     break
 
@@ -499,9 +505,6 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
                     Extractor(this).initCarouselExtractLocation()
 
-                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
-                    initServicesSection()
-
                     /* We do not break up with this infinite while loop until we are connected to the internet. */
                     // But we still set this flag to "true" to avoid infinite extraction loop.
                     GlobalSchema.isOfflineCachedDataLoaded = true
@@ -515,41 +518,6 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
-    }
-
-    /**
-     * This function initializes the sections inside the "Services" tab,
-     * based on the retrieved (or fallback) JSON.
-     *
-     * This function is created in order to mitigate: java.util.ConcurrentModificationException,
-     * which occurs when the services sections are initialized in the fragment instead of the main thread/composable.
-     */
-    private fun initServicesSection() {
-        // Preamble logging.
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.initServicesSection] Launching services initialization ...")
-
-        // Get the application's JSON object.
-        val json: JSONObject = AppDatabase().getMainData()
-
-        // Reset the ArrayLists.
-        GlobalSchema.servicesNode = ArrayList<String>()
-        GlobalSchema.servicesTitle = ArrayList<String>()
-
-        // Retrieve the dict key of the list of services.
-        val servicesDictionaryKey: JSONObject = json.getJSONObject("yt-video")
-        for (l in servicesDictionaryKey.keys()) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of l in services dict.: $l")
-            GlobalSchema.servicesNode.add(l!!)
-        }
-
-        // Retrieve the title helper for services.
-        // This is the list of services to display, corresponding to the JSONSchema node name.
-        val helperTitleArray: JSONObject = json.getJSONObject("helper-title").getJSONObject("yt-video")
-        for (l in GlobalSchema.servicesNode) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of added string in the helper array: ${helperTitleArray.getString(l)}")
-            GlobalSchema.servicesTitle.add(helperTitleArray.getString(l))
-        }
-
     }
 
 }

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -142,7 +143,7 @@ class FragmentInfo : ComponentActivity() {
                             GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_INTERNAL_HTML
                         },
 
-                        modifier = Modifier.padding(bottom = 10.dp).height(150.dp)
+                        modifier = Modifier.padding(bottom = 10.dp).aspectRatio(2.4f).fillMaxWidth()
                         ) {
 
                         // Displaying the text-overlaid image.
@@ -199,7 +200,11 @@ class FragmentInfo : ComponentActivity() {
                 }
             }  // --- end of church info card/column.
 
-            // Displays the social media CTAs.
+            /* Display the "two-dimensional" (i.e., having nested page) ministry info card. */
+            // TODO: Only after the "Media" feature is introduced.
+            getMinistryNestedInfo()
+
+            /* Displays the social media CTAs. */
             Spacer(Modifier.height(50.dp))
             Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 // Assumes identical ArrayList size.
@@ -221,7 +226,7 @@ class FragmentInfo : ComponentActivity() {
                 }
             }
 
-            // Displays the copyright notice.
+            /* Displays the copyright notice. */
             Column (Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 Spacer(Modifier.height(25.dp))
                 Text(stringResource(R.string.about_copyright_notice),
@@ -245,6 +250,78 @@ class FragmentInfo : ComponentActivity() {
                 doTriggerBrowserOpen.value = false
             }
         }
+    }
+
+    /**
+     * Display the two-dimensional (i.e., having nested pages) ministry info page.
+     * This card is displayed separately as an exception, because it is currently
+     * the only card info that bears nested pages.
+     */
+    @Composable
+    private fun getMinistryNestedInfo() {
+        /*Card(
+            onClick = {
+                if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title!", Toast.LENGTH_SHORT).show()
+
+                // Set this screen as the anchor point for "back"
+                GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
+                GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MINISTRY
+            },
+
+            modifier = Modifier.padding(bottom = 10.dp).height(150.dp)
+        ) {
+
+            // Displaying the text-overlaid image.
+            Box {
+                /* The background featured image. */
+                // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/customize
+                // ---
+                val contrast = 1.1f  // --- 0f..10f (1 should be default)
+                val brightness = 0.0f  // --- -255f..255f (0 should be default)
+                Image(
+                    // Load local path image.
+                    // SOURCE: https://stackoverflow.com/a/70827897
+                    painter = rememberAsyncImagePainter(
+                        File(GlobalSchema.staticDataBannerArray[index])
+                    ),
+                    contentDescription = "Profile page: $title",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.colorMatrix(ColorMatrix(
+                        floatArrayOf(
+                            contrast, 0f, 0f, 0f, brightness,
+                            0f, contrast, 0f, 0f, brightness,
+                            0f, 0f, contrast, 0f, brightness,
+                            0f, 0f, 0f, 1f, 0f
+                        )
+                    ))
+                )
+
+                /* Add shadow-y overlay background so that the white text becomes more visible. */
+                // SOURCE: https://developer.android.com/develop/ui/compose/graphics/draw/brush
+                // SOURCE: https://stackoverflow.com/a/60479489
+                Box (
+                    modifier = Modifier
+                        // Color pattern: 0xAARRGGBB (where "AA" is the alpha value).
+                        .background(Color(0x40fda308))
+                        .matchParentSize()
+                )
+
+                /* The card description label. */
+                Column (horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = title,
+                        fontSize = 22.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 20.dp).padding(bottom = 20.dp),
+                        style = TextStyle(
+                            shadow = Shadow(Color.Black, Offset(3.0f, 3.0f), 8.0f)
+                        )
+                    )
+                }
+            }  // --- end of box.
+
+        }*/
     }
 
 }
