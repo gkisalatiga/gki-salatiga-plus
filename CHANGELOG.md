@@ -1,5 +1,13 @@
 # GKI Salatiga+ Changelog
 
+## v0.3.2-beta (22) --- 2024-08-19
+
+- New: Added the "Media" screen that displays non-pinned GKI Salatiga YouTube playlists
+- Improved: Added thumbnail aspect ratios in order to maintain layout size and position
+- Improved: Locked orientation to portrait on non-fullscreen YouTube screens
+- Improved: Improved the outlook and display of the video viewer and playlist display
+- Improved: (Back-End) Added override debug settings to disable downloading static and carousel zip files
+
 ## v0.3.1-beta.2 (21) --- 2024-08-16
 
 - Fix: Fixed "targeting S+ version 31 and above" error on HyperOS devices

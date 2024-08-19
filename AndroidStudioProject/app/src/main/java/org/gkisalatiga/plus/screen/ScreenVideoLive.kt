@@ -287,7 +287,15 @@ class ScreenVideoLive : ComponentActivity() {
                         ) {
                             Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Top) {
                                 Text(
-                                    GlobalSchema.ytViewerParameters["desc"]!!, Modifier.absolutePadding(left = 10.dp, right = 10.dp).fillMaxWidth(), fontSize = 14.sp, lineHeight = 1.em, color = Color.White, textAlign = TextAlign.Left)
+                                    GlobalSchema.ytViewerParameters["desc"]!!,
+                                    Modifier
+                                        .absolutePadding(left = 10.dp, right = 10.dp)
+                                        .fillMaxWidth(),
+                                    fontSize = 14.sp,
+                                    lineHeight = 1.em,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Left
+                                )
                             }
                             // Add other composables inside the Box if needed.
                         }

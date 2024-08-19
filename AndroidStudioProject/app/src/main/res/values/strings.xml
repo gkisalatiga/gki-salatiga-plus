@@ -2,7 +2,7 @@
     <!-- Constant strings for app-related names -->
     <string name="app_name">GKI Salatiga+ (Beta)</string>
     <string name="app_name_alias">GKI Salatiga Plus (Beta)</string>
-    <string name="title_activity_main">GKI Salatiga+</string>
+    <string name="title_activity_main">GKI Salatiga+ (Beta)</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
     <string name="bottomnav_menu_home">Beranda</string>
