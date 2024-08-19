@@ -195,6 +195,9 @@ class GlobalSchema : Application() {
         val ytIsFullscreen = mutableStateOf(false)
         val ytCurrentSecond = mutableFloatStateOf(0.0f)
 
+        /* Determines what screen triggered the launching of "ScreenVideoList". */
+        var ytVideoListDispatcher: String = ""
+
         /* The remembered scroll states. */
         var fragmentGalleryListScrollState: LazyGridState? = null
         var fragmentHomeScrollState: ScrollState? = null
@@ -202,6 +205,7 @@ class GlobalSchema : Application() {
         var fragmentInfoScrollState: ScrollState? = null
         var screenAgendaScrollState: ScrollState? = null
         var screenFormsScrollState: ScrollState? = null
+        var screenMediaScrollState: ScrollState? = null
         var screenPersembahanScrollState: ScrollState? = null
         var screenGaleriScrollState: ScrollState? = null
 
@@ -257,9 +261,8 @@ class GlobalSchema : Application() {
         var webViewTargetURL: String = ""
         var webViewTitle: String = ""
 
-        // Determines what playlist to display when switching to "ScreenVideoList".
-        // This represents the JSON node under "data/yt-video".
-        var videoListTargetNode: String = ""
+        // Determines what YouTube playlist to display when switching to "ScreenVideoList".
+        var videoListContentArray: MutableList<JSONObject> = mutableListOf()
         var videoListTitle: String = ""
 
         // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,

@@ -14,12 +14,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -55,16 +52,29 @@ import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.json.JSONArray
 import org.json.JSONObject
 
-class FragmentServices() : ComponentActivity() {
-
-    // The list of JSON nodes corresponding to a service section.
-    private val listOfServicesNode: ArrayList<String> = GlobalSchema.servicesNode
-
-    // The list of services to display, corresponding to the section title string ID.
-    private val listOfServicesTitle: ArrayList<String> = GlobalSchema.servicesTitle
+class FragmentServices : ComponentActivity() {
 
     @Composable
     public fun getComposable() {
+
+        // The "pinned playlist" section.
+        val pinnedList: JSONArray = AppDatabase().getMainData().getJSONObject("yt").getJSONArray("pinned")
+
+        // Enlist the cards to be shown in this fragment.
+        // This is equivalent to this fragment's particular JSON node.
+        val pinnedPlaylistTitle: MutableList<String> = mutableListOf()
+        val pinnedPlaylistContent: MutableList<JSONArray> = mutableListOf()
+        for (i in 0 until pinnedList.length()) {
+            pinnedPlaylistTitle.add(
+                (pinnedList[i] as JSONObject).getString("title")
+            )
+
+            pinnedPlaylistContent.add(
+                (pinnedList[i] as JSONObject).getJSONArray("content")
+            )
+        }
+        // pinnedPlaylistTitle.removeAt(0)
+        // pinnedPlaylistContent.removeAt(0)
 
         // Enabling vertical scrolling, and setting the layout to center both vertically and horizontally.
         // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
@@ -78,10 +88,10 @@ class FragmentServices() : ComponentActivity() {
                 .verticalScroll(state = scrollState)
                 .padding(20.dp)
         ) {
-            // Assumes both "listOfServicesNode" and "listOfServicesTitle" have the same list size.
-            listOfServicesNode.forEachIndexed { index, str ->
+            // Assumes both "pinnedPlaylistTitle" and "pinnedPlaylistContent" have the same list size.
+            pinnedPlaylistTitle.forEachIndexed { index, str ->
                 // Displaying the relevant YouTube-based church services.
-                getServicesUI(str, listOfServicesTitle[index])
+                getServicesUI(str, pinnedPlaylistContent[index])
             }
         }
 
@@ -94,46 +104,25 @@ class FragmentServices() : ComponentActivity() {
      * @param sectionTitle the title string that will be displayed on top of the section.
      */
     @Composable
-    private fun getServicesUI(nodeName: String, sectionTitle: String) {
+    private fun getServicesUI(sectionTitle: String, sectionContent: JSONArray) {
 
-        // Get the application's JSON object.
-        val json: JSONObject = AppDatabase().getMainData()
-
-        // Navigate to this fragment's particular JSON node, and retrieve its array.
-        val array: JSONArray = json.getJSONObject("yt-video").getJSONArray(nodeName)
-
-        // Enlist the cards to be shown in this fragment.
-        // This is equivalent to this fragment's particular JSON node.
-        var cardsList: MutableList<Map<String, String>> = mutableListOf(emptyMap())
-        for (i in 0 until array.length()) {
-            val curNode = array[i] as JSONObject
-            cardsList.add(mapOf(
-                "title" to curNode.getString("title"),
-                "date" to curNode.getString("date"),
-                "link" to curNode.getString("link"),
-                "desc" to curNode.getString("desc"),
-                "thumbnail" to curNode.getString("thumbnail")
-            ))
+        // The current playlist's video list.
+        val playlistContentList: MutableList<JSONObject> = mutableListOf()
+        for (i in 0 until sectionContent.length()) {
+            playlistContentList.add(sectionContent[i] as JSONObject)
         }
-
-        // For some reason, we must pop the 0-th item in cardsList
-        // because JSONArray iterates from 1, not 0.
-        cardsList.removeAt(0)
+        playlistContentList.removeAt(0)
 
         // Testing and debugging.
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
-            Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${cardsList.size}")
-            cardsList.forEachIndexed { index, map ->
-                Log.d("Groaker-Test", "[$index] ${map["title"]}")
-                Log.d("Groaker-Test", "[$index] ${map["date"]}")
-                Log.d("Groaker-Test", "[$index] ${map["link"]}")
-                Log.d("Groaker-Test", "[$index] ${map["thumbnail"]}")
-            }
-        }
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
 
-        // Only show the three most recent videos.
-        if (cardsList.size > 3) {
-            cardsList = cardsList.subList(0, 3)
+        // Only show the "N" most recent videos.
+        val recentVideoList: MutableList<JSONObject> = mutableListOf()
+        val videoCount = 3
+        if (playlistContentList.size > videoCount) {
+            recentVideoList.addAll(playlistContentList.subList(0, videoCount))
+        } else {
+            recentVideoList.addAll(playlistContentList)
         }
 
         /* Displaying the section title. */
@@ -141,9 +130,10 @@ class FragmentServices() : ComponentActivity() {
             Text(sectionTitle, modifier = Modifier.fillMaxWidth().weight(4f), fontWeight = FontWeight.Bold, fontSize = 24.sp, overflow = TextOverflow.Ellipsis)
             Button(onClick = {
                 // Display the list of videos in this playlist.
-                GlobalSchema.videoListTargetNode = nodeName
+                GlobalSchema.videoListContentArray = playlistContentList
                 GlobalSchema.videoListTitle = sectionTitle
                 GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
+                GlobalSchema.ytVideoListDispatcher = NavigationRoutes().SCREEN_MAIN
             }, modifier = Modifier.fillMaxWidth().weight(1f).padding(0.dp).wrapContentSize(Alignment.Center, true)) {
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Some desc", modifier = Modifier.fillMaxSize().aspectRatio(1.0f).padding(0.dp))
             }
@@ -156,18 +146,18 @@ class FragmentServices() : ComponentActivity() {
             item { Spacer(modifier = Modifier.width(5.dp)) }
 
             // The actual content. This displays the cards.
-            items(cardsList.size) {
+            items(recentVideoList.size) {
 
                 // Preparing the arguments.
-                val title = cardsList[it]["title"]
-                val url = cardsList[it]["link"]
-                val desc = cardsList[it]["desc"]
+                val title = recentVideoList[it].getString("title")
+                val url = recentVideoList[it].getString("link")
+                val desc = recentVideoList[it].getString("desc")
 
                 // Format the date.
-                val date = StringFormatter().convertDateFromJSON(cardsList[it]["date"]!!)
+                val date = StringFormatter().convertDateFromJSON(recentVideoList[it].getString("date"))
 
                 // Retrieving the video thumbnail.
-                val imgSrc = StringFormatter().getYouTubeThumbnailFromUrl(url!!)
+                val thumbnail = recentVideoList[it].getString("thumbnail")
 
                 Card (
                     onClick = {
@@ -177,9 +167,9 @@ class FragmentServices() : ComponentActivity() {
                         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Opening the YouTube stream: $url.")
                         GlobalSchema.ytViewerParameters["yt-link"] = url
                         GlobalSchema.ytViewerParameters["yt-id"] = StringFormatter().getYouTubeIDFromUrl(url)
-                        GlobalSchema.ytViewerParameters["title"] = title!!
+                        GlobalSchema.ytViewerParameters["title"] = title
                         GlobalSchema.ytViewerParameters["date"] = date
-                        GlobalSchema.ytViewerParameters["desc"] = desc!!
+                        GlobalSchema.ytViewerParameters["desc"] = desc
                         GlobalSchema.ytCurrentSecond.floatValue = 0.0f
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                         GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_LIVE
@@ -190,7 +180,7 @@ class FragmentServices() : ComponentActivity() {
                     Column {
                         // Displaying the image.
                         AsyncImage(
-                            model = imgSrc,
+                            model = thumbnail,
                             contentDescription = title,
                             error = painterResource(R.drawable.thumbnail_loading),
                             modifier = Modifier.fillMaxWidth().aspectRatio(1.77778f),
@@ -198,7 +188,7 @@ class FragmentServices() : ComponentActivity() {
                         )
                         // Displaying the content description of the card.
                         Column (modifier = Modifier.padding(10.dp)) {
-                            Text(title!!, fontWeight = FontWeight.Bold, minLines = 1, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(title, fontWeight = FontWeight.Bold, minLines = 1, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Text("Diunggah $date")
                         }
                     }

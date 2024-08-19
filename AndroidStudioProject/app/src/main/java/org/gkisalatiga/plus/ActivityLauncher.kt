@@ -226,6 +226,7 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.screenAgendaScrollState = rememberScrollState()
             GlobalSchema.screenFormsScrollState = rememberScrollState()
             GlobalSchema.screenGaleriScrollState = rememberScrollState()
+            GlobalSchema.screenMediaScrollState = rememberScrollState()
             GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
             // Listen to the request to hide the phone's bars.
@@ -446,9 +447,6 @@ class ActivityLauncher : ComponentActivity() {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
 
-            // Init the services sections, mitigating java.util.ConcurrentModificationException.
-            initServicesSection()
-
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
             GlobalSchema.isGalleryDataInitialized.value = false
@@ -486,9 +484,6 @@ class ActivityLauncher : ComponentActivity() {
                         Extractor(this).initCarouselExtractLocation()
                     }
 
-                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
-                    initServicesSection()
-
                     // It is finally set-up. Let's break free from this loop.
                     break
 
@@ -510,9 +505,6 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
                     Extractor(this).initCarouselExtractLocation()
 
-                    // Init the services sections, mitigating java.util.ConcurrentModificationException.
-                    initServicesSection()
-
                     /* We do not break up with this infinite while loop until we are connected to the internet. */
                     // But we still set this flag to "true" to avoid infinite extraction loop.
                     GlobalSchema.isOfflineCachedDataLoaded = true
@@ -526,41 +518,6 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
-    }
-
-    /**
-     * This function initializes the sections inside the "Services" tab,
-     * based on the retrieved (or fallback) JSON.
-     *
-     * This function is created in order to mitigate: java.util.ConcurrentModificationException,
-     * which occurs when the services sections are initialized in the fragment instead of the main thread/composable.
-     */
-    private fun initServicesSection() {
-        // Preamble logging.
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.initServicesSection] Launching services initialization ...")
-
-        // Get the application's JSON object.
-        val json: JSONObject = AppDatabase().getMainData()
-
-        // Reset the ArrayLists.
-        GlobalSchema.servicesNode = ArrayList<String>()
-        GlobalSchema.servicesTitle = ArrayList<String>()
-
-        // Retrieve the dict key of the list of services.
-        val servicesDictionaryKey: JSONObject = json.getJSONObject("yt-video")
-        for (l in servicesDictionaryKey.keys()) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of l in services dict.: $l")
-            GlobalSchema.servicesNode.add(l!!)
-        }
-
-        // Retrieve the title helper for services.
-        // This is the list of services to display, corresponding to the JSONSchema node name.
-        val helperTitleArray: JSONObject = json.getJSONObject("helper-title").getJSONObject("yt-video")
-        for (l in GlobalSchema.servicesNode) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "Current value of added string in the helper array: ${helperTitleArray.getString(l)}")
-            GlobalSchema.servicesTitle.add(helperTitleArray.getString(l))
-        }
-
     }
 
 }
