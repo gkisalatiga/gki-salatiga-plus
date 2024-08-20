@@ -111,7 +111,7 @@ class FragmentServices : ComponentActivity() {
         for (i in 0 until sectionContent.length()) {
             playlistContentList.add(sectionContent[i] as JSONObject)
         }
-        playlistContentList.removeAt(0)
+        // playlistContentList.removeAt(0)
 
         // Testing and debugging.
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")

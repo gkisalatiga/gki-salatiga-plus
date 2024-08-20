@@ -33,6 +33,14 @@ class GlobalSchema : Application() {
     companion object {
 
         /* ------------------------------------------------------------------------------------ */
+        /* The following constants are used in the "ScreenAbout" composable. */
+        const val aboutSourceCodeURL = "https://github.com/gkisalatiga/gki-salatiga-plus"
+        const val aboutChangelogURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/CHANGELOG.md"
+        const val aboutContactMail = "gkisalatiga@gmail.com"
+        const val aboutLicenseFullTextURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/LICENSE"
+
+
+        /* ------------------------------------------------------------------------------------ */
         /* The following schemas are used in Google Drive Gallery viewer
          * and the SAF-based GDrive photo downloader. */
 
@@ -203,6 +211,8 @@ class GlobalSchema : Application() {
         var fragmentHomeScrollState: ScrollState? = null
         var fragmentServicesScrollState: ScrollState? = null
         var fragmentInfoScrollState: ScrollState? = null
+        var screenAboutScrollState: ScrollState? = null
+        var screenAttributionScrollState: ScrollState? = null
         var screenAgendaScrollState: ScrollState? = null
         var screenFormsScrollState: ScrollState? = null
         var screenMediaScrollState: ScrollState? = null

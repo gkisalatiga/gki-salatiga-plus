@@ -2,6 +2,7 @@
     <!-- Constant strings for app-related names -->
     <string name="app_name">GKI Salatiga+ (Beta)</string>
     <string name="app_name_alias">GKI Salatiga Plus (Beta)</string>
+    <string name="app_description">Media sistem informasi jemaat dan komunikasi internal untuk mendukung pembangunan jemaat di GKI Salatiga</string>
     <string name="title_activity_main">GKI Salatiga+ (Beta)</string>
 
     <!-- Constant strings for ScreenMain and FragmentMain. -->
@@ -12,6 +13,7 @@
 
     <!-- Constant strings for screen titles. -->
     <string name="screenabout_title">About</string>
+    <string name="screenattrib_title">Open Source Libraries</string>
     <string name="screenprofile_title">Profil</string>
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">Video YouTube (Pre-Recorded)</string>
@@ -106,9 +108,26 @@
     <string name="exit_confirmation_toast_string">Tekan sekali lagi untuk keluar dari aplikasi.</string>
 
     <!-- The app copyright notice. -->
-    <string name="about_copyright_notice">Copyright \u00A9 Komisi Multimedia dan Sarana Prasarana GKI Salatiga 2024</string>
+    <string name="about_copyright_notice">Copyright \u00A9 Komisi Sarana Prasarana dan Multimedia\nGKI Salatiga 2024</string>
+
+    <!-- Email chooser intent. -->
+    <string name="email_chooser_title">Send email with ...</string>
 
     <!-- DEBUG -->
     <string name="top_bar_height_in_dp">75</string>
     <string name="empty_string"></string>
+
+    <!-- Applicable in ScreenAbout. -->
+    <string name="screen_about_tentang_aplikasi">Tentang Aplikasi</string>
+    <string name="screen_about_lisensi">Lisensi</string>
+    <string name="screen_about_kebijakan_privasi">Kebijakan Privasi</string>
+    <string name="screen_about_atribusi_pihak_ketiga">Atribusi Sumber Terbuka</string>
+    <string name="screen_about_kode_sumber">Kode Sumber</string>
+    <string name="screen_about_log_perubahan">Log Perubahan</string>
+    <string name="screen_about_tentang_pengembang">Tentang Pengembang</string>
+    <string name="screen_about_kontributor">Kontributor</string>
+    <string name="screen_about_kontak">Kontak</string>
+    <string name="screen_about_license_dismiss">Mengerti</string>
+    <string name="screen_about_license_dismiss_ok">OK</string>
+    <string name="screen_about_license_confirm">Buka Teks Utuh</string>
 </resources>

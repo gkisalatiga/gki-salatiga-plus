@@ -1,5 +1,13 @@
 # GKI Salatiga+ Changelog
 
+## v0.4.0-beta (23) --- 2024-08-21
+
+- New: Added privacy policy notice
+- New: Added changelog, license information, open source library attributions, contributor list, and repo link in the "About" screen
+- Improved: Adjusted the font size of forms, gallery, YKB devotion, church news, and liturgy menus
+- Improved: Changed the image loading graph from "omon-omon" to "no internet connection"
+- Fix: Fixed services fragment not displaying the first YouTube video in a playlist
+
 ## v0.3.2-beta (22) --- 2024-08-19
 
 - New: Added the "Media" screen that displays non-pinned GKI Salatiga YouTube playlists

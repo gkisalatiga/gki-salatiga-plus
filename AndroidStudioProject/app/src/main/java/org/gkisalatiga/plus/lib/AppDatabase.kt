@@ -45,6 +45,21 @@ class AppDatabase {
     }
 
     /**
+     * Returns the attribution JSON file of this applications,
+     * which open source works are used in this app.
+     */
+    public fun getAttributions(): JSONObject {
+        // Loading the local JSON file.
+        // SOURCE: https://stackoverflow.com/a/2856501
+        // SOURCE: https://stackoverflow.com/a/39500046
+        val input: InputStream = GlobalSchema.context.resources.openRawResource(R.raw.app_attributions_open_source)
+        val inputAsString: String = input.bufferedReader().use { it.readText() }
+
+        // Return the fallback JSONObject, and then navigate to the "data" node.
+        return JSONObject(inputAsString)
+    }
+
+    /**
      * Returns the fallback JSONObject stored and packaged within the app.
      * This is useful especially when the app has not yet loaded the refreshed JSON metadata
      * from the internet yet.
