@@ -11,8 +11,8 @@ android {
         applicationId "org.gkisalatiga.plus"
         minSdk 21
         targetSdk 33
-        versionCode 22
-        versionName "0.3.2-beta"
+        versionCode 23
+        versionName "0.4.0-beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -118,6 +118,13 @@ dependencies {
     // Add more material icons.
     // SOURCE: https://stackoverflow.com/a/65665564
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Enable markdown rendering.
+    // SOURCE: https://stackoverflow.com/a/68899070
+    // SOURCE: https://github.com/halilozercan/compose-richtext
+    // SOURCE: https://halilibo.com/compose-richtext/
+    implementation("com.halilibo.compose-richtext:richtext-commonmark:1.0.0-alpha01")
+    implementation("com.halilibo.compose-richtext:richtext-ui-material:1.0.0-alpha01")
 
     // For displaying icons on tabs?
     // SOURCE: https://stackoverflow.com/q/78398074

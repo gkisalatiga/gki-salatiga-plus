@@ -26,6 +26,7 @@ public data class NavigationRoutes (
     val SCREEN_VIDEO_LIST: String = "nav_screen_saren",
     val SCREEN_POSTER_VIEWER: String = "nav_screen_poster",
     val SCREEN_AGENDA: String = "nav_screen_agenda",
+    val SCREEN_ATTRIBUTION: String = "nav_screen_attrib",
     val SCREEN_PERSEMBAHAN: String = "nav_screen_offertory",
     val SCREEN_GALERI: String = "nav_screen_gallery",
     val SCREEN_GALERI_LIST: String = "nav_screen_gallerylist",

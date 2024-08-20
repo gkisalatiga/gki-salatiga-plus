@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GKI Salatiga Plus"
 include ':app'
-include ':splashscreen'

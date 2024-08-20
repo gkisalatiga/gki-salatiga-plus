@@ -168,8 +168,7 @@ class ScreenGaleriYear : ComponentActivity() {
                                 modifier = Modifier.fillMaxSize().weight(2f),
                                 contentScale = ContentScale.Crop
                             )
-                            Spacer( modifier = Modifier.weight(0.4f) )
-                            Text(title, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(7f))
+                            Text(title, fontSize = 18.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(horizontal = 10.dp).weight(7.5f))
                         }
                     }  // --- end of card.
                 }  // --- end of forEach.

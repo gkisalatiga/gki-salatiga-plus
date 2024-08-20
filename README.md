@@ -20,9 +20,11 @@ The developmental project of GKI Salatiga's mobile church application
 
 ## License of Materials Used
 
-- Android Studio Asset Studio Icon library (Apache 2.0) [(Link)](https://developer.android.com/studio/write/create-app-icons)
-- Jetpack Compose Material3 by The Android Open Source Project (Apache 2.0)
-- [Remix-Design](https://github.com/Remix-Design) Iconify.Design RemixIcon Icon Set (Apache 2.0) [(Link)](https://icon-sets.iconify.design/ri)
-- [android-youtube-player](https://github.com/PierfrancescoSoffritti/android-youtube-player) (MIT License) by Pierfrancesco Soffritti
-- [UnzipUtil](https://prakashnitin.medium.com/unzipping-files-in-android-kotlin-2a2a2d5eb7ae) by Nitin Praksh (NitinPraksash9911) (Apache 2.0) [(Alternative Link)](https://gist.github.com/NitinPraksash9911/dea21ec4b8ae7df068f8f891187b6d1e)
-- [ZoomableBox](https://stackoverflow.com/a/72528056) by [Sean](https://stackoverflow.com/users/45364/sean), licensed under CC BY-SA
+- Android Studio Asset Studio Icon Library, The Android Open Source Project (C) 2024 (Apache 2.0) [(Link)](https://developer.android.com/studio/write/create-app-icons)
+- Android YouTube Player, Pierfrancesco Soffritti (C) 2023 (MIT) [Link](https://github.com/PierfrancescoSoffritti/android-youtube-player)
+- Compose Richtext, Halil Ozercan (C) 2024 (Apache 2.0) [Link](https://github.com/halilozercan/compose-richtext)
+- Jetpack Compose Material3, The Android Open Source Project (C) 2024 (Apache 2.0) [(Link)](https://developer.android.com/jetpack/androidx/releases/compose-material3#1.3.0-beta04)
+- Material Symbols & Icons - Google Fonts, The Android Open Source Project (c) 2024 (SIL Open Font License) [(Link)](https://fonts.google.com/icons)
+- RemixIcon Icon Set, Remix-Design (C) 2024 (Apache 2.0) [(Link 1)](https://icon-sets.iconify.design/ri), [(Link 2)](https://github.com/Remix-Design/RemixIcon)
+- UnzipUtil, Nitin Praksh (C) 2021 (Apache 2.0) [(Link 1)](https://prakashnitin.medium.com/unzipping-files-in-android-kotlin-2a2a2d5eb7ae), [(Link 2)](https://gist.github.com/NitinPraksash9911/dea21ec4b8ae7df068f8f891187b6d1e)
+- ZoomableBox, Sean (C) 2022 (CC BY-SA 4.0) [(Link)](https://stackoverflow.com/a/72528056)

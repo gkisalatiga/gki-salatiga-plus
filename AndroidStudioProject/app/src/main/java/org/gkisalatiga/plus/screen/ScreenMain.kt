@@ -290,7 +290,7 @@ class ScreenMain : ComponentActivity() {
                         if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(localContext, "You just clicked $curRoute and exited the app!", Toast.LENGTH_SHORT).show()
                         (localContext as ComponentActivity).finish()
                     } else {
-                        Toast.makeText(localContext, exitConfirm , Toast.LENGTH_LONG).show()
+                        Toast.makeText(localContext, exitConfirm, Toast.LENGTH_LONG).show()
                     }
 
                     backPressedTime = System.currentTimeMillis()

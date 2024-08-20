@@ -80,6 +80,7 @@ import org.gkisalatiga.plus.lib.GallerySaver
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
+import org.gkisalatiga.plus.screen.ScreenAttribution
 import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenGaleri
 import org.gkisalatiga.plus.screen.ScreenGaleriList
@@ -223,6 +224,8 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.fragmentHomeScrollState = rememberScrollState()
             GlobalSchema.fragmentServicesScrollState = rememberScrollState()
             GlobalSchema.fragmentInfoScrollState = rememberScrollState()
+            GlobalSchema.screenAboutScrollState = rememberScrollState()
+            GlobalSchema.screenAttributionScrollState = rememberScrollState()
             GlobalSchema.screenAgendaScrollState = rememberScrollState()
             GlobalSchema.screenFormsScrollState = rememberScrollState()
             GlobalSchema.screenGaleriScrollState = rememberScrollState()
@@ -317,6 +320,7 @@ class ActivityLauncher : ComponentActivity() {
         NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
             composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
             composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
+            composable(NavigationRoutes().SCREEN_ATTRIBUTION) { ScreenAttribution().getComposable() }
             composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
             composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
             composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
