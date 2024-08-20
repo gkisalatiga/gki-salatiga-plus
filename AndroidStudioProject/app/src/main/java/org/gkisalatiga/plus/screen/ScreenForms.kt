@@ -139,7 +139,7 @@ class ScreenForms : ComponentActivity() {
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_FORMS
