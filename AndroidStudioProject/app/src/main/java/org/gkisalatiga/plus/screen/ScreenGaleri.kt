@@ -146,10 +146,9 @@ class ScreenGaleri : ComponentActivity() {
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
                 ) {
                     Row ( modifier = Modifier.padding(5.dp).fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically ) {
-                        Text(title, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(3f))
-                        Spacer( modifier = Modifier.weight(1f) )
+                        Text(title, fontSize = 18.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(5f), maxLines = 2, overflow = TextOverflow.Ellipsis)
                         // The "arrow forward" icon.
-                        Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(vertical = 5.dp).padding(end = 5.dp).fillMaxHeight())
+                        Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(vertical = 5.dp).padding(end = 5.dp).padding(start = 10.dp).fillMaxHeight())
                     }
                 }  // --- end of card.
             }  // --- end of forEach.

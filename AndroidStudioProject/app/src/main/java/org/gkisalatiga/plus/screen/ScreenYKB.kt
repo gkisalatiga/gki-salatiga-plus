@@ -139,7 +139,7 @@ class ScreenYKB() : ComponentActivity() {
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_YKB
@@ -152,10 +152,9 @@ class ScreenYKB() : ComponentActivity() {
                     modifier = Modifier.padding(bottom = 10.dp).height(65.dp)
                 ) {
                     Row ( modifier = Modifier.padding(5.dp).fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically ) {
-                        Text(title!!, fontSize = 20.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(3f))
-                        Spacer( modifier = Modifier.weight(1f) )
+                        Text(title!!, fontSize = 18.sp, fontWeight = FontWeight.Normal, modifier = Modifier.padding(start = 5.dp).weight(5f), maxLines = 2, overflow = TextOverflow.Ellipsis)
                         // The "arrow forward" icon.
-                        Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(vertical = 5.dp).padding(end = 5.dp).fillMaxHeight())
+                        Icon(Icons.AutoMirrored.Default.ArrowForward, "", modifier = Modifier.padding(vertical = 5.dp).padding(end = 5.dp).padding(start = 10.dp).fillMaxHeight())
                     }
                 }
 
