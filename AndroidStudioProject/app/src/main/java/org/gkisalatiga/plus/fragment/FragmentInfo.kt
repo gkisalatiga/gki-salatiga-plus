@@ -7,7 +7,9 @@
 package org.gkisalatiga.plus.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
@@ -201,6 +203,9 @@ class FragmentInfo : ComponentActivity() {
                 }
             }  // --- end of church info card/column.
 
+            // The "open with mail" string text.
+            val emailChooserTitle = stringResource(R.string.email_chooser_title)
+
             /* Display the "two-dimensional" (i.e., having nested page) ministry info card. */
             // TODO: Only after the "Media" feature is introduced.
             getMinistryNestedInfo()
@@ -213,8 +218,19 @@ class FragmentInfo : ComponentActivity() {
 
                     Surface(Modifier.weight(1.0f).clickable(onClick = {
                         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[FragmentInfo.getComposable] Selected node: ${socialMediaNodeTitles[index]}")
-                        doTriggerBrowserOpen.value = true
-                        externalLinkURL.value = if (socialMediaNodeTitles[index] == "email") "mailto:${socialMediaNodeTitles[index]}" else socialMediaCTATargets[index]
+
+                        if (socialMediaNodeTitles[index] == "email") {
+                            // SOURCE: https://www.geeksforgeeks.org/how-to-send-an-email-from-your-android-app/
+                            // SOURCE: https://www.tutorialspoint.com/android/android_sending_email.htm
+                            // SOURCE: https://stackoverflow.com/a/59365539
+                            val emailIntent = Intent(Intent.ACTION_SENDTO)
+                            emailIntent.setData(Uri.parse("mailto:${socialMediaCTATargets[index]}"))
+                            ctx.startActivity(Intent.createChooser(emailIntent, emailChooserTitle))
+                        } else {
+                            doTriggerBrowserOpen.value = true
+                            externalLinkURL.value = socialMediaCTATargets[index]
+                        }
+
                     })) {
                         // Modify the icon's color.
                         // SOURCE: https://stackoverflow.com/a/72365284

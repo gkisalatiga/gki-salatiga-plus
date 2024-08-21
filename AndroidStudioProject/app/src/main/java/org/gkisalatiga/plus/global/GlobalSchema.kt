@@ -36,7 +36,7 @@ class GlobalSchema : Application() {
         /* The following constants are used in the "ScreenAbout" composable. */
         const val aboutSourceCodeURL = "https://github.com/gkisalatiga/gki-salatiga-plus"
         const val aboutChangelogURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/CHANGELOG.md"
-        const val aboutContactMail = "gkisalatiga@gmail.com"
+        const val aboutContactMail = "dev.gkisalatiga@gmail.com"
         const val aboutLicenseFullTextURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/LICENSE"
 
 
