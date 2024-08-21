@@ -70,14 +70,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.halilibo.richtext.commonmark.Markdown
-import com.halilibo.richtext.ui.material.RichText
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -450,9 +450,11 @@ class ScreenAbout : ComponentActivity() {
 
                         // Display the markdown text.
                         Column(Modifier.verticalScroll(scrollState).fillMaxSize()) {
-                            RichText {
-                                Markdown(dialogMarkdownContent.trimIndent())
-                            }
+                            MarkdownText(
+                                modifier = Modifier.padding(2.dp),
+                                markdown = dialogMarkdownContent.trimIndent(),
+                                style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Justify)
+                            )
                         }
 
                     }

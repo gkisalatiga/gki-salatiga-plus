@@ -2,6 +2,7 @@
 
 ## Next Beta Update
 
+- Improved: (Back-End) Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
 - Fix: Performance issue due to continuous reading of JSON main data is now solved
 
 ## v0.4.0-beta (23) --- 2024-08-21

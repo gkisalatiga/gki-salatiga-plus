@@ -22,7 +22,7 @@ The developmental project of GKI Salatiga's mobile church application
 
 - Android Studio Asset Studio Icon Library, The Android Open Source Project (C) 2024 (Apache 2.0) [(Link)](https://developer.android.com/studio/write/create-app-icons)
 - Android YouTube Player, Pierfrancesco Soffritti (C) 2023 (MIT) [Link](https://github.com/PierfrancescoSoffritti/android-youtube-player)
-- Compose Richtext, Halil Ozercan (C) 2024 (Apache 2.0) [Link](https://github.com/halilozercan/compose-richtext)
+- Compose Markdown, Jeziel Lago (C) 2024 (MIT) [Link](https://github.com/jeziellago/compose-markdown)
 - Jetpack Compose Material3, The Android Open Source Project (C) 2024 (Apache 2.0) [(Link)](https://developer.android.com/jetpack/androidx/releases/compose-material3#1.3.0-beta04)
 - Material Symbols & Icons - Google Fonts, The Android Open Source Project (c) 2024 (SIL Open Font License) [(Link)](https://fonts.google.com/icons)
 - RemixIcon Icon Set, Remix-Design (C) 2024 (Apache 2.0) [(Link 1)](https://icon-sets.iconify.design/ri), [(Link 2)](https://github.com/Remix-Design/RemixIcon)
