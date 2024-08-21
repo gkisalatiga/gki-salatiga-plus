@@ -509,6 +509,10 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
                     Extractor(this).initCarouselExtractLocation()
 
+                    // Load the cached gallery data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached gallery index JSON file ...")
+                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
+
                     /* We do not break up with this infinite while loop until we are connected to the internet. */
                     // But we still set this flag to "true" to avoid infinite extraction loop.
                     GlobalSchema.isOfflineCachedDataLoaded = true
