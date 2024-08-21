@@ -114,7 +114,7 @@ class ScreenLiturgi : ComponentActivity() {
             }
 
             /* Retrieve the list of liturgies. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONObject("pdf").getJSONArray("liturgi")
+            val formListAsJSONArray = GlobalSchema.globalJSONObject!!.getJSONObject("pdf").getJSONArray("liturgi")
 
             /* Enumerate and enlist the individual card. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())

@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Next Beta Update
+
+- Fix: Performance issue due to continuous reading of JSON main data is now solved
+
 ## v0.4.0-beta (23) --- 2024-08-21
 
 - New: Added privacy policy notice

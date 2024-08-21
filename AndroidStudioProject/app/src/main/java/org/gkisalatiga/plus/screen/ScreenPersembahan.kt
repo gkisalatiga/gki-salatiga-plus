@@ -89,7 +89,7 @@ class ScreenPersembahan() : ComponentActivity() {
         val ctx = LocalContext.current
 
         // The JSON node.
-        val persembahanJSONArray = AppDatabase().getMainData().getJSONArray("offertory")
+        val persembahanJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("offertory")
 
         // The column's saved scroll state.
         val scrollState = GlobalSchema.screenPersembahanScrollState!!

@@ -94,7 +94,7 @@ class ScreenAgenda() : ComponentActivity() {
     private fun getMainContent() {
 
         // The agenda node.
-        val agendaJSONNode = AppDatabase().getMainData().getJSONObject("agenda")
+        val agendaJSONNode = GlobalSchema.globalJSONObject!!.getJSONObject("agenda")
 
         // Enlist the list of title, corresponding to name of days.
         val dayTitleList = agendaJSONNode.keys()

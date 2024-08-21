@@ -58,7 +58,7 @@ class FragmentServices : ComponentActivity() {
     public fun getComposable() {
 
         // The "pinned playlist" section.
-        val pinnedList: JSONArray = AppDatabase().getMainData().getJSONObject("yt").getJSONArray("pinned")
+        val pinnedList: JSONArray = GlobalSchema.globalJSONObject!!.getJSONObject("yt").getJSONArray("pinned")
 
         // Enlist the cards to be shown in this fragment.
         // This is equivalent to this fragment's particular JSON node.
@@ -114,7 +114,8 @@ class FragmentServices : ComponentActivity() {
         // playlistContentList.removeAt(0)
 
         // Testing and debugging.
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
+        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
+        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[FragmentServices] The dumped JSON array: ${playlistContentList}")
 
         // Only show the "N" most recent videos.
         val recentVideoList: MutableList<JSONObject> = mutableListOf()

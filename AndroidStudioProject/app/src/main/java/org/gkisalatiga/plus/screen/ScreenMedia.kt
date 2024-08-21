@@ -95,7 +95,7 @@ class ScreenMedia : ComponentActivity() {
     private fun getMainContent() {
 
         // The "pinned playlist" section.
-        val pinnedList: JSONArray = AppDatabase().getMainData().getJSONObject("yt").getJSONArray("standard")
+        val pinnedList: JSONArray = GlobalSchema.globalJSONObject!!.getJSONObject("yt").getJSONArray("standard")
 
         // Enlist the cards to be shown in this fragment.
         // This is equivalent to this fragment's particular JSON node.

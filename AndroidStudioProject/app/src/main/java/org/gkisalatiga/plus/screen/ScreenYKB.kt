@@ -113,7 +113,7 @@ class ScreenYKB() : ComponentActivity() {
             }
 
             /* Retrieve the list of devotionals. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONArray("ykb")
+            val formListAsJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("ykb")
 
             /* Enumerate and enlist the individual card. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())

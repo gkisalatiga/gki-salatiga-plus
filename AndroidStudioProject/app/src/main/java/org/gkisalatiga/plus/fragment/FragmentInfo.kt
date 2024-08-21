@@ -77,7 +77,7 @@ class FragmentInfo : ComponentActivity() {
     private var externalLinkURL = mutableStateOf("https://www.example.com")
 
     // The JSON node of the social media CTA.
-    private val socialMediaJSONNode = AppDatabase().getMainData().getJSONObject("url-profile")
+    private val socialMediaJSONNode = GlobalSchema.globalJSONObject!!.getJSONObject("url-profile")
 
     // The list of node title.
     // This must be manually specified in the app.

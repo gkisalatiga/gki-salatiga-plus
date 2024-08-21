@@ -187,7 +187,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)
@@ -223,7 +223,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)

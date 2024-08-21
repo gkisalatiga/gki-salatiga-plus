@@ -113,7 +113,7 @@ class ScreenForms : ComponentActivity() {
             }
 
             /* Retrieve the list of forms. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONArray("forms")
+            val formListAsJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("forms")
 
             /* Enumerate and enlist the individual form. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())

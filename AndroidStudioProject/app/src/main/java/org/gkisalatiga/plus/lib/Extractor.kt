@@ -33,7 +33,7 @@ class Extractor(private val ctx: Context) {
         GlobalSchema.staticDataBannerArray.clear()
 
         val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
-        val parentNode = AppDatabase().getMainData().getJSONObject("static")
+        val parentNode = GlobalSchema.globalJSONObject!!.getJSONObject("static")
         for (l in parentNode.keys()) {
             // Extract the static data's node names.
             GlobalSchema.staticDataJSONNodeArray.add(l)
@@ -65,7 +65,7 @@ class Extractor(private val ctx: Context) {
         GlobalSchema.carouselBannerBaseFolderArray.clear()
 
         val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
-        val parentNode = AppDatabase().getMainData().getJSONObject("carousel")
+        val parentNode = GlobalSchema.globalJSONObject!!.getJSONObject("carousel")
         for (l in parentNode.keys()) {
             // Extract the static data's node names.
             GlobalSchema.carouselBannerJSONNodeArray.add(l)

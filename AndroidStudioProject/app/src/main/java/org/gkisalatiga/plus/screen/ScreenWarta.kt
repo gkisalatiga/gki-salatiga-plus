@@ -114,7 +114,7 @@ class ScreenWarta() : ComponentActivity() {
             }
 
             /* Retrieve the list of news. */
-            val formListAsJSONArray = AppDatabase().getMainData().getJSONObject("pdf").getJSONArray("wj")
+            val formListAsJSONArray = GlobalSchema.globalJSONObject!!.getJSONObject("pdf").getJSONArray("wj")
 
             /* Enumerate and enlist the individual card. */
             val enumeratedFormList: MutableList<Map<String, String>> =  mutableListOf(emptyMap<String, String>())

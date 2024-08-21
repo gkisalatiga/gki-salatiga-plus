@@ -97,6 +97,9 @@ class ScreenAbout : ComponentActivity() {
     private var dialogMarkdownContent = ""
     private var dialogMarkdownIcon = Icons.Default.QuestionMark
 
+    // The description of the application.
+    private var appMainDescription = mutableStateOf("")
+
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
@@ -115,6 +118,9 @@ class ScreenAbout : ComponentActivity() {
         val applicationInfo: ApplicationInfo = ctx.getApplicationInfo()
         val stringId = applicationInfo.labelRes
         val appName = if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else ctx.getString(stringId)
+
+        // Init the app's main desc.
+        if (appMainDescription.value.isBlank()) appMainDescription.value = stringResource(R.string.app_description)
 
         Scaffold (
             topBar = { getTopBar() }
@@ -140,19 +146,25 @@ class ScreenAbout : ComponentActivity() {
                             }
 
                             /* DEBUG: Testing notification trigger. */
-                            NotificationService.showDebugNotification(ctx)
+                            // NotificationService.showDebugNotification(ctx)
 
                             /* DEBUG: Testing the alarm receiver. */
                             // AlarmService.test(ctx)
 
                             /* DEBUG: Enlisting the archive folder content recursively. */
                             // SOURCE: https://www.baeldung.com/kotlin/list-files-recursively
-                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
+                            /*if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
                                 val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
                                 File(baseExtractedData).walk().forEach { f ->
                                     Log.d("Groaker-Dump", f.absolutePath)
                                 }
-                            }
+                            }*/
+
+                            /* DEBUG: Dumping the content of the main data's JSON file. */
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "${GlobalSchema.globalJSONObject!!}")
+
+                            /* DEBUG: Displaying the JSON main data. */
+                            appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"
                         }
                     ) {
                         Image(painterResource(R.mipmap.ic_launcher_foreground), "",
@@ -161,10 +173,12 @@ class ScreenAbout : ComponentActivity() {
                         )
                     }
                 }
+
+                // Displaying the text contents.
                 Text(appName, fontWeight = FontWeight.Bold, fontSize = 24.sp)
                 Text("Versi $vName", fontSize = 18.sp)
                 Spacer(Modifier.height(20.dp))
-                Text(stringResource(R.string.app_description), modifier = Modifier.padding(horizontal = 20.dp), textAlign = TextAlign.Center)
+                Text(appMainDescription.value, modifier = Modifier.padding(horizontal = 20.dp), textAlign = TextAlign.Center)
                 Spacer(Modifier.height(20.dp))
 
                 // Display the main "about" contents.

@@ -146,7 +146,7 @@ class GlobalSchema : Application() {
         const val DEBUG_ENABLE_EASTER_EGG = true
 
         // Whether to display the debugger's toast.
-        const val DEBUG_ENABLE_TOAST = true
+        const val DEBUG_ENABLE_TOAST = false
 
         // Whether to display the debugger's logcat logging.
         const val DEBUG_ENABLE_LOG_CAT = true

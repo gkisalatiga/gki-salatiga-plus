@@ -214,8 +214,7 @@ class FragmentHome : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // Navigate to the current iteration's JSON node.
-                    val currentNode = AppDatabase()
-                        .getMainData()
+                    val currentNode = GlobalSchema.globalJSONObject!!
                         .getJSONObject("carousel")
                         .getJSONObject(GlobalSchema.carouselBannerJSONNodeArray[it % actualPageCount])
 
