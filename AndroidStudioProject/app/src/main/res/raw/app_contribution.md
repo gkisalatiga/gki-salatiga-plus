@@ -1,9 +1,10 @@
 
-##### Programmer
+#### Developer
 
 - Samarthya Lykamanuella
 
-##### Quality Assurance
+#### Co-Developers
 
 - Joaquim Pulitzer Agung
 - Natanael Jeffrey Susanto
+- Tunggul Laras
