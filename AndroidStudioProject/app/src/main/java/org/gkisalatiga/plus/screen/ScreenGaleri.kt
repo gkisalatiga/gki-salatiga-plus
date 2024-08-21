@@ -88,6 +88,7 @@ class ScreenGaleri : ComponentActivity() {
 
     @Composable
     private fun getMainContent() {
+        val ctx = LocalContext.current
 
         // The agenda node.
         val galleryNode = GlobalSchema.globalGalleryObject!!
@@ -134,7 +135,7 @@ class ScreenGaleri : ComponentActivity() {
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "Opening gallery folder year: $it", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "Opening gallery folder year: $it", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_GALERI

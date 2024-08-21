@@ -2,8 +2,9 @@
 
 ## Next Beta Update
 
-- Improved: (Back-End) Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
+- Improved: Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
 - Fix: Performance issue due to continuous reading of JSON main data is now solved
+- Fix: StaticMemoryLeak solved by using `LocalContext.current` implementation to obtain the current context in non-main classes
 
 ## v0.4.0-beta (23) --- 2024-08-21
 

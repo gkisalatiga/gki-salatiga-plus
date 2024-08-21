@@ -297,11 +297,6 @@ class GlobalSchema : Application() {
         val posterDialogCaption = mutableStateOf("")
         val posterDialogImageSource = mutableStateOf("")
 
-        /* This parameter is required for  manipulating the composition and the app's view. */
-        // TODO: Find a way to use the app's context across functions without memory leak.
-        @SuppressLint("StaticFieldLeak")
-        var context: Context = AppCompatActivity()
-
         /* This is the clipboard manager. */
         var clipManager: ClipboardManager? = null
 

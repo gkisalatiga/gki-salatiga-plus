@@ -102,28 +102,10 @@ class FragmentHome : ComponentActivity() {
     )
 
     // The following defines the label of each visible menu button.
-    private val btnLabels = listOf(
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_wj),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_liturgi),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_offertory),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_form),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_gallery),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_media),
-    )
+    private lateinit var btnLabels: List<String>
 
     // The following defines each visible menu button's icon description.
-    private val btnDescriptions = listOf(
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_wj),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_liturgi),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_offertory),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_form),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_gallery),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_media),
-    )
+    private lateinit var btnDescriptions: List<String>
 
     // The following defines the icons used for the visible menu buttons.
     // Find the icons here: https://fonts.google.com/icons
@@ -142,6 +124,29 @@ class FragmentHome : ComponentActivity() {
     public fun getComposable() {
         val ctx = LocalContext.current
 
+        /* Initialized the "lateinit" variables. */
+        btnLabels = listOf(
+            ctx.resources.getString(R.string.btn_mainmenu_wj),
+            ctx.resources.getString(R.string.btn_mainmenu_liturgi),
+            ctx.resources.getString(R.string.btn_mainmenu_agenda),
+            ctx.resources.getString(R.string.btn_mainmenu_offertory),
+            ctx.resources.getString(R.string.btn_mainmenu_ykb),
+            ctx.resources.getString(R.string.btn_mainmenu_form),
+            ctx.resources.getString(R.string.btn_mainmenu_gallery),
+            ctx.resources.getString(R.string.btn_mainmenu_media),
+        )
+        btnDescriptions = listOf(
+            ctx.resources.getString(R.string.btn_desc_mainmenu_wj),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_liturgi),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_agenda),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_offertory),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_ykb),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_form),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_gallery),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_media),
+        )
+
+        // Prepare the poster dialog.
         getPosterDialog()
 
         // The following defines each individual featured cover image of the menu.

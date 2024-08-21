@@ -85,6 +85,8 @@ class ScreenYKB() : ComponentActivity() {
     
     @Composable
     private fun getMainContent() {
+        val ctx = LocalContext.current
+
         // Setting the layout to center both vertically and horizontally,
         // and then make it scrollable vertically.
         // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
@@ -139,7 +141,7 @@ class ScreenYKB() : ComponentActivity() {
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_YKB

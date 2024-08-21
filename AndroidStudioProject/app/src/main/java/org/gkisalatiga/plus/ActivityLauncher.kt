@@ -195,7 +195,7 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.lastNewTopBarBackground.value = defaultNewTopBarBackground
 
         // Setting the global context value.
-        GlobalSchema.context = this
+        // GlobalSchema.context = this
 
         // Setting the clipboard manager.
         // Should be performed within "onCreate" to avoid the following error:
@@ -424,7 +424,7 @@ class ActivityLauncher : ComponentActivity() {
         val executor = Executors.newSingleThreadExecutor()
         executor.execute {
             // Create the JSON manager object.
-            val appDB = AppDatabase()
+            val appDB = AppDatabase(this)
 
             // Get the number of launches since install so that we can determine
             // whether to use the fallback data.
@@ -446,7 +446,7 @@ class ActivityLauncher : ComponentActivity() {
 
                 // Loading the fallback gallery data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
-                AppGallery.initFallbackGalleryData()
+                AppGallery(this).initFallbackGalleryData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -458,8 +458,8 @@ class ActivityLauncher : ComponentActivity() {
             while (true) {
 
                 // Make the attempt to download the JSON files.
-                Downloader().initMetaData()
-                Downloader().initGalleryData()
+                Downloader(this).initMetaData()
+                Downloader(this).initGalleryData()
 
                 if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
 
@@ -468,7 +468,7 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
 
                     // Also assign globally the gallery data.
-                    GlobalSchema.globalGalleryObject = AppGallery.getGalleryData()
+                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
 
                     // Make the attempt to fetch the online static data.
                     if (updateStaticData) {

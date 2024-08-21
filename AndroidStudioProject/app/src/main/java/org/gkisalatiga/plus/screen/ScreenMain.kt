@@ -111,7 +111,7 @@ class ScreenMain : ComponentActivity() {
     private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
 
     // Determines the top banner title.
-    private var topBannerTitle = (GlobalSchema.context).resources.getString(R.string.app_name_alias)
+    private var topBannerTitle = ""
 
     // Controls the horizontal scrolling of the pager.
     private lateinit var horizontalPagerState: PagerState
@@ -125,7 +125,11 @@ class ScreenMain : ComponentActivity() {
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
+        val ctx = LocalContext.current
         scope = rememberCoroutineScope()
+
+        // Initializing the top banner title.
+        topBannerTitle = ctx.resources.getString(R.string.app_name_alias)
 
         // Initializing the horizontal pager.
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )

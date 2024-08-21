@@ -106,6 +106,7 @@ class FragmentInfo : ComponentActivity() {
 
     @Composable
     public fun getComposable() {
+        val ctx = LocalContext.current
 
         // Setting the layout to center both vertically and horizontally,
         // and then make it scrollable vertically.
@@ -131,7 +132,7 @@ class FragmentInfo : ComponentActivity() {
 
                     Card(
                         onClick = {
-                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title!", Toast.LENGTH_SHORT).show()
+                            if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You just clicked: $title!", Toast.LENGTH_SHORT).show()
 
                             // Set this screen as the anchor point for "back"
                             GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
