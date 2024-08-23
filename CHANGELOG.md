@@ -2,6 +2,7 @@
 
 ## Next Beta Update
 
+- Improved: Changed the banners on menus: "Warta", "Liturgi", "YKB", "Agenda", and "Forms" by @KimJoZer
 - Improved: Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
 - Improved: The "profile info" static content now has sub-folders and nested content support
 - Improved: For performance optimalization, the "profile info" static data now uses JSON files instead of zip archives

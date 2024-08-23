@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -111,15 +112,18 @@ class ScreenAgenda() : ComponentActivity() {
             val imgDescription = "Menu banner"
             Surface (
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).padding(bottom = 10.dp)
+                modifier = Modifier.aspectRatio(1.77778f)
             ) {
                 Image(
                     painter = painterResource(imgSource),
                     contentDescription = imgDescription,
                     modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.FillWidth
+                    contentScale = ContentScale.Crop
                 )
             }
+
+            /* Add a visually dividing divider :D */
+            HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
             // Iterate through every day list.
             var isFirstElement = true
