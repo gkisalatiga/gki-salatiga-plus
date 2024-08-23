@@ -183,7 +183,7 @@ class ScreenMedia : ComponentActivity() {
                 AsyncImage(
                     (sectionContent[0] as JSONObject).getString("thumbnail"),
                     contentDescription = "",
-                    error = painterResource(R.drawable.thumbnail_loading),
+                    error = painterResource(R.drawable.thumbnail_loading_stretched),
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )

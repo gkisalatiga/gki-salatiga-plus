@@ -183,7 +183,7 @@ class FragmentServices : ComponentActivity() {
                         AsyncImage(
                             model = thumbnail,
                             contentDescription = title,
-                            error = painterResource(R.drawable.thumbnail_loading),
+                            error = painterResource(R.drawable.thumbnail_loading_stretched),
                             modifier = Modifier.fillMaxWidth().aspectRatio(1.77778f),
                             contentScale = ContentScale.Crop
                         )

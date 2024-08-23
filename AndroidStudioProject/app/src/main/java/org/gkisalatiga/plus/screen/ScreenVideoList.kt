@@ -138,7 +138,7 @@ class ScreenVideoList : ComponentActivity() {
                     AsyncImage(
                         listOfVideoContent[0].getString("thumbnail"),
                         contentDescription = "",
-                        error = painterResource(R.drawable.thumbnail_loading),
+                        error = painterResource(R.drawable.thumbnail_loading_stretched),
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
@@ -184,7 +184,7 @@ class ScreenVideoList : ComponentActivity() {
                         AsyncImage(
                             model = thumbnail,
                             contentDescription = title,
-                            error = painterResource(R.drawable.thumbnail_loading),
+                            error = painterResource(R.drawable.thumbnail_loading_stretched),
                             modifier = Modifier.aspectRatio(1.77778f).fillMaxHeight(),
                             contentScale = ContentScale.Crop,
                         )
