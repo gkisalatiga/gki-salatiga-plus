@@ -18,6 +18,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -234,6 +235,9 @@ class GlobalSchema : Application() {
 
         /* The poster dialog state in FragmentHome. */
         val fragmentHomePosterDialogState = mutableStateOf(false)
+
+        /* The horizontal pager state in FragmentHome */
+        var fragmentHomeCarouselPagerState: PagerState? = null
 
         /* The top offset of fragments in the ScreenMain. */
         const val minScreenMainTopOffset = 0.0f

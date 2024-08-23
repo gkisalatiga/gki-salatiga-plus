@@ -49,6 +49,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -220,6 +221,9 @@ class ActivityLauncher : ComponentActivity() {
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
+
+            // Try to remember the state of the carousel.
+            initCarouselState()
 
             // Initializes the scroll states.
             GlobalSchema.fragmentGalleryListScrollState = rememberLazyGridState()
@@ -522,6 +526,27 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
+    }
+
+    @Composable
+    private fun initCarouselState() {
+        // Enlist the banner sources for the horizontal "infinite" carousel.
+        val carouselImageSources = GlobalSchema.carouselBannerBannerArray
+
+        // "Infinite" pager page scrolling.
+        // Please fill the following integer-variable with a number of pages
+        // that the user won't bother scrolling.
+        // SOURCE: https://stackoverflow.com/a/75469260
+        val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
+
+        // Necessary variables for the infinite-page carousel.
+        // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
+        val actualPageCount = carouselImageSources.size
+        val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
+        GlobalSchema.fragmentHomeCarouselPagerState = rememberPagerState(
+            initialPage = carouselPageCount / 2,
+            pageCount = { carouselPageCount }
+        )
     }
 
 }

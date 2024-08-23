@@ -5,6 +5,7 @@
 - Improved: Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
 - Improved: The "profile info" static content now has sub-folders and nested content support
 - Improved: For performance optimalization, the "profile info" static data now uses JSON files instead of zip archives
+- Fix: Fixed carousel page always resetting to page no. 1 after clicking a carousel content/poster
 - Fix: Email app not showing the destination email address upon clicking a "mailto" button in GKI Salatiga+
 - Fix: Gallery crashes and cannot open when the app is offline #37
 - Fix: Performance issue due to continuous reading of JSON main data is now solved

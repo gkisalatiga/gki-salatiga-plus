@@ -60,6 +60,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -169,10 +170,13 @@ class FragmentHome : ComponentActivity() {
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
         val actualPageCount = carouselImageSources.size
         val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
-        val carouselPagerState = rememberPagerState(
+        /*val carouselPagerState = rememberPagerState(
             initialPage = carouselPageCount / 2,
             pageCount = { carouselPageCount }
-        )
+        )*/
+
+        // Retrieving the global state.
+        val carouselPagerState = GlobalSchema.fragmentHomeCarouselPagerState!!
 
         /* Set-up the launched effect for auto-scrolling the horizontal carousel/pager. */
         // SOURCE: https://stackoverflow.com/a/67615616
