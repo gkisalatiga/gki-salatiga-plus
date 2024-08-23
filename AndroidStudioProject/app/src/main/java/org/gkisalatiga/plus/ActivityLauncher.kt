@@ -78,6 +78,7 @@ import org.gkisalatiga.plus.lib.Extractor
 import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.lib.external.AppStatic
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenAttribution
@@ -93,6 +94,7 @@ import org.gkisalatiga.plus.screen.ScreenMedia
 import org.gkisalatiga.plus.screen.ScreenMinistry
 import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
+import org.gkisalatiga.plus.screen.ScreenStaticContentList
 import org.gkisalatiga.plus.screen.ScreenVideoList
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
@@ -338,6 +340,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_WEBVIEW) { ScreenWebView().getComposable() }
             composable(NavigationRoutes().SCREEN_INTERNAL_HTML) { ScreenInternalHTML().getComposable() }
             composable(NavigationRoutes().SCREEN_POSTER_VIEWER) { ScreenPosterViewer().getComposable() }
+            composable(NavigationRoutes().SCREEN_STATIC_CONTENT_LIST) { ScreenStaticContentList().getComposable() }
         }
 
         // Watch for the state change in the parameter "pushScreen".
@@ -436,10 +439,6 @@ class ActivityLauncher : ComponentActivity() {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
                 GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
 
-                // Obtain the fallback static zip data.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback zipped static data ...")
-                Extractor(this).initFallbackStaticData()
-
                 // Obtain the fallback carousel banner data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
                 Extractor(this).initFallbackCarouselBanner()
@@ -447,6 +446,10 @@ class ActivityLauncher : ComponentActivity() {
                 // Loading the fallback gallery data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
                 AppGallery(this).initFallbackGalleryData()
+
+                // Loading the fallback static data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback static JSON file ...")
+                AppStatic(this).initFallbackStaticData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -454,12 +457,14 @@ class ActivityLauncher : ComponentActivity() {
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
             GlobalSchema.isGalleryDataInitialized.value = false
+            GlobalSchema.isStaticDataInitialized.value = false
 
             while (true) {
 
                 // Make the attempt to download the JSON files.
                 Downloader(this).initMetaData()
                 Downloader(this).initGalleryData()
+                Downloader(this).initStaticData()
 
                 if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
 
@@ -469,15 +474,6 @@ class ActivityLauncher : ComponentActivity() {
 
                     // Also assign globally the gallery data.
                     GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
-
-                    // Make the attempt to fetch the online static data.
-                    if (updateStaticData) {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Fetching the latest static data zipfile ...")
-                        Extractor(this).initStaticData()
-                    } else {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
-                        Extractor(this).initStaticExtractLocation()
-                    }
 
                     // Make the attempt to fetch the online carousel banner data.
                     if (updateCarouselBanner) {
@@ -501,10 +497,6 @@ class ActivityLauncher : ComponentActivity() {
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
 
-                    // Load the cached static data.
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
-                    Extractor(this).initStaticExtractLocation()
-
                     // Load the cached carousel banners.
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
                     Extractor(this).initCarouselExtractLocation()
@@ -512,6 +504,10 @@ class ActivityLauncher : ComponentActivity() {
                     // Load the cached gallery data.
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached gallery index JSON file ...")
                     GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
+
+                    // Load the cached static data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static index JSON file ...")
+                    GlobalSchema.globalStaticObject = AppStatic(this).getStaticData()
 
                     /* We do not break up with this infinite while loop until we are connected to the internet. */
                     // But we still set this flag to "true" to avoid infinite extraction loop.

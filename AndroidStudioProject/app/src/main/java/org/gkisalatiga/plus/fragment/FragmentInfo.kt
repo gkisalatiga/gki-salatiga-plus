@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,12 +63,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 // import coil.compose.AsyncImage
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.json.JSONObject
 import java.io.File
 
 class FragmentInfo : ComponentActivity() {
@@ -110,6 +113,12 @@ class FragmentInfo : ComponentActivity() {
     public fun getComposable() {
         val ctx = LocalContext.current
 
+        // Converting JSONArray to regular lists.
+        val staticDataList: MutableList<JSONObject> = mutableListOf()
+        for (i in 0 until GlobalSchema.globalStaticObject!!.length()) {
+            staticDataList.add(GlobalSchema.globalStaticObject!![i] as JSONObject)
+        }
+
         // Setting the layout to center both vertically and horizontally,
         // and then make it scrollable vertically.
         // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
@@ -129,8 +138,17 @@ class FragmentInfo : ComponentActivity() {
 
             /* Display the individual "church info" card. */
             Column ( modifier = Modifier.padding(top = 10.dp) ) {
-                // Assumes cardRoutes, cardIcons, cardLabels, and cardIconDescriptions all have the same size.
-                (GlobalSchema.staticDataTitleArray).forEachIndexed { index, title ->
+                staticDataList.forEachIndexed { index, itemObject ->
+
+                    // The card title, thumbnail, etc.
+                    var bannerURL = itemObject.getString("banner")
+                    val title = itemObject.getString("title")
+
+                    // For some reason, coil cannot render non-HTTPS images.
+                    if (bannerURL.startsWith("http://")) bannerURL = bannerURL.replaceFirst("http://", "https://")
+
+                    // DEBUG.
+                    // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "BannerURL: $bannerURL, Title: $title")
 
                     Card(
                         onClick = {
@@ -139,11 +157,9 @@ class FragmentInfo : ComponentActivity() {
                             // Set this screen as the anchor point for "back"
                             GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
 
-                            // Display the church profile internal webview.
-                            // i.e., offline HTML code without any internet download.
-                            GlobalSchema.targetIndexHTMLPath = GlobalSchema.staticDataIndexHTMLArray[index]
-                            GlobalSchema.internalWebViewTitle = title
-                            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_INTERNAL_HTML
+                            // Display the church profile content folder list.
+                            GlobalSchema.targetStaticFolder = itemObject
+                            GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_STATIC_CONTENT_LIST
                         },
 
                         modifier = Modifier.padding(bottom = 10.dp).aspectRatio(2.4f).fillMaxWidth()
@@ -156,13 +172,10 @@ class FragmentInfo : ComponentActivity() {
                             // ---
                             val contrast = 1.1f  // --- 0f..10f (1 should be default)
                             val brightness = 0.0f  // --- -255f..255f (0 should be default)
-                            Image(
-                                // Load local path image.
-                                // SOURCE: https://stackoverflow.com/a/70827897
-                                painter = rememberAsyncImagePainter(
-                                    File(GlobalSchema.staticDataBannerArray[index])
-                                ),
+                            AsyncImage(
+                                model = bannerURL,
                                 contentDescription = "Profile page: $title",
+                                error = painterResource(R.drawable.thumbnail_loading_no_text),
                                 modifier = Modifier.fillMaxWidth(),
                                 contentScale = ContentScale.Crop,
                                 colorFilter = ColorFilter.colorMatrix(ColorMatrix(
@@ -205,10 +218,6 @@ class FragmentInfo : ComponentActivity() {
 
             // The "open with mail" string text.
             val emailChooserTitle = stringResource(R.string.email_chooser_title)
-
-            /* Display the "two-dimensional" (i.e., having nested page) ministry info card. */
-            // TODO: Only after the "Media" feature is introduced.
-            getMinistryNestedInfo()
 
             /* Displays the social media CTAs. */
             Spacer(Modifier.height(50.dp))
@@ -267,78 +276,6 @@ class FragmentInfo : ComponentActivity() {
                 doTriggerBrowserOpen.value = false
             }
         }
-    }
-
-    /**
-     * Display the two-dimensional (i.e., having nested pages) ministry info page.
-     * This card is displayed separately as an exception, because it is currently
-     * the only card info that bears nested pages.
-     */
-    @Composable
-    private fun getMinistryNestedInfo() {
-        /*Card(
-            onClick = {
-                if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title!", Toast.LENGTH_SHORT).show()
-
-                // Set this screen as the anchor point for "back"
-                GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
-                GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_MINISTRY
-            },
-
-            modifier = Modifier.padding(bottom = 10.dp).height(150.dp)
-        ) {
-
-            // Displaying the text-overlaid image.
-            Box {
-                /* The background featured image. */
-                // SOURCE: https://developer.android.com/develop/ui/compose/graphics/images/customize
-                // ---
-                val contrast = 1.1f  // --- 0f..10f (1 should be default)
-                val brightness = 0.0f  // --- -255f..255f (0 should be default)
-                Image(
-                    // Load local path image.
-                    // SOURCE: https://stackoverflow.com/a/70827897
-                    painter = rememberAsyncImagePainter(
-                        File(GlobalSchema.staticDataBannerArray[index])
-                    ),
-                    contentDescription = "Profile page: $title",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop,
-                    colorFilter = ColorFilter.colorMatrix(ColorMatrix(
-                        floatArrayOf(
-                            contrast, 0f, 0f, 0f, brightness,
-                            0f, contrast, 0f, 0f, brightness,
-                            0f, 0f, contrast, 0f, brightness,
-                            0f, 0f, 0f, 1f, 0f
-                        )
-                    ))
-                )
-
-                /* Add shadow-y overlay background so that the white text becomes more visible. */
-                // SOURCE: https://developer.android.com/develop/ui/compose/graphics/draw/brush
-                // SOURCE: https://stackoverflow.com/a/60479489
-                Box (
-                    modifier = Modifier
-                        // Color pattern: 0xAARRGGBB (where "AA" is the alpha value).
-                        .background(Color(0x40fda308))
-                        .matchParentSize()
-                )
-
-                /* The card description label. */
-                Column (horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = title,
-                        fontSize = 22.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 20.dp).padding(bottom = 20.dp),
-                        style = TextStyle(
-                            shadow = Shadow(Color.Black, Offset(3.0f, 3.0f), 8.0f)
-                        )
-                    )
-                }
-            }  // --- end of box.
-
-        }*/
     }
 
 }

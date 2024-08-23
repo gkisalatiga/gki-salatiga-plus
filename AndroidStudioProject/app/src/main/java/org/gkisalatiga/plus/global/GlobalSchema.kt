@@ -84,6 +84,15 @@ class GlobalSchema : Application() {
         var globalGalleryObject: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
+        /* Determines the initialization of static JSON file. */
+
+        val staticSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-static.json"
+        val staticSavedFilename = "gkisplus-static.json"
+        var absolutePathToStaticData = ""
+        var isStaticDataInitialized = mutableStateOf(false)
+        var globalStaticObject: JSONArray? = null
+
+        /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which zipped static source to look up to in order to update the application's static data.
          * It cannot and should not be changed arbitrarily within the app code. */
 
@@ -93,7 +102,7 @@ class GlobalSchema : Application() {
         val staticDataSavedFilename = "gkisplus-static.zip"
 
         // Stores the absolute path of the downloaded (into internal app storage) ZIP-compressed static data (folder).
-        var absolutePathToStaticData = ""
+        // var absolutePathToStaticData = ""
 
         // The state of the initialization of the ZIP-compressed static data.
         var isStaticDataDownloaded = mutableStateOf(false)
@@ -104,6 +113,9 @@ class GlobalSchema : Application() {
         var staticDataBannerArray: ArrayList<String> = ArrayList<String>()
         var staticDataJSONNodeArray: ArrayList<String> = ArrayList<String>()
         var staticDataIndexHTMLArray: ArrayList<String> = ArrayList<String>()
+
+        // The target static data "folder" to display in the static content list.
+        var targetStaticFolder: JSONObject? = null
 
         /* ------------------------------------------------------------------------------------ */
         /* The following parameter determines which zipped carousel data should be loaded into the main screen.
@@ -167,6 +179,7 @@ class GlobalSchema : Application() {
 
         // Determines where to go when pressing the "back" button after changing screens.
         var popBackScreen = mutableStateOf("")
+        var popBackDoubleScreen = mutableStateOf("")
         var popBackFragment = mutableStateOf("")
         var popBackSubmenu = mutableStateOf("")
 
@@ -278,6 +291,7 @@ class GlobalSchema : Application() {
         // Determines the "data/static" JSON schema node to display in the ScreenInternalHTML view,
         // as well as its content title.
         var targetIndexHTMLPath: String = ""
+        var targetHTMLContent: String = ""
         var internalWebViewTitle: String = ""
 
         // Determines which gallery folder year to display in the "gallery" menu.
