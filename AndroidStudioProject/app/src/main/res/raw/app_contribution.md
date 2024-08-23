@@ -1,5 +1,5 @@
 
-#### Developer
+#### Lead Developer
 
 - Samarthya Lykamanuella
 
