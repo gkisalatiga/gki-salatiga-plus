@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## Next Release
+
+- Fix: `ScreenMain` leaves a significant white gap between the content and the top banner #42
+
 ## v0.4.1-beta (24) --- 2024-08-25
 
 - Release Note: General bug fixes and visual improvement

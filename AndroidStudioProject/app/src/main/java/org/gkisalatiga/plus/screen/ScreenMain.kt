@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -246,7 +247,7 @@ class ScreenMain : ComponentActivity() {
                 ) {
                     // Shows the new top bar.
                     // Wrap in a LazyColumn so that scrolling events in this element will get caught by the nestedScrollConnection.
-                    LazyColumn {
+                    LazyColumn (userScrollEnabled = true) {
                         item { getTopBanner() }
                     }
 
@@ -381,8 +382,8 @@ class ScreenMain : ComponentActivity() {
 
         /* Drawing canvas for the new top bar layout. */
         Box ( modifier = Modifier
-            .height(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_height).dp)
             .fillMaxWidth()
+            .height((GlobalSchema.maxScreenMainTopOffset + 100).dp)
             .offset(y = GlobalSchema.screenMainWelcomeImageTopOffset.floatValue.dp)
         ) {
 
@@ -391,12 +392,12 @@ class ScreenMain : ComponentActivity() {
             Image (
                 painter = painterResource(newTopBannerBackground.intValue),
                 contentDescription = "",
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
 
             /* To colorize the image. */
-            Box (Modifier.background(Color(0x77fdb308)).matchParentSize()) {}
+            Box (Modifier.background(Color(0x77fdb308)).fillMaxSize()) {}
 
             /* Drawing the overlapping top bar transparent gradient. */
             // SOURCE: https://developer.android.com/develop/ui/compose/graphics/draw/brush
@@ -410,7 +411,7 @@ class ScreenMain : ComponentActivity() {
             Box (
                 modifier = Modifier
                     .background(overlayGradient)
-                    .matchParentSize()
+                    .fillMaxSize()
                     .padding(LocalContext.current.resources.getDimension(R.dimen.new_topbar_canvas_padding).dp)
                     .padding(top = calculatedTopPadding)
             ) {
