@@ -2,6 +2,7 @@
 
 ## Next Release
 
+- New: Added English translation for the `strings.xml` file
 - Fix: `ScreenMain` leaves a significant white gap between the content and the top banner #42
 
 ## v0.4.1-beta (24) --- 2024-08-25
