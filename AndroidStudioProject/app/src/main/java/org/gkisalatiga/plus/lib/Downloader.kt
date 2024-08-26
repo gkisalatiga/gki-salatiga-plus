@@ -21,68 +21,7 @@ import java.util.concurrent.Executors
  * Attempts to download an online data.
  * SOURCE: https://stackoverflow.com/a/53128216
  */
-class Downloader() {
-
-    // TODO: Remove this method
-    /**
-     * Downloads a file and save it as a private file in the app's private storage.
-     * SOURCE: https://www.geeksforgeeks.org/how-to-load-any-image-from-url-without-using-any-dependency-in-android/
-     *
-     * @param streamURL the internet link to download.
-     * @param saveFileAs the name of the file to save as in the app's private storage.
-     * @return nothing. the downloaded file path is stored in "GlobalSchema.pathToDownloadedPrivateFile.value" upon successful download.
-     */
-    public fun asPrivateFile(streamURL: String, saveFileAs: String) {
-        // Non-blocking the main GUI by creating a separate thread for the download
-        // Preparing the thread.
-        val executor = Executors.newSingleThreadExecutor()
-
-        // The return status of the download process.
-        var downloadStatus: Boolean = false
-
-        // The absolute path of the downloaded private file.
-        var downloadedAbsolutePath: String = ""
-
-        // Fetching the data
-        executor.execute {
-
-            // Notify anyone that the download is ongoing.
-            GlobalSchema.pathToDownloadedPrivateFile.value = ""
-            GlobalSchema.isPrivateDownloadComplete.value = false
-
-            try {
-                // Opening the file download stream.
-                val streamIn = java.net.URL(streamURL).openStream()
-
-                // Coverting input stream (bytes) to string.
-                // SOURCE: http://stackoverflow.com/questions/49467780/ddg#49468129
-                val decodedData: ByteArray = streamIn.readBytes()
-
-                // Creating the private file.
-                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
-                val privateFile = File(fileCreator, saveFileAs)
-
-                // Writing into the file.
-                val out = FileOutputStream(privateFile)
-                out.flush()
-                out.write(decodedData)
-                out.close()
-
-                Log.d("Groaker", "Download successful into ${privateFile.absolutePath}")
-                downloadedAbsolutePath = privateFile.absolutePath
-                downloadStatus = true
-
-            } catch (e: Exception) {
-                Log.d("Groaker", "Error encountered during download: $e")
-                downloadStatus = false
-            }
-
-            // Break free from this thread. Save download path.
-            GlobalSchema.pathToDownloadedPrivateFile.value = downloadedAbsolutePath
-            GlobalSchema.isPrivateDownloadComplete.value = true
-            executor.shutdown()
-        }
-    }
+class Downloader(private val ctx: Context) {
 
     /**
      * Downloads and initiates the metadata JSON source file from the CDN.
@@ -107,7 +46,7 @@ class Downloader() {
                 val decodedData: ByteArray = streamIn.readBytes()
 
                 // Creating the private file.
-                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
+                val fileCreator = ctx.getDir("Downloads", Context.MODE_PRIVATE)
                 val privateFile = File(fileCreator, GlobalSchema.JSONSavedFilename)
 
                 // Writing into the file.
@@ -158,7 +97,7 @@ class Downloader() {
                 val decodedData: ByteArray = streamIn.readBytes()
 
                 // Creating the private file.
-                val fileCreator = (GlobalSchema.context).getDir("Downloads", Context.MODE_PRIVATE)
+                val fileCreator = ctx.getDir("Downloads", Context.MODE_PRIVATE)
                 val privateFile = File(fileCreator, GlobalSchema.gallerySavedFilename)
 
                 // Writing into the file.
@@ -179,6 +118,57 @@ class Downloader() {
             } catch (e: UnknownHostException) {
                 GlobalSchema.isConnectedToInternet = false
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable when downloading the gallery data: $e")
+            }
+
+            // Break free from this thread.
+            executor.shutdown()
+        }
+    }
+
+    /**
+     * Downloads and initiates the static JSON source file from the CDN.
+     * This function will then assign the downloaded JSON path to the appropriate global variable.
+     * Requires no argument and does not return any return value.
+     */
+    public fun initStaticData() {
+        // Non-blocking the main GUI by creating a separate thread for the download
+        // Preparing the thread.
+        val executor = Executors.newSingleThreadExecutor()
+
+        // Fetching the data
+        Log.d("Groaker", "Attempting to download the static JSON file ...")
+        executor.execute {
+
+            try {
+                // Opening the file download stream.
+                val streamIn = java.net.URL(GlobalSchema.staticSource).openStream()
+
+                // Coverting input stream (bytes) to string.
+                // SOURCE: http://stackoverflow.com/questions/49467780/ddg#49468129
+                val decodedData: ByteArray = streamIn.readBytes()
+
+                // Creating the private file.
+                val fileCreator = ctx.getDir("Downloads", Context.MODE_PRIVATE)
+                val privateFile = File(fileCreator, GlobalSchema.staticSavedFilename)
+
+                // Writing into the file.
+                val out = FileOutputStream(privateFile)
+                out.flush()
+                out.write(decodedData)
+                out.close()
+
+                // Notify all the other functions about the JSON file path.
+                GlobalSchema.absolutePathToStaticData = privateFile.absolutePath
+                GlobalSchema.isStaticDataInitialized.value = true
+
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Static data was successfully downloaded into: ${privateFile.absolutePath}")
+
+                // We are connected to the internet!
+                GlobalSchema.isConnectedToInternet = true
+
+            } catch (e: UnknownHostException) {
+                GlobalSchema.isConnectedToInternet = false
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable when downloading the static data: $e")
             }
 
             // Break free from this thread.

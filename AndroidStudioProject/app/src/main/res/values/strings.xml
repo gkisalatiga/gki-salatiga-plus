@@ -108,7 +108,7 @@
     <string name="exit_confirmation_toast_string">Tekan sekali lagi untuk keluar dari aplikasi.</string>
 
     <!-- The app copyright notice. -->
-    <string name="about_copyright_notice">Copyright \u00A9 Komisi Sarana Prasarana dan Multimedia\nGKI Salatiga 2024</string>
+    <string name="about_copyright_notice">Copyright \u00A9 2024\nKomisi Sarana Prasarana dan Multimedia (SARPRAS)\nGKI Salatiga</string>
 
     <!-- Email chooser intent. -->
     <string name="email_chooser_title">Send email with ...</string>

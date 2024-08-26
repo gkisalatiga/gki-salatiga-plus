@@ -17,12 +17,12 @@
             "link": "https://github.com/PierfrancescoSoffritti/android-youtube-player"
         },
         {
-            "title": "Compose Richtext",
-            "license": "Apache License 2.0",
-            "license-url": "https://spdx.org/licenses/Apache-2.0.html",
+            "title": "Compose Markdown",
+            "license": "MIT License",
+            "license-url": "https://spdx.org/licenses/MIT.html",
             "year": "2024",
-            "author": "Halil Ozercan",
-            "link": "https://github.com/halilozercan/compose-richtext"
+            "author": "Jeziel Lago",
+            "link": "https://github.com/jeziellago/compose-markdown"
         },
         {
             "title": "Jetpack Compose Material3",

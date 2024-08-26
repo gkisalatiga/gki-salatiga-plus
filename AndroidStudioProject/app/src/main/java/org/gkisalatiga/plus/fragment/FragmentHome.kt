@@ -60,6 +60,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -102,28 +103,10 @@ class FragmentHome : ComponentActivity() {
     )
 
     // The following defines the label of each visible menu button.
-    private val btnLabels = listOf(
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_wj),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_liturgi),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_offertory),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_form),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_gallery),
-        (GlobalSchema.context).resources.getString(R.string.btn_mainmenu_media),
-    )
+    private lateinit var btnLabels: List<String>
 
     // The following defines each visible menu button's icon description.
-    private val btnDescriptions = listOf(
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_wj),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_liturgi),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_agenda),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_offertory),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_ykb),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_form),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_gallery),
-        (GlobalSchema.context).resources.getString(R.string.btn_desc_mainmenu_media),
-    )
+    private lateinit var btnDescriptions: List<String>
 
     // The following defines the icons used for the visible menu buttons.
     // Find the icons here: https://fonts.google.com/icons
@@ -142,6 +125,29 @@ class FragmentHome : ComponentActivity() {
     public fun getComposable() {
         val ctx = LocalContext.current
 
+        /* Initialized the "lateinit" variables. */
+        btnLabels = listOf(
+            ctx.resources.getString(R.string.btn_mainmenu_wj),
+            ctx.resources.getString(R.string.btn_mainmenu_liturgi),
+            ctx.resources.getString(R.string.btn_mainmenu_agenda),
+            ctx.resources.getString(R.string.btn_mainmenu_offertory),
+            ctx.resources.getString(R.string.btn_mainmenu_ykb),
+            ctx.resources.getString(R.string.btn_mainmenu_form),
+            ctx.resources.getString(R.string.btn_mainmenu_gallery),
+            ctx.resources.getString(R.string.btn_mainmenu_media),
+        )
+        btnDescriptions = listOf(
+            ctx.resources.getString(R.string.btn_desc_mainmenu_wj),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_liturgi),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_agenda),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_offertory),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_ykb),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_form),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_gallery),
+            ctx.resources.getString(R.string.btn_desc_mainmenu_media),
+        )
+
+        // Prepare the poster dialog.
         getPosterDialog()
 
         // The following defines each individual featured cover image of the menu.
@@ -164,10 +170,13 @@ class FragmentHome : ComponentActivity() {
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
         val actualPageCount = carouselImageSources.size
         val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
-        val carouselPagerState = rememberPagerState(
+        /*val carouselPagerState = rememberPagerState(
             initialPage = carouselPageCount / 2,
             pageCount = { carouselPageCount }
-        )
+        )*/
+
+        // Retrieving the global state.
+        val carouselPagerState = GlobalSchema.fragmentHomeCarouselPagerState!!
 
         /* Set-up the launched effect for auto-scrolling the horizontal carousel/pager. */
         // SOURCE: https://stackoverflow.com/a/67615616
@@ -214,8 +223,7 @@ class FragmentHome : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // Navigate to the current iteration's JSON node.
-                    val currentNode = AppDatabase()
-                        .getMainData()
+                    val currentNode = GlobalSchema.globalJSONObject!!
                         .getJSONObject("carousel")
                         .getJSONObject(GlobalSchema.carouselBannerJSONNodeArray[it % actualPageCount])
 

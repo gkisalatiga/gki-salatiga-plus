@@ -11,6 +11,7 @@
 package org.gkisalatiga.plus.lib
 
 import android.content.Context
+import android.util.Log
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.json.JSONObject
@@ -18,7 +19,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
-class AppDatabase {
+class AppDatabase(private val ctx: Context) {
 
     private var _parsedJSONString: String = ""
 
@@ -52,7 +53,7 @@ class AppDatabase {
         // Loading the local JSON file.
         // SOURCE: https://stackoverflow.com/a/2856501
         // SOURCE: https://stackoverflow.com/a/39500046
-        val input: InputStream = GlobalSchema.context.resources.openRawResource(R.raw.app_attributions_open_source)
+        val input: InputStream = ctx.resources.openRawResource(R.raw.app_attributions_open_source)
         val inputAsString: String = input.bufferedReader().use { it.readText() }
 
         // Return the fallback JSONObject, and then navigate to the "data" node.
@@ -68,7 +69,7 @@ class AppDatabase {
         // Loading the local JSON file.
         // SOURCE: https://stackoverflow.com/a/2856501
         // SOURCE: https://stackoverflow.com/a/39500046
-        val input: InputStream = GlobalSchema.context.resources.openRawResource(R.raw.fallback_metadata)
+        val input: InputStream = ctx.resources.openRawResource(R.raw.fallback_metadata)
         val inputAsString: String = input.bufferedReader().use { it.readText() }
 
         // Return the fallback JSONObject, and then navigate to the "data" node.
@@ -91,8 +92,16 @@ class AppDatabase {
         // Prevents error-returning when this function is called upon offline.
         if (GlobalSchema.isJSONMetaDataInitialized.value || JSONExists) {
             this.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
-            return JSONObject(_parsedJSONString).getJSONObject("data")
+
+            // Debugger logging.
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reading local/downloaded JSON main data ...")
+
+            // The JSONObject main data.
+            val mainData = JSONObject(this._parsedJSONString).getJSONObject("data")
+            GlobalSchema.globalJSONObject = mainData
+            return mainData
         } else {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reverting to the fallback data of the JSON schema ...")
             return getFallbackMainData()
         }
 

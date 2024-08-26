@@ -11,10 +11,14 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -38,6 +42,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
+import org.gkisalatiga.plus.lib.NavigationRoutes
+import java.io.ByteArrayOutputStream
 
 class ScreenInternalHTML() : ComponentActivity() {
 
@@ -59,6 +65,7 @@ class ScreenInternalHTML() : ComponentActivity() {
         // SOURCE: https://stackoverflow.com/a/69151539
         BackHandler {
             GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
+            GlobalSchema.popBackScreen.value = GlobalSchema.popBackDoubleScreen.value
         }
 
     }
@@ -67,8 +74,15 @@ class ScreenInternalHTML() : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled", "ComposableNaming")
     private fun getMainContent() {
 
-        // Declare the local HTML path that will be displayed.
-        val indexHTMLPath = GlobalSchema.targetIndexHTMLPath
+        // Declare the HTML code to display in the viewer.
+        var HTMLBody = GlobalSchema.targetHTMLContent
+
+        // Allow for displaying mixed-content images.
+         HTMLBody = HTMLBody.replace("http://", "https://")
+
+        // Create the encoded HTML body.
+        // SOURCE: https://developer.android.com/develop/ui/views/layout/webapps/load-local-content#loadDataWithBaseUrl
+        val encodedHTMLBody = Base64.encodeToString(HTMLBody.toByteArray(), Base64.NO_PADDING)
 
         /* Displaying the web view.
          * SOURCE: https://medium.com/@kevinnzou/using-webview-in-jetpack-compose-bbf5991cfd14 */
@@ -81,40 +95,22 @@ class ScreenInternalHTML() : ComponentActivity() {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
-                // Custom WebViewClient to disable arbitrary opening an external website.
-                // SOURCE: https://stackoverflow.com/a/62166792
-                wv.webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(
-                        view: WebView?,
-                        url: String?
-                    ): Boolean {
-                        // Prevents redirection into some arbitrary external site.
-                        Log.d("Groaker-Test", "Redirection URL: ${url.toString()}")
-                        wv.loadUrl("file://$indexHTMLPath")
-                        return false
-                    }
-                }
-
                 // Disable text selection and haptic feedback caused by long press.
                 // This also disables copy-pasting of HTML text.
                 // SOURCE: https://stackoverflow.com/a/12793740
-                wv.setOnLongClickListener(OnLongClickListener { true })
+                wv.setOnLongClickListener(View.OnLongClickListener { true })
                 wv.isLongClickable = false
                 wv.isHapticFeedbackEnabled = false
 
                 // Enables JavaScript.
                 // SOURCE: https://stackoverflow.com/a/69373543
                 wv.settings.javaScriptEnabled = true
-
-                // Allow opening local file paths.
-                // SOURCE: https://www.perplexity.ai/search/can-webview-access-html-in-the-dECz59cCQLugKCIpo.5dqg
-                wv.settings.allowFileAccess = true
             }
         }, update = {
             // Load the local HTML content.
-            // SOURCE: https://stackoverflow.com/a/13816680
-            it.loadUrl("file://$indexHTMLPath")
+            it.loadData(encodedHTMLBody, "text/html", "base64")
         })
+
     }
 
     @Composable
@@ -136,6 +132,7 @@ class ScreenInternalHTML() : ComponentActivity() {
             navigationIcon = {
                 IconButton(onClick = {
                     GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
+                    GlobalSchema.popBackScreen.value = GlobalSchema.popBackDoubleScreen.value
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,

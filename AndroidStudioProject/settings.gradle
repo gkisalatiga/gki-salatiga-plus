@@ -10,6 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        // Composable markdown support using "compose-markdown"
+        // SOURCE: https://github.com/jeziellago/compose-markdown
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "GKI Salatiga Plus"

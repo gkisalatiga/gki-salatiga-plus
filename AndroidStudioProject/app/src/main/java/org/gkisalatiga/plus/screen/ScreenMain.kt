@@ -111,7 +111,7 @@ class ScreenMain : ComponentActivity() {
     private var bottomNavPagerScrollTo = mutableIntStateOf(fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value))
 
     // Determines the top banner title.
-    private var topBannerTitle = (GlobalSchema.context).resources.getString(R.string.app_name_alias)
+    private var topBannerTitle = ""
 
     // Controls the horizontal scrolling of the pager.
     private lateinit var horizontalPagerState: PagerState
@@ -125,7 +125,11 @@ class ScreenMain : ComponentActivity() {
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
+        val ctx = LocalContext.current
         scope = rememberCoroutineScope()
+
+        // Initializing the top banner title.
+        topBannerTitle = ctx.resources.getString(R.string.app_name_alias)
 
         // Initializing the horizontal pager.
         horizontalPagerState = rememberPagerState ( pageCount = {fragRoutes.size}, initialPage = fragRoutes.indexOf(GlobalSchema.lastMainScreenPagerPage.value) )
@@ -187,7 +191,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)
@@ -223,7 +227,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)

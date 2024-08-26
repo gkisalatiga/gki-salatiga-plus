@@ -1,9 +1,9 @@
 
-##### Programmer
+#### Lead Developer
 
 - Samarthya Lykamanuella
 
-##### Quality Assurance
+#### Co-Developers
 
 - Joaquim Pulitzer Agung
 - Natanael Jeffrey Susanto

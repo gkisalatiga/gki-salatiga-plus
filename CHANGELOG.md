@@ -1,5 +1,17 @@
 # GKI Salatiga+ Changelog
 
+## v0.4.1-beta (24) --- 2024-08-25
+
+- Improved: Changed the banners on menus: "Warta", "Liturgi", "YKB", "Agenda", and "Forms" by @KimJoZer
+- Improved: Changed dependency from "Compose RichText" to "Compose Markdown" for more advanced functionalities
+- Improved: The "profile info" static content now has sub-folders and nested content support
+- Improved: For performance optimalization, the "profile info" static data now uses JSON files instead of zip archives
+- Fix: Fixed carousel page always resetting to page no. 1 after clicking a carousel content/poster
+- Fix: Email app not showing the destination email address upon clicking a "mailto" button in GKI Salatiga+
+- Fix: Gallery crashes and cannot open when the app is offline #37
+- Fix: Performance issue due to continuous reading of JSON main data is now solved
+- Fix: StaticMemoryLeak solved by using `LocalContext.current` implementation to obtain the current context in non-main classes
+
 ## v0.4.0-beta (23) --- 2024-08-21
 
 - New: Added privacy policy notice

@@ -49,6 +49,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -78,6 +79,7 @@ import org.gkisalatiga.plus.lib.Extractor
 import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.lib.external.AppStatic
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenAttribution
@@ -93,6 +95,7 @@ import org.gkisalatiga.plus.screen.ScreenMedia
 import org.gkisalatiga.plus.screen.ScreenMinistry
 import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
+import org.gkisalatiga.plus.screen.ScreenStaticContentList
 import org.gkisalatiga.plus.screen.ScreenVideoList
 import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
@@ -195,7 +198,7 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.lastNewTopBarBackground.value = defaultNewTopBarBackground
 
         // Setting the global context value.
-        GlobalSchema.context = this
+        // GlobalSchema.context = this
 
         // Setting the clipboard manager.
         // Should be performed within "onCreate" to avoid the following error:
@@ -218,6 +221,9 @@ class ActivityLauncher : ComponentActivity() {
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
         setContent {
+
+            // Try to remember the state of the carousel.
+            initCarouselState()
 
             // Initializes the scroll states.
             GlobalSchema.fragmentGalleryListScrollState = rememberLazyGridState()
@@ -338,6 +344,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_WEBVIEW) { ScreenWebView().getComposable() }
             composable(NavigationRoutes().SCREEN_INTERNAL_HTML) { ScreenInternalHTML().getComposable() }
             composable(NavigationRoutes().SCREEN_POSTER_VIEWER) { ScreenPosterViewer().getComposable() }
+            composable(NavigationRoutes().SCREEN_STATIC_CONTENT_LIST) { ScreenStaticContentList().getComposable() }
         }
 
         // Watch for the state change in the parameter "pushScreen".
@@ -424,7 +431,7 @@ class ActivityLauncher : ComponentActivity() {
         val executor = Executors.newSingleThreadExecutor()
         executor.execute {
             // Create the JSON manager object.
-            val appDB = AppDatabase()
+            val appDB = AppDatabase(this)
 
             // Get the number of launches since install so that we can determine
             // whether to use the fallback data.
@@ -436,17 +443,17 @@ class ActivityLauncher : ComponentActivity() {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
                 GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
 
-                // Obtain the fallback static zip data.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback zipped static data ...")
-                Extractor(this).initFallbackStaticData()
-
                 // Obtain the fallback carousel banner data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
                 Extractor(this).initFallbackCarouselBanner()
 
                 // Loading the fallback gallery data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
-                AppGallery.initFallbackGalleryData()
+                AppGallery(this).initFallbackGalleryData()
+
+                // Loading the fallback static data.
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback static JSON file ...")
+                AppStatic(this).initFallbackStaticData()
             } else {
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
             }
@@ -454,12 +461,14 @@ class ActivityLauncher : ComponentActivity() {
             // Set the flag to "false" to signal that we need to have the new data now.
             GlobalSchema.isJSONMetaDataInitialized.value = false
             GlobalSchema.isGalleryDataInitialized.value = false
+            GlobalSchema.isStaticDataInitialized.value = false
 
             while (true) {
 
                 // Make the attempt to download the JSON files.
-                Downloader().initMetaData()
-                Downloader().initGalleryData()
+                Downloader(this).initMetaData()
+                Downloader(this).initGalleryData()
+                Downloader(this).initStaticData()
 
                 if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
 
@@ -468,16 +477,7 @@ class ActivityLauncher : ComponentActivity() {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
 
                     // Also assign globally the gallery data.
-                    GlobalSchema.globalGalleryObject = AppGallery.getGalleryData()
-
-                    // Make the attempt to fetch the online static data.
-                    if (updateStaticData) {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Fetching the latest static data zipfile ...")
-                        Extractor(this).initStaticData()
-                    } else {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
-                        Extractor(this).initStaticExtractLocation()
-                    }
+                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
 
                     // Make the attempt to fetch the online carousel banner data.
                     if (updateCarouselBanner) {
@@ -501,13 +501,17 @@ class ActivityLauncher : ComponentActivity() {
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
 
-                    // Load the cached static data.
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static data files ...")
-                    Extractor(this).initStaticExtractLocation()
-
                     // Load the cached carousel banners.
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
                     Extractor(this).initCarouselExtractLocation()
+
+                    // Load the cached gallery data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached gallery index JSON file ...")
+                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
+
+                    // Load the cached static data.
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static index JSON file ...")
+                    GlobalSchema.globalStaticObject = AppStatic(this).getStaticData()
 
                     /* We do not break up with this infinite while loop until we are connected to the internet. */
                     // But we still set this flag to "true" to avoid infinite extraction loop.
@@ -522,6 +526,27 @@ class ActivityLauncher : ComponentActivity() {
 
             }
         }
+    }
+
+    @Composable
+    private fun initCarouselState() {
+        // Enlist the banner sources for the horizontal "infinite" carousel.
+        val carouselImageSources = GlobalSchema.carouselBannerBannerArray
+
+        // "Infinite" pager page scrolling.
+        // Please fill the following integer-variable with a number of pages
+        // that the user won't bother scrolling.
+        // SOURCE: https://stackoverflow.com/a/75469260
+        val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
+
+        // Necessary variables for the infinite-page carousel.
+        // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
+        val actualPageCount = carouselImageSources.size
+        val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
+        GlobalSchema.fragmentHomeCarouselPagerState = rememberPagerState(
+            initialPage = carouselPageCount / 2,
+            pageCount = { carouselPageCount }
+        )
     }
 
 }

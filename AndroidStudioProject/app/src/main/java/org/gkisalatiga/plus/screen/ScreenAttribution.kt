@@ -123,12 +123,14 @@ class ScreenAttribution : ComponentActivity() {
 
     @Composable
     private fun getMainContent() {
+        val ctx = LocalContext.current
+
         // This is used to open external URLs.
         val uriHandler = LocalUriHandler.current
 
         // Load the JSON file containing attributions of all open source programs
         // and code which are used by this app.
-        val attribJSON: JSONObject = AppDatabase().getAttributions()
+        val attribJSON: JSONObject = AppDatabase(ctx).getAttributions()
         val attribArray: JSONArray = attribJSON.getJSONArray("opensource-attributions")
 
         // Convert JSONArray to regular list.

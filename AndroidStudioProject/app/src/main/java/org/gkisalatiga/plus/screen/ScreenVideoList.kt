@@ -86,6 +86,8 @@ class ScreenVideoList : ComponentActivity() {
     
     @Composable
     private fun getMainContent() {
+        val ctx = LocalContext.current
+
         // Setting the layout to center both vertically and horizontally,
         // and then make it scrollable vertically.
         // SOURCE: https://codingwithrashid.com/how-to-center-align-ui-elements-in-android-jetpack-compose/
@@ -116,7 +118,7 @@ class ScreenVideoList : ComponentActivity() {
                         val thumbnail = listOfVideoContent[0].getString("thumbnail")
 
                         // Debug logging.
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
@@ -136,7 +138,7 @@ class ScreenVideoList : ComponentActivity() {
                     AsyncImage(
                         listOfVideoContent[0].getString("thumbnail"),
                         contentDescription = "",
-                        error = painterResource(R.drawable.thumbnail_loading),
+                        error = painterResource(R.drawable.thumbnail_loading_stretched),
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Crop
                     )
@@ -159,7 +161,7 @@ class ScreenVideoList : ComponentActivity() {
                 // Displaying the individual card.
                 Card(
                     onClick = {
-                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText((GlobalSchema.context), "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
+                        if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You just clicked: $title that points to $url!", Toast.LENGTH_SHORT).show()
 
                         // Set this screen as the anchor point for "back"
                         GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_VIDEO_LIST
@@ -182,7 +184,7 @@ class ScreenVideoList : ComponentActivity() {
                         AsyncImage(
                             model = thumbnail,
                             contentDescription = title,
-                            error = painterResource(R.drawable.thumbnail_loading),
+                            error = painterResource(R.drawable.thumbnail_loading_stretched),
                             modifier = Modifier.aspectRatio(1.77778f).fillMaxHeight(),
                             contentScale = ContentScale.Crop,
                         )
