@@ -54,13 +54,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.os.ConfigurationCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -106,6 +111,7 @@ import org.gkisalatiga.plus.services.AlarmService
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
 import org.json.JSONObject
+import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -197,9 +203,6 @@ class ActivityLauncher : ComponentActivity() {
         // The top bar greeting background.
         GlobalSchema.lastNewTopBarBackground.value = defaultNewTopBarBackground
 
-        // Setting the global context value.
-        // GlobalSchema.context = this
-
         // Setting the clipboard manager.
         // Should be performed within "onCreate" to avoid the following error:
         // java.lang.IllegalStateException: System services not available to Activities before onCreate()
@@ -247,6 +250,27 @@ class ActivityLauncher : ComponentActivity() {
                     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
                 }
             }
+
+            // Set the default locale.
+            // TODO: Remove or debug-and-implement?
+            // SOURCE: https://stackoverflow.com/a/78360465
+            // SOURCE: https://stackoverflow.com/a/75172481
+            // AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
+            /*val context = LocalContext.current
+            val resources = context.resources
+            val configuration = resources.configuration
+
+            val newContext = context.createConfigurationContext(configuration.apply {
+                setLocale(Locale.forLanguageTag("in"))
+            })
+            newContext.also { LocalContext.current = it }
+            SideEffect {
+                //AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
+            }*/
+            // LocalConfiguration.current.setLocale(Locale.forLanguageTag("in"))
+            val configuration = LocalConfiguration.current
+            ConfigurationCompat.setLocales(configuration, LocaleListCompat.forLanguageTags("in"))
 
             GKISalatigaPlusTheme {
 

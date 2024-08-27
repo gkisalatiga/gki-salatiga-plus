@@ -21,15 +21,21 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -40,39 +46,49 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.json.JSONObject
 
-class ScreenPersembahan() : ComponentActivity() {
+class ScreenPersembahan : ComponentActivity() {
+    private var isFirstElement = false
+    private val showOffertoryCodeTextDialog = mutableStateOf(false)
 
     @Composable
     public fun getComposable() {
         Scaffold (
             topBar = { this.getTopBar() }
-                ) {
+        ) {
 
             // Display the necessary content.
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
                 getMainContent()
             }
+
+            // Display the offertory code help text.
+            getOffertoryCodeText()
         }
 
         // Ensure that when we are at the first screen upon clicking "back",
@@ -87,9 +103,6 @@ class ScreenPersembahan() : ComponentActivity() {
     @Composable
     private fun getMainContent() {
         val ctx = LocalContext.current
-
-        // The JSON node.
-        val persembahanJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("offertory")
 
         // The column's saved scroll state.
         val scrollState = GlobalSchema.screenPersembahanScrollState!!
@@ -136,10 +149,14 @@ class ScreenPersembahan() : ComponentActivity() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(vertical = 10.dp)
+                    .padding(top = 25.dp)
             )
 
+            // The JSON node for bank account.
+            val persembahanJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("offertory")
+
             // Iterate through every offertory option.
-            var isFirstElement = true
+            isFirstElement = true
             for (index in 0 until persembahanJSONArray.length()) {
                 if (isFirstElement) {
                     HorizontalDivider()
@@ -149,7 +166,11 @@ class ScreenPersembahan() : ComponentActivity() {
                 val currentNode = persembahanJSONArray[index] as JSONObject
                 val notificationString = stringResource(R.string.offertory_number_copied)
                 ListItem(
-                    leadingContent = { Icon(Icons.Default.QrCodeScanner, "", modifier = Modifier.size(60.dp)) },
+                    leadingContent = {
+                        val bankLogoURL = currentNode.getString("bank-logo-url")
+                        val bankName = currentNode.getString("bank-name")
+                        AsyncImage(bankLogoURL, bankName, modifier = Modifier.size(60.dp))
+                    },
                     overlineContent = { Text( currentNode.getString("bank-name") ) },
                     headlineContent = {
                         val headlineText = "${currentNode.getString("bank-abbr")} ${currentNode.getString("bank-number")}"
@@ -167,6 +188,60 @@ class ScreenPersembahan() : ComponentActivity() {
                 )
                 HorizontalDivider()
             }
+
+            /* Offertory code title. */
+            Row (modifier = Modifier.padding(vertical = 10.dp).padding(top = 25.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.section_title_offertory_code),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Surface(
+                    shape = CircleShape,
+                    onClick = {
+                        showOffertoryCodeTextDialog.value = true
+                    }
+                ) {
+                    Icon(Icons.AutoMirrored.Default.Help, "")
+                }
+            }
+
+            // The JSON node for offertory code.
+            val kodeUnikJSONArray = GlobalSchema.globalJSONObject!!.getJSONArray("offertory-code")
+
+            // Iterate through every offertory option.
+            isFirstElement = true
+            for (index in 0 until kodeUnikJSONArray.length()) {
+                if (isFirstElement) {
+                    HorizontalDivider()
+                    isFirstElement = false
+                }
+
+                val currentNode = kodeUnikJSONArray[index] as JSONObject
+                val notificationString = stringResource(R.string.offertory_code_copied)
+                ListItem(
+                    leadingContent = {
+                        val leadingText = currentNode.getString("unique-code")
+                        Text(leadingText, fontWeight = FontWeight.Black, fontSize = 32.sp, textAlign = TextAlign.Center)
+                    },
+                    headlineContent = {
+                        val headlineText = currentNode.getString("title")
+                        Text(headlineText, fontWeight = FontWeight.Bold)
+                    },
+                    supportingContent = { Text(currentNode.getString("desc")) },
+                    modifier = Modifier.clickable(onClick = {
+                        // Attempt to copy text to clipboard.
+                        // SOURCE: https://www.geeksforgeeks.org/clipboard-in-android/
+                        val clipData = ClipData.newPlainText("text", currentNode.getString("unique-code"))
+                        GlobalSchema.clipManager!!.setPrimaryClip(clipData)
+
+                        Toast.makeText(ctx, notificationString, Toast.LENGTH_SHORT).show()
+                    })
+                )
+                HorizontalDivider()
+            }
+
         }  // --- end of scrollable column.
     }
 
@@ -199,6 +274,35 @@ class ScreenPersembahan() : ComponentActivity() {
             actions = { },
             scrollBehavior = scrollBehavior
         )
+    }
+
+    @Composable
+    private fun getOffertoryCodeText() {
+        val ctx = LocalContext.current
+
+        if (showOffertoryCodeTextDialog.value) {
+            AlertDialog(
+                icon = {
+                    Icon(Icons.AutoMirrored.Default.Help, "")
+                },
+                title = {
+                    Text(stringResource(R.string.section_title_offertory_code))
+                },
+                text = {
+                    Text(stringResource(R.string.offertory_code_desc))
+                },
+                onDismissRequest = {
+                    showOffertoryCodeTextDialog.value = false
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { showOffertoryCodeTextDialog.value = false }) {
+                        Text(stringResource(R.string.screen_persembahan_ok))
+                    }
+                }
+            )
+
+        }
     }
 
 }
