@@ -80,7 +80,7 @@
 
     <!-- Constant string used in ScreenWebView. -->
     <string name="webview_visit_link_confirmation_title">Visit the external site?</string>
-    <string name="webview_visit_link_confirmation_subtitle">You will be redirected to the following site via your phone's browser:</string>
+    <string name="webview_visit_link_confirmation_subtitle">You will be redirected to the following site via your phone\'s browser:</string>
     <string name="webview_visit_link_cancel_btn">Cancel</string>
     <string name="webview_visit_link_proceed_btn">Continue</string>
     <string name="webview_visit_link_link_copied">Link successfully copied!</string>
@@ -100,6 +100,7 @@
     <string name="section_title_other_payment_method">Bank Transfer Method</string>
     <string name="section_title_offertory_code">Offertory Unique Code</string>
     <string name="offertory_number_copied">Account number copied successfully!</string>
+    <string name="offertory_code_copied">Offertory unique code copied successfully!</string>
     <string name="offertory_code_desc">Add the following unique code at the end of the amount to be offered.\n\nFor instance, if you want to offer IDR 50.000 for the Christmas service, transfer IDR 50.050 to the GKI Salatiga bank account.</string>
 
     <!-- Constant string used in the new top bar layout. -->
