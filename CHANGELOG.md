@@ -1,6 +1,8 @@
 # GKI Salatiga+ Changelog
 
-## Next Release
+## v0.4.2-beta (25) --- 2024-08-27
+
+- Release Note: General bug fixes and feature update without APK compilation
 
 - New: Added English translation for the `strings.xml` file
 - New: Added offertory transfer code list
