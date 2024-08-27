@@ -164,7 +164,7 @@ class ScreenAbout : ComponentActivity() {
                             // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "${GlobalSchema.globalJSONObject!!}")
 
                             /* DEBUG: Displaying the JSON main data. */
-                            appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"
+                            // appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"
                         }
                     ) {
                         Image(painterResource(R.mipmap.ic_launcher_foreground), "",
