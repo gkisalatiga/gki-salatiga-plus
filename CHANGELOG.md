@@ -6,6 +6,8 @@
 - New: Added offertory transfer code list
 - New: Added offertory bank accoount logo
 - Fix: `ScreenMain` leaves a significant white gap between the content and the top banner #42
+- Fix: White color on banner image when the carousel data has not been downloaded #46
+- Fix: App crashes after 5 seconds since launch on Pixel 5 #44
 
 ## v0.4.1-beta (24) --- 2024-08-25
 
