@@ -267,10 +267,10 @@ class ActivityLauncher : ComponentActivity() {
             SideEffect {
                 //AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
                 AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-            }*/
+            }
             // LocalConfiguration.current.setLocale(Locale.forLanguageTag("in"))
             val configuration = LocalConfiguration.current
-            ConfigurationCompat.setLocales(configuration, LocaleListCompat.forLanguageTags("in"))
+            ConfigurationCompat.setLocales(configuration, LocaleListCompat.forLanguageTags("in"))*/
 
             GKISalatigaPlusTheme {
 
@@ -433,20 +433,6 @@ class ActivityLauncher : ComponentActivity() {
         }
         if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_STATIC_DATA) updateStaticData = false  // --- override.
 
-        // Determine should we re-download the carousel banner archive file from the repository,
-        // which could be huge in size. (We don't do it frequently.)
-        var updateCarouselBanner = true
-        val lastCarouselBannerUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE] as Long
-        val carouselBannerUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_CAROUSEL_BANNER_UPDATE_FREQUENCY] as Long
-        if (timeNowMillis > lastCarouselBannerUpdate + carouselBannerUpdateFrequency) {
-            updateCarouselBanner = true
-            AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_CAROUSEL_BANNER_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is too old.")
-        } else {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The carousel banner archive is up-to-date.")
-        }
-        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_CAROUSEL_DATA) updateCarouselBanner = false  // --- override.
-
         // Upon successful data download, we manage the app's internal variable storage
         // according to the downloaded JSON file's schema.
         // We also make any appropriate settings accordingly.
@@ -466,10 +452,6 @@ class ActivityLauncher : ComponentActivity() {
                 // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
                 GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
-
-                // Obtain the fallback carousel banner data.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback carousel banner data ...")
-                Extractor(this).initFallbackCarouselBanner()
 
                 // Loading the fallback gallery data.
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
@@ -503,15 +485,6 @@ class ActivityLauncher : ComponentActivity() {
                     // Also assign globally the gallery data.
                     GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
 
-                    // Make the attempt to fetch the online carousel banner data.
-                    if (updateCarouselBanner) {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Fetching the latest carousel banner zipfile ...")
-                        Extractor(this).initCarouselData()
-                    } else {
-                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
-                        Extractor(this).initCarouselExtractLocation()
-                    }
-
                     // It is finally set-up. Let's break free from this loop.
                     break
 
@@ -524,10 +497,6 @@ class ActivityLauncher : ComponentActivity() {
                     // Assign the JSON data globally.
                     GlobalSchema.globalJSONObject = appDB.getMainData()
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
-
-                    // Load the cached carousel banners.
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached carousel banner files ...")
-                    Extractor(this).initCarouselExtractLocation()
 
                     // Load the cached gallery data.
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached gallery index JSON file ...")
@@ -554,8 +523,22 @@ class ActivityLauncher : ComponentActivity() {
 
     @Composable
     private fun initCarouselState() {
-        // Enlist the banner sources for the horizontal "infinite" carousel.
-        val carouselImageSources = GlobalSchema.carouselBannerBannerArray
+
+        /* Read the carousel JSON object. */
+        // First, we clear the array list.
+        GlobalSchema.carouselJSONObject.clear()
+        GlobalSchema.carouselJSONKey.clear()
+        // Directly assign globally.
+        val carouselParentNode = GlobalSchema.globalJSONObject!!.getJSONObject("carousel")
+        for (l in carouselParentNode.keys()) {
+            // Extract the static data's node names.
+            GlobalSchema.carouselJSONObject.add(carouselParentNode.getJSONObject(l))
+
+            // Get the carousel JSON object key strings.
+            GlobalSchema.carouselJSONKey.add(l)
+        }
+
+        /**********************************************************************/
 
         // "Infinite" pager page scrolling.
         // Please fill the following integer-variable with a number of pages
@@ -565,7 +548,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Necessary variables for the infinite-page carousel.
         // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
-        val actualPageCount = carouselImageSources.size
+        val actualPageCount = GlobalSchema.carouselJSONKey.size
         val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
         GlobalSchema.fragmentHomeCarouselPagerState = rememberPagerState(
             initialPage = carouselPageCount / 2,

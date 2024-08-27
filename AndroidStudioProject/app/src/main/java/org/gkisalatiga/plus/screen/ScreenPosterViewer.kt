@@ -20,6 +20,7 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -37,11 +38,16 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
+import org.gkisalatiga.plus.lib.external.ZoomableBox
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -79,64 +85,23 @@ class ScreenPosterViewer() : ComponentActivity() {
         // Declare the local image path that will be displayed.
         val targetPosterSource = GlobalSchema.posterDialogImageSource.value
 
-        // Converting the image into base64 string in order to display it without "file://" scheme.
-        // SOURCE: https://stackoverflow.com/a/4830846
-        val bm = BitmapFactory.decodeFile(targetPosterSource)
-        val baos = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-        val b = baos.toByteArray()
-        val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
-
-        // Create the HTML body.
-        // SOURCE: https://developer.android.com/develop/ui/views/layout/webapps/load-local-content#loadDataWithBaseUrl
-        val HTMLBody = """
-            <body style="padding: 0px; margin: 0px">
-                <img src="data:image/png;base64,$encodedImage" style="position: absolute; height: 100%; width: 100%; border: none; margin: 0px; padding: 0px;"></img>
-            </body>
-        """.trimIndent()
-        val encodedHTMLBody = Base64.encodeToString(HTMLBody.toByteArray(), Base64.NO_PADDING)
-
-        /* Displaying the web view.
-         * SOURCE: https://medium.com/@kevinnzou/using-webview-in-jetpack-compose-bbf5991cfd14 */
-        // Adding a WebView inside AndroidView with layout as full screen
-        AndroidView(factory = {
-            WebView(it).apply {
-                val wv = this
-                wv.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-
-                // Disable text selection and haptic feedback caused by long press.
-                // This also disables copy-pasting of HTML text.
-                // SOURCE: https://stackoverflow.com/a/12793740
-                wv.setOnLongClickListener(View.OnLongClickListener { true })
-                wv.isLongClickable = false
-                wv.isHapticFeedbackEnabled = false
-
-                // Enables JavaScript.
-                // SOURCE: https://stackoverflow.com/a/69373543
-                wv.settings.javaScriptEnabled = true
-
-                // Enable pinching and zooming.
-                // SOURCE: https://www.perplexity.ai/search/android-webview-how-to-enable-m7wBk07KS2GFsAk0cw1t4g
-                // SOURCE: https://stackoverflow.com/a/7172165
-                // SOURCE: https://stackoverflow.com/a/33784686
-                // SOURCE: https://stackoverflow.com/a/26115592
-                wv.settings.loadWithOverviewMode = true
-                wv.settings.builtInZoomControls = true
-                wv.settings.displayZoomControls = false
-                wv.settings.useWideViewPort = false
-                wv.settings.setSupportZoom(true)
-
-                // Allow opening local file paths.
-                // SOURCE: https://www.perplexity.ai/search/can-webview-access-html-in-the-dECz59cCQLugKCIpo.5dqg
-                wv.settings.allowFileAccess = true
-            }
-        }, update = {
-            // Load the local HTML content.
-            it.loadData(encodedHTMLBody, "text/html", "base64")
-        })
+        // Displaying the poster image from a remote source.
+        ZoomableBox {
+            AsyncImage(
+                model = targetPosterSource,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        translationX = offsetX,
+                        translationY = offsetY
+                    ),
+                contentDescription = "",
+                error = painterResource(R.drawable.thumbnail_loading),
+                contentScale = ContentScale.Fit
+            )
+        }
 
     }
 

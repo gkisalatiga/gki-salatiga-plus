@@ -137,6 +137,8 @@ class GlobalSchema : Application() {
         var carouselBannerBannerArray: ArrayList<String> = ArrayList<String>()
         var carouselBannerTypeArray: ArrayList<String> = ArrayList<String>()
         var carouselBannerBaseFolderArray: ArrayList<String> = ArrayList<String>()
+        var carouselJSONObject: ArrayList<JSONObject> = ArrayList<JSONObject>()
+        var carouselJSONKey: ArrayList<String> = ArrayList<String>()
 
         /* ------------------------------------------------------------------------------------ */
         /* Values and constants used in the "offertory" menu. */

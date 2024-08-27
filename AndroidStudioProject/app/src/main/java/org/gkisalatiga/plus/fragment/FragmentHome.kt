@@ -70,11 +70,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,6 +85,7 @@ import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.lib.StringFormatter
+import org.json.JSONObject
 import java.io.File
 import kotlin.math.ceil
 import kotlin.math.round
@@ -157,23 +160,8 @@ class FragmentHome : ComponentActivity() {
             R.drawable.menu_cover_liturgi
         )
 
-        // Enlist the banner sources for the horizontal "infinite" carousel.
-        val carouselImageSources = GlobalSchema.carouselBannerBannerArray
-
-        // "Infinite" pager page scrolling.
-        // Please fill the following integer-variable with a number of pages
-        // that the user won't bother scrolling.
-        // SOURCE: https://stackoverflow.com/a/75469260
-        val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
-
-        // Necessary variables for the infinite-page carousel.
-        // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
-        val actualPageCount = carouselImageSources.size
-        val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
-        /*val carouselPagerState = rememberPagerState(
-            initialPage = carouselPageCount / 2,
-            pageCount = { carouselPageCount }
-        )*/
+        // Get the number of carousel banners.
+        val actualPageCount = GlobalSchema.carouselJSONKey.size
 
         // Retrieving the global state.
         val carouselPagerState = GlobalSchema.fragmentHomeCarouselPagerState!!
@@ -219,23 +207,24 @@ class FragmentHome : ComponentActivity() {
                 /* Create the horizontal pager "carousel" */
                 HorizontalPager(
                     state = carouselPagerState,
-                    beyondViewportPageCount = 1,
+                    beyondViewportPageCount = 5,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // Navigate to the current iteration's JSON node.
-                    val currentNode = GlobalSchema.globalJSONObject!!
-                        .getJSONObject("carousel")
-                        .getJSONObject(GlobalSchema.carouselBannerJSONNodeArray[it % actualPageCount])
+                    val currentNode = GlobalSchema.carouselJSONObject[it % actualPageCount]
 
-                    /* Display the sample image. */
+                    /* Display the carousel banner image. */
                     Surface (
                         shape = RoundedCornerShape(15.dp),
                         modifier = Modifier.padding(LocalContext.current.resources.getDimension(R.dimen.banner_inner_padding).dp).fillMaxWidth().aspectRatio(1.77778f),
                         onClick = {
                             if (GlobalSchema.DEBUG_ENABLE_TOAST) Toast.makeText(ctx, "You are clicking carousel banner no. ${it % actualPageCount}!", Toast.LENGTH_SHORT).show()
 
+                            // Get the type of the current carousel banner.
+                            val currentType = currentNode.getString("type")
+
                             /* Switch to a different screen or run a certain action based on the carousel banner type. */
-                            when (GlobalSchema.carouselBannerTypeArray[it % actualPageCount]) {
+                            when (currentType) {
                                 "article" -> {
                                     // Preparing the WebView arguments.
                                     val url = currentNode.getString("article-url")
@@ -253,7 +242,7 @@ class FragmentHome : ComponentActivity() {
                                     showPosterDialog.value = true
                                     posterDialogTitle.value = currentNode.getString("title")
                                     posterDialogCaption.value = currentNode.getString("poster-caption")
-                                    posterDialogImageSource.value = GlobalSchema.carouselBannerBaseFolderArray[it % actualPageCount] + "/" + currentNode.getString("poster-image")
+                                    posterDialogImageSource.value = currentNode.getString("poster-image")
                                 }
                                 "yt" -> {
                                     // Preparing the YouTube player arguments.
@@ -276,11 +265,9 @@ class FragmentHome : ComponentActivity() {
                             }
                         }
                     ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                File(carouselImageSources[it % actualPageCount])
-                            ),
-                            contentDescription = "Carousel Image ${it % actualPageCount }",
+                        AsyncImage(
+                            model = currentNode.getString("banner"),
+                            contentDescription = "Carousel Image ${it % actualPageCount}",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -440,17 +427,17 @@ class FragmentHome : ComponentActivity() {
                     Column(
                         modifier = Modifier.height(300.dp).verticalScroll(verticalScrollState)
                     ) {
-                        Surface (modifier = Modifier.fillMaxWidth(), color = Color.Transparent, onClick = {
+                        Text("Ketuk pada gambar untuk memperbesar poster.", fontStyle = FontStyle.Italic)
+                        Spacer(Modifier.height(15.dp))
+                        Surface (modifier = Modifier.fillMaxWidth().height(150.dp), color = Color.Transparent, onClick = {
                             showPosterDialog.value = false
                             GlobalSchema.popBackScreen.value = NavigationRoutes().SCREEN_MAIN
                             GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_POSTER_VIEWER
-                        }, shape = RoundedCornerShape(10.dp)) {
-                            Image(
-                                painter = rememberAsyncImagePainter(
-                                    File(posterDialogImageSource.value)
-                                ),
+                        }, shape = RoundedCornerShape(20.dp)) {
+                            AsyncImage(
+                                model = posterDialogImageSource.value,
                                 contentDescription = "Carousel Poster Image",
-                                modifier = Modifier.height(250.dp),
+                                modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
                         }
