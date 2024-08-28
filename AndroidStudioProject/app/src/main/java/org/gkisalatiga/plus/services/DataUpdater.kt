@@ -82,7 +82,7 @@ class DataUpdater(private val ctx: Context) {
                 if (getLastMainDataUpdate() < feedJSONObject.getInt("last-maindata-update")) {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Updating main data ...")
                     GlobalSchema.isJSONMainDataInitialized.value = false
-                    Downloader(ctx).initMainData()
+                    Downloader(ctx).initMainData(autoReloadGlobalData = true)
                 } else {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Main data is up-to-date!")
                 }
@@ -90,7 +90,7 @@ class DataUpdater(private val ctx: Context) {
                 if (getLastGalleryUpdate() < feedJSONObject.getInt("last-gallery-update")) {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Updating gallery data ...")
                     GlobalSchema.isGalleryDataInitialized.value = false
-                    Downloader(ctx).initGalleryData()
+                    Downloader(ctx).initGalleryData(autoReloadGlobalData = true)
                 } else {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Gallery data is up-to-date!")
                 }
@@ -98,7 +98,7 @@ class DataUpdater(private val ctx: Context) {
                 if (getLastStaticUpdate() < feedJSONObject.getInt("last-static-update")) {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Updating static data ...")
                     GlobalSchema.isStaticDataInitialized.value = false
-                    Downloader(ctx).initStaticData()
+                    Downloader(ctx).initStaticData(autoReloadGlobalData = true)
                 } else {
                     if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_UPDATER) Log.i("Groaker-Updater", "[DataUpdater.updateData] Static data is up-to-date!")
                 }

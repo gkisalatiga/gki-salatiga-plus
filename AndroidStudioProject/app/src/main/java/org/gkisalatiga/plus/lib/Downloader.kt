@@ -27,8 +27,9 @@ class Downloader(private val ctx: Context) {
      * Downloads and initiates the main JSON data source file from the CDN.
      * This function will then assign the downloaded JSON path to the appropriate global variable.
      * Requires no argument and does not return any return value.
+     * @param autoReloadGlobalData whether to reload the global JSON data after successful download
      */
-    public fun initMainData() {
+    public fun initMainData(autoReloadGlobalData: Boolean = false) {
         // Non-blocking the main GUI by creating a separate thread for the download
         // Preparing the thread.
         val executor = Executors.newSingleThreadExecutor()
@@ -58,6 +59,7 @@ class Downloader(private val ctx: Context) {
                 // Notify all the other functions about the JSON file path.
                 GlobalSchema.absolutePathToJSONMetaData = privateFile.absolutePath
                 GlobalSchema.isJSONMainDataInitialized.value = true
+                if (autoReloadGlobalData) GlobalSchema.globalJSONObject = AppDatabase(ctx).getMainData()
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "JSON metadata was successfully downloaded into: ${privateFile.absolutePath}")
 
@@ -75,8 +77,9 @@ class Downloader(private val ctx: Context) {
      * Downloads and initiates the gallery JSON source file from the CDN.
      * This function will then assign the downloaded JSON path to the appropriate global variable.
      * Requires no argument and does not return any return value.
+     * @param autoReloadGlobalData whether to reload the global JSON data after successful download
      */
-    public fun initGalleryData() {
+    public fun initGalleryData(autoReloadGlobalData: Boolean = false) {
         // Non-blocking the main GUI by creating a separate thread for the download
         // Preparing the thread.
         val executor = Executors.newSingleThreadExecutor()
@@ -106,6 +109,7 @@ class Downloader(private val ctx: Context) {
                 // Notify all the other functions about the JSON file path.
                 GlobalSchema.absolutePathToGalleryData = privateFile.absolutePath
                 GlobalSchema.isGalleryDataInitialized.value = true
+                if (autoReloadGlobalData) GlobalSchema.globalGalleryObject = AppGallery(ctx).getGalleryData()
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Gallery was successfully downloaded into: ${privateFile.absolutePath}")
 
@@ -123,8 +127,9 @@ class Downloader(private val ctx: Context) {
      * Downloads and initiates the static JSON source file from the CDN.
      * This function will then assign the downloaded JSON path to the appropriate global variable.
      * Requires no argument and does not return any return value.
+     * @param autoReloadGlobalData whether to reload the global JSON data after successful download
      */
-    public fun initStaticData() {
+    public fun initStaticData(autoReloadGlobalData: Boolean = false) {
         // Non-blocking the main GUI by creating a separate thread for the download
         // Preparing the thread.
         val executor = Executors.newSingleThreadExecutor()
@@ -154,6 +159,7 @@ class Downloader(private val ctx: Context) {
                 // Notify all the other functions about the JSON file path.
                 GlobalSchema.absolutePathToStaticData = privateFile.absolutePath
                 GlobalSchema.isStaticDataInitialized.value = true
+                if (autoReloadGlobalData) GlobalSchema.globalStaticObject = AppStatic(ctx).getStaticData()
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Static data was successfully downloaded into: ${privateFile.absolutePath}")
 

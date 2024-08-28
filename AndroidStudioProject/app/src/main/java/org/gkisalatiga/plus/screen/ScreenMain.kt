@@ -156,9 +156,9 @@ class ScreenMain : ComponentActivity() {
         }
 
         // The pull-to-refresh indicator states.
-        var isRefreshing = remember { mutableStateOf(false) }
-        val pullToRefreshState = rememberPullToRefreshState()
-        val refreshExecutor = Executors.newSingleThreadExecutor()
+        val isRefreshing = remember { GlobalSchema.isPTRRefreshing }
+        val pullToRefreshState = GlobalSchema.globalPTRState
+        val refreshExecutor = GlobalSchema.PTRExecutor
 
         Scaffold (
             bottomBar = { getBottomBar() },
@@ -166,7 +166,7 @@ class ScreenMain : ComponentActivity() {
             snackbarHost = { SnackbarHost(snackbarHostState) },
             floatingActionButton =  { },
             floatingActionButtonPosition = FabPosition.Center,
-            modifier = Modifier.pullToRefresh(isRefreshing.value, pullToRefreshState, onRefresh = {
+            modifier = Modifier.pullToRefresh(isRefreshing.value, pullToRefreshState!!, onRefresh = {
                 refreshExecutor.execute {
                     // Assumes there is an internet connection.
                     // (If there isn't, the boolean state change will trigger the snack bar.)
@@ -177,6 +177,9 @@ class ScreenMain : ComponentActivity() {
                     DataUpdater(ctx).updateData()
                     TimeUnit.SECONDS.sleep(5)
                     isRefreshing.value = false
+
+                    // Update/recompose the UI.
+                    GlobalSchema.reloadCurrentScreen.value = !GlobalSchema.reloadCurrentScreen.value
                 }
             })
         ) {

@@ -53,6 +53,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
@@ -251,6 +252,9 @@ class ActivityLauncher : ComponentActivity() {
             GlobalSchema.screenMediaScrollState = rememberScrollState()
             GlobalSchema.screenPersembahanScrollState = rememberScrollState()
 
+            // Prepare the pull-to-refresh (PTR) state globally.
+            GlobalSchema.globalPTRState = rememberPullToRefreshState()
+
             // Listen to the request to hide the phone's bars.
             // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
             key (GlobalSchema.phoneBarsVisibility.value) {
@@ -383,7 +387,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Watch for the state change in the parameter "pushScreen".
         // SOURCE: https://stackoverflow.com/a/73129228
-        key(GlobalSchema.pushScreen.value) {
+        key(GlobalSchema.pushScreen.value, GlobalSchema.reloadCurrentScreen.value) {
             mainNavController.navigate(GlobalSchema.pushScreen.value)
         }
 

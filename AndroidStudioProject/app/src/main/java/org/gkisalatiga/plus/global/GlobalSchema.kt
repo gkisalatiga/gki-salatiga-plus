@@ -17,6 +17,9 @@ import android.content.ClipboardManager
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -24,6 +27,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTube
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.Executors
 
 class GlobalSchema : Application() {
 
@@ -71,6 +75,7 @@ class GlobalSchema : Application() {
 
         // The JSONObject that can be globally accessed by any function and class in the app.
         var globalJSONObject: JSONObject? = null
+        // var globalJSONObject: MutableState<JSONObject?> = mutableStateOf(null)
 
         /* ------------------------------------------------------------------------------------ */
         /* Determines the initialization of gallery JSON file. */
@@ -143,15 +148,18 @@ class GlobalSchema : Application() {
          * Changing any of the following parameters would directly and immediately trigger recomposition. */
 
         // Determines where to go when pressing the "back" button after changing screens.
-        var popBackScreen = mutableStateOf("")
-        var popBackDoubleScreen = mutableStateOf("")
-        var popBackFragment = mutableStateOf("")
-        var popBackSubmenu = mutableStateOf("")
+        val popBackScreen = mutableStateOf("")
+        val popBackDoubleScreen = mutableStateOf("")
+        val popBackFragment = mutableStateOf("")
+        val popBackSubmenu = mutableStateOf("")
 
         // Determine the next screen to open upon trigger.
-        var pushScreen = mutableStateOf("")
-        var pushFragment = mutableStateOf("")  // --- not used.
-        var pushSubmenu = mutableStateOf("")  // --- not used.
+        val pushScreen = mutableStateOf("")
+        val pushFragment = mutableStateOf("")  // --- not used.
+        val pushSubmenu = mutableStateOf("")  // --- not used.
+
+        // Determine if we should reload the current screen.
+        val reloadCurrentScreen = mutableStateOf(false)
 
         // Custom submenu global state for the tab "Services".
         var lastServicesSubmenu = mutableStateOf("")
@@ -221,6 +229,15 @@ class GlobalSchema : Application() {
 
         // Used in the loading of cached data when the app is not connected to the internet.
         var isOfflineCachedDataLoaded: Boolean = false
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Controls the pull-to-refresh (PTR) states and variables. */
+
+        val isPTRRefreshing = mutableStateOf(false)
+        val PTRExecutor = Executors.newSingleThreadExecutor()
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        var globalPTRState: PullToRefreshState? = null
 
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */
