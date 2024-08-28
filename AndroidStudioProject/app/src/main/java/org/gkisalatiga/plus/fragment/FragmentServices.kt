@@ -114,8 +114,8 @@ class FragmentServices : ComponentActivity() {
         // playlistContentList.removeAt(0)
 
         // Testing and debugging.
-        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
-        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[FragmentServices] The dumped JSON array: ${playlistContentList}")
+        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[FragmentServices] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
+        // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", "[FragmentServices] The dumped JSON array: ${playlistContentList}")
 
         // Only show the "N" most recent videos.
         val recentVideoList: MutableList<JSONObject> = mutableListOf()

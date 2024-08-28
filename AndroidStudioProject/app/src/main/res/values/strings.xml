@@ -130,4 +130,6 @@
     <string name="screen_about_license_dismiss_ok">OK</string>
     <string name="screen_about_license_confirm">Buka Teks Utuh</string>
     <string name="screen_persembahan_ok">OK</string>
+
+    <string name="not_connected_to_internet">Anda tidak terhubung ke internet!</string>
 </resources>

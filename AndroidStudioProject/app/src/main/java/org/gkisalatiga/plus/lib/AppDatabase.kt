@@ -76,6 +76,24 @@ class AppDatabase(private val ctx: Context) {
         return JSONObject(inputAsString).getJSONObject("data")
     }
 
+    public fun getFallbackMainMetadata(): JSONObject {
+        // Loading the local JSON file.
+        // SOURCE: https://stackoverflow.com/a/2856501
+        // SOURCE: https://stackoverflow.com/a/39500046
+        val input: InputStream = ctx.resources.openRawResource(R.raw.fallback_metadata)
+        val inputAsString: String = input.bufferedReader().use { it.readText() }
+
+        // Return the fallback JSONObject, and then navigate to the "data" node.
+        return JSONObject(inputAsString).getJSONObject("meta")
+    }
+
+    /**
+     * Initializes the main data and assign the global variable that handles it.
+     */
+    public fun initFallbackGalleryData() {
+        GlobalSchema.globalJSONObject = getFallbackMainData()
+    }
+
     /**
      * Parse the specified JSON string and serialize it, then
      * return a JSON object that reads the database's main data.
@@ -90,20 +108,36 @@ class AppDatabase(private val ctx: Context) {
 
         // Load the downloaded JSON.
         // Prevents error-returning when this function is called upon offline.
-        if (GlobalSchema.isJSONMetaDataInitialized.value || JSONExists) {
+        if (GlobalSchema.isJSONMainDataInitialized.value || JSONExists) {
             this.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
 
             // Debugger logging.
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reading local/downloaded JSON main data ...")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reading local/downloaded JSON main data ...")
 
             // The JSONObject main data.
             val mainData = JSONObject(this._parsedJSONString).getJSONObject("data")
             GlobalSchema.globalJSONObject = mainData
             return mainData
         } else {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reverting to the fallback data of the JSON schema ...")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[AppDatabase.getMainData] Reverting to the fallback data of the JSON schema ...")
             return getFallbackMainData()
         }
 
     }
+
+    public fun getMainMetadata(): JSONObject {
+        // Determines if we have already downloaded the JSON file.
+        val JSONExists = File(GlobalSchema.absolutePathToJSONMetaData).exists()
+
+        // Load the downloaded JSON.
+        // Prevents error-returning when this function is called upon offline.
+        if (GlobalSchema.isJSONMainDataInitialized.value || JSONExists) {
+            this.loadJSON(GlobalSchema.absolutePathToJSONMetaData)
+            return JSONObject(this._parsedJSONString).getJSONObject("meta")
+        } else {
+            return getFallbackMainMetadata()
+        }
+
+    }
+
 }

@@ -51,21 +51,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.core.os.ConfigurationCompat
-import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -80,11 +77,10 @@ import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.AppGallery
 import org.gkisalatiga.plus.lib.AppPreferences
 import org.gkisalatiga.plus.lib.Downloader
-import org.gkisalatiga.plus.lib.Extractor
 import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.lib.external.AppStatic
+import org.gkisalatiga.plus.lib.AppStatic
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenAttribution
@@ -108,15 +104,16 @@ import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
 import org.gkisalatiga.plus.services.AlarmReceiver
 import org.gkisalatiga.plus.services.AlarmService
+import org.gkisalatiga.plus.services.ConnectionChecker
+import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-import org.json.JSONObject
-import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 // import org.gkisalatiga.plus.screen.ScreenMain
 
+@OptIn(ExperimentalMaterial3Api::class)
 class ActivityLauncher : ComponentActivity() {
 
     override fun onPause() {
@@ -144,7 +141,7 @@ class ActivityLauncher : ComponentActivity() {
                 val outputStream = contentResolver.openOutputStream(uri)
 
                 // Perform operations on the document using its URI.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", uri.path!!)
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", uri.path!!)
                 GallerySaver().onSAFPathReceived(outputStream!!)
             }
         }
@@ -158,6 +155,9 @@ class ActivityLauncher : ComponentActivity() {
 
         // Initializes the app's internally saved preferences.
         initPreferences()
+
+        // Start the connection (online/offline) checker.
+        ConnectionChecker(this).execute()
 
         // Configure the behavior of the hidden system bars and configure the immersive mode (hide status bar and navigation bar).
         // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
@@ -214,6 +214,16 @@ class ActivityLauncher : ComponentActivity() {
 
         // Retrieving the latest JSON metadata.
         initData()
+
+        // Block the app until all data is initialized.
+        // Prevents "null pointer exception" when the JSON data in the multi-thread has not been prepared.
+        while (true) {
+            if (GlobalSchema.globalJSONObject != null && GlobalSchema.globalGalleryObject != null && GlobalSchema.globalStaticObject != null) {
+                break
+            } else {
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_SPAM) Log.w("Groaker-Spam", "[ActivityLauncher.onCreate] Still initializing data ...")
+            }
+        }
 
         // Creating the notification channels.
         initNotificationChannel()
@@ -417,143 +427,70 @@ class ActivityLauncher : ComponentActivity() {
      */
     private fun initData() {
 
-        val timeNowMillis = System.currentTimeMillis()
+        // Get the number of launches since install so that we can determine
+        // whether to use the fallback data.
+        val launches = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAUNCH_COUNTS] as Int
 
-        // Determine should we re-download the static data archive file from the repository,
-        // which could be huge in size. (We don't do it frequently.)
-        var updateStaticData = false
-        val lastStaticDataUpdate = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE] as Long
-        val staticDataUpdateFrequency = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_STATIC_DATA_UPDATE_FREQUENCY] as Long
-        if (timeNowMillis > lastStaticDataUpdate + staticDataUpdateFrequency) {
-            updateStaticData = true
-            AppPreferences(this).writePreference(GlobalSchema.PREF_KEY_LAST_STATIC_DATA_UPDATE, timeNowMillis)
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is too old.")
+        // Get fallback data only if first launch.
+        if (launches == 0) {
+            // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_INIT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
+            AppDatabase(this).initFallbackGalleryData()
+
+            // Loading the fallback gallery data.
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_INIT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
+            AppGallery(this).initFallbackGalleryData()
+
+            // Loading the fallback static data.
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_INIT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback static JSON file ...")
+            AppStatic(this).initFallbackStaticData()
+
         } else {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] The static data is up-to-date.")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_INIT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
         }
-        if (GlobalSchema.DEBUG_DISABLE_DOWNLOADING_STATIC_DATA) updateStaticData = false  // --- override.
 
-        // Upon successful data download, we manage the app's internal variable storage
-        // according to the downloaded JSON file's schema.
-        // We also make any appropriate settings accordingly.
-        // ---
-        // This is all done in a multi-thread so that we do not interrupt the main GUI.
-        val executor = Executors.newSingleThreadExecutor()
-        executor.execute {
-            // Create the JSON manager object.
-            val appDB = AppDatabase(this)
-
-            // Get the number of launches since install so that we can determine
-            // whether to use the fallback data.
-            val launches = GlobalSchema.preferencesKeyValuePairs[GlobalSchema.PREF_KEY_LAUNCH_COUNTS] as Int
-
-            // Get fallback data only if first launch.
-            if (launches == 0) {
-                // Let's apply the fallback JSON data until the actual, updated JSON metadata is downloaded.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback JSON metadata ...")
-                GlobalSchema.globalJSONObject = appDB.getFallbackMainData()
-
-                // Loading the fallback gallery data.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback gallery JSON file ...")
-                AppGallery(this).initFallbackGalleryData()
-
-                // Loading the fallback static data.
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Loading the fallback static JSON file ...")
-                AppStatic(this).initFallbackStaticData()
-            } else {
-                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] This is not first launch.")
-            }
-
-            // Set the flag to "false" to signal that we need to have the new data now.
-            GlobalSchema.isJSONMetaDataInitialized.value = false
-            GlobalSchema.isGalleryDataInitialized.value = false
-            GlobalSchema.isStaticDataInitialized.value = false
-
-            while (true) {
-
-                // Make the attempt to download the JSON files.
-                Downloader(this).initMetaData()
-                Downloader(this).initGalleryData()
-                Downloader(this).initStaticData()
-
-                if (GlobalSchema.isJSONMetaDataInitialized.value && GlobalSchema.isGalleryDataInitialized.value) {
-
-                    // Since the JSON metadata has now been downloaded, let's assign the actual JSON globally.
-                    GlobalSchema.globalJSONObject = appDB.getMainData()
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
-
-                    // Also assign globally the gallery data.
-                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
-
-                    // It is finally set-up. Let's break free from this loop.
-                    break
-
-                } else if (GlobalSchema.isConnectedToInternet == false && launches != 0 && !GlobalSchema.isOfflineCachedDataLoaded) {
-
-                    /* The app is offline, but this is not first launch.
-                     * Therefore, the fallback metadata and zip files are assumed
-                     * to have been extracted. We'll use this data. */
-
-                    // Assign the JSON data globally.
-                    GlobalSchema.globalJSONObject = appDB.getMainData()
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Successfully refreshed the JSON data!")
-
-                    // Load the cached gallery data.
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached gallery index JSON file ...")
-                    GlobalSchema.globalGalleryObject = AppGallery(this).getGalleryData()
-
-                    // Load the cached static data.
-                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Init", "[ActivityLauncher.initData] Initializing the cached static index JSON file ...")
-                    GlobalSchema.globalStaticObject = AppStatic(this).getStaticData()
-
-                    /* We do not break up with this infinite while loop until we are connected to the internet. */
-                    // But we still set this flag to "true" to avoid infinite extraction loop.
-                    GlobalSchema.isOfflineCachedDataLoaded = true
-
-                } else {
-                    // Sleep for a couple of milliseconds before continuing.
-                    // SOURCE: http://stackoverflow.com/questions/24104313/ddg#24104427
-                    TimeUnit.SECONDS.sleep(5);
-                    continue
-                }
-
-            }
-        }
+        // At last, update the data to the latest whenever possible.
+        DataUpdater(this).updateData()
     }
 
     @Composable
     private fun initCarouselState() {
 
-        /* Read the carousel JSON object. */
-        // First, we clear the array list.
-        GlobalSchema.carouselJSONObject.clear()
-        GlobalSchema.carouselJSONKey.clear()
-        // Directly assign globally.
-        val carouselParentNode = GlobalSchema.globalJSONObject!!.getJSONObject("carousel")
-        for (l in carouselParentNode.keys()) {
-            // Extract the static data's node names.
-            GlobalSchema.carouselJSONObject.add(carouselParentNode.getJSONObject(l))
+        // Use multithread (coroutine scope) so that it won't block the app's execution.
+        val scope = rememberCoroutineScope()
+        scope.run {
 
-            // Get the carousel JSON object key strings.
-            GlobalSchema.carouselJSONKey.add(l)
+            /* Read the carousel JSON object. */
+            // First, we clear the array list.
+            GlobalSchema.carouselJSONObject.clear()
+            GlobalSchema.carouselJSONKey.clear()
+            // Directly assign globally.
+            val carouselParentNode = GlobalSchema.globalJSONObject!!.getJSONObject("carousel")
+            for (l in carouselParentNode.keys()) {
+                // Extract the static data's node names.
+                GlobalSchema.carouselJSONObject.add(carouselParentNode.getJSONObject(l))
+
+                // Get the carousel JSON object key strings.
+                GlobalSchema.carouselJSONKey.add(l)
+            }
+
+            /**********************************************************************/
+
+            // "Infinite" pager page scrolling.
+            // Please fill the following integer-variable with a number of pages
+            // that the user won't bother scrolling.
+            // SOURCE: https://stackoverflow.com/a/75469260
+            val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
+
+            // Necessary variables for the infinite-page carousel.
+            // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
+            val actualPageCount = GlobalSchema.carouselJSONKey.size
+            val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
+            GlobalSchema.fragmentHomeCarouselPagerState = rememberPagerState(
+                initialPage = carouselPageCount / 2,
+                pageCount = { carouselPageCount }
+            )
         }
-
-        /**********************************************************************/
-
-        // "Infinite" pager page scrolling.
-        // Please fill the following integer-variable with a number of pages
-        // that the user won't bother scrolling.
-        // SOURCE: https://stackoverflow.com/a/75469260
-        val baseInfiniteScrollingPages = 256  // --- i.e., 2^8.
-
-        // Necessary variables for the infinite-page carousel.
-        // SOURCE: https://medium.com/androiddevelopers/customizing-compose-pager-with-fun-indicators-and-transitions-12b3b69af2cc
-        val actualPageCount = GlobalSchema.carouselJSONKey.size
-        val carouselPageCount = actualPageCount * baseInfiniteScrollingPages
-        GlobalSchema.fragmentHomeCarouselPagerState = rememberPagerState(
-            initialPage = carouselPageCount / 2,
-            pageCount = { carouselPageCount }
-        )
     }
 
 }

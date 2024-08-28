@@ -19,7 +19,6 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -50,17 +49,25 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -90,7 +97,10 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.ui.theme.Brown1
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class ScreenMain : ComponentActivity() {
 
@@ -123,11 +133,16 @@ class ScreenMain : ComponentActivity() {
     // The coroutine scope.
     private lateinit var scope: CoroutineScope
 
+    // The snackbar host state.
+    private lateinit var snackbarHostState: SnackbarHostState
+
     @Composable
+    @ExperimentalMaterial3Api
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
         val ctx = LocalContext.current
         scope = rememberCoroutineScope()
+        snackbarHostState = remember { SnackbarHostState() }
 
         // Initializing the top banner title.
         topBannerTitle = ctx.resources.getString(R.string.app_name_alias)
@@ -140,11 +155,30 @@ class ScreenMain : ComponentActivity() {
             GlobalSchema.lastMainScreenPagerPage.value = fragRoutes[horizontalPagerState.targetPage]
         }
 
+        // The pull-to-refresh indicator states.
+        var isRefreshing = remember { mutableStateOf(false) }
+        val pullToRefreshState = rememberPullToRefreshState()
+        val refreshExecutor = Executors.newSingleThreadExecutor()
+
         Scaffold (
             bottomBar = { getBottomBar() },
             topBar = { /* The "top bar" is now merged with the scaffold content. */ },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             floatingActionButton =  { },
             floatingActionButtonPosition = FabPosition.Center,
+            modifier = Modifier.pullToRefresh(isRefreshing.value, pullToRefreshState, onRefresh = {
+                refreshExecutor.execute {
+                    // Assumes there is an internet connection.
+                    // (If there isn't, the boolean state change will trigger the snack bar.)
+                    GlobalSchema.isConnectedToInternet.value = true
+
+                    // Attempts to update the data.
+                    isRefreshing.value = true
+                    DataUpdater(ctx).updateData()
+                    TimeUnit.SECONDS.sleep(5)
+                    isRefreshing.value = false
+                }
+            })
         ) {
             calculatedTopPadding = it.calculateTopPadding()
             calculatedBottomPadding = it.calculateBottomPadding()
@@ -192,7 +226,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", "[PreScroll] delta: $delta, currentOffset: $currentContentOffset, minOffset: $minContentOffset, maxOffset: $maxContentOffset, targetOffset: $targetContentOffset, returnDelta: $returnDelta")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)
@@ -228,7 +262,7 @@ class ScreenMain : ComponentActivity() {
                                 else delta
 
                             // Debugging the output values.
-                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", "[Post-Scroll] y-consumed: ${consumed.y}, y-available: ${available.y}")
 
                             // Give out the delta to the fragment's scrollable.
                             return Offset(0.0f, returnDelta)
@@ -278,6 +312,34 @@ class ScreenMain : ComponentActivity() {
                     }
                 }  // --- end of box 2.
             }  // --- end of box 1.
+
+            // Check whether we are connected to the internet.
+            // Then notify user about this.
+            val snackbarMessageString = stringResource(R.string.not_connected_to_internet)
+            LaunchedEffect(GlobalSchema.isConnectedToInternet.value) {
+                if (!GlobalSchema.isConnectedToInternet.value) scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = snackbarMessageString,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
+
+            // Add pull-to-refresh mechanism for updating the content data.
+            PullToRefreshBox(
+                modifier = Modifier.fillMaxWidth().padding(top = it.calculateTopPadding()),
+                isRefreshing = isRefreshing.value,
+                state = pullToRefreshState,
+                onRefresh = {},
+                content = {},
+                indicator = {
+                    Indicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        isRefreshing = isRefreshing.value,
+                        state = pullToRefreshState
+                    )
+                },
+            )
 
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.

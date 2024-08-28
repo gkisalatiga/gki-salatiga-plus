@@ -24,11 +24,11 @@ import java.util.concurrent.Executors
 class Downloader(private val ctx: Context) {
 
     /**
-     * Downloads and initiates the metadata JSON source file from the CDN.
+     * Downloads and initiates the main JSON data source file from the CDN.
      * This function will then assign the downloaded JSON path to the appropriate global variable.
      * Requires no argument and does not return any return value.
      */
-    public fun initMetaData() {
+    public fun initMainData() {
         // Non-blocking the main GUI by creating a separate thread for the download
         // Preparing the thread.
         val executor = Executors.newSingleThreadExecutor()
@@ -57,15 +57,12 @@ class Downloader(private val ctx: Context) {
 
                 // Notify all the other functions about the JSON file path.
                 GlobalSchema.absolutePathToJSONMetaData = privateFile.absolutePath
-                GlobalSchema.isJSONMetaDataInitialized.value = true
+                GlobalSchema.isJSONMainDataInitialized.value = true
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "JSON metadata was successfully downloaded into: ${privateFile.absolutePath}")
 
-                // We are connected to the internet!
-                GlobalSchema.isConnectedToInternet = true
-
             } catch (e: UnknownHostException) {
-                GlobalSchema.isConnectedToInternet = false
+                GlobalSchema.isConnectedToInternet.value = false
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable during download: $e")
             }
 
@@ -112,11 +109,8 @@ class Downloader(private val ctx: Context) {
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Gallery was successfully downloaded into: ${privateFile.absolutePath}")
 
-                // We are connected to the internet!
-                GlobalSchema.isConnectedToInternet = true
-
             } catch (e: UnknownHostException) {
-                GlobalSchema.isConnectedToInternet = false
+                GlobalSchema.isConnectedToInternet.value = false
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable when downloading the gallery data: $e")
             }
 
@@ -163,11 +157,8 @@ class Downloader(private val ctx: Context) {
 
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Static data was successfully downloaded into: ${privateFile.absolutePath}")
 
-                // We are connected to the internet!
-                GlobalSchema.isConnectedToInternet = true
-
             } catch (e: UnknownHostException) {
-                GlobalSchema.isConnectedToInternet = false
+                GlobalSchema.isConnectedToInternet.value = false
                 if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "Network unreachable when downloading the static data: $e")
             }
 

@@ -151,7 +151,7 @@ class ScreenMedia : ComponentActivity() {
         // playlistContentList.removeAt(0)
 
         // Testing and debugging.
-        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[ScreenMedia] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ScreenMedia] Size of the JSONObject's parsed list is: ${playlistContentList.size}")
 
         /* Displaying the section title. */
         Row (modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp).padding(horizontal = 10.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {

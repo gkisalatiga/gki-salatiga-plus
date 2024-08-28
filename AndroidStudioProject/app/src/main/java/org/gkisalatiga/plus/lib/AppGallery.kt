@@ -58,6 +58,15 @@ class AppGallery(private val ctx: Context) {
         return JSONObject(inputAsString).getJSONObject("gallery")
     }
 
+    public fun getFallbackGalleryMetadata(): JSONObject {
+        // Loading the local JSON file.
+        val input: InputStream = ctx.resources.openRawResource(R.raw.fallback_gallery)
+        val inputAsString: String = input.bufferedReader().use { it.readText() }
+
+        // Return the fallback JSONObject, and then navigate to the "gallery" node.
+        return JSONObject(inputAsString).getJSONObject("meta")
+    }
+
     /**
      * Initializes the gallery data and assign the global variable that handles it.
      */
@@ -84,6 +93,21 @@ class AppGallery(private val ctx: Context) {
             return JSONObject(_parsedJSONString).getJSONObject("gallery")
         } else {
             return getFallbackGalleryData()
+        }
+
+    }
+
+    public fun getGalleryMetadata(): JSONObject {
+        // Determines if we have already downloaded the JSON file.
+        val JSONExists = File(GlobalSchema.absolutePathToGalleryData).exists()
+
+        // Load the downloaded JSON.
+        // Prevents error-returning when this function is called upon offline.
+        if (GlobalSchema.isGalleryDataInitialized.value || JSONExists) {
+            this.loadJSON(GlobalSchema.absolutePathToGalleryData)
+            return JSONObject(_parsedJSONString).getJSONObject("meta")
+        } else {
+            return getFallbackGalleryMetadata()
         }
 
     }
