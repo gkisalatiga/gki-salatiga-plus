@@ -112,14 +112,13 @@ class ScreenVideoLive : ComponentActivity() {
     private lateinit var scope: CoroutineScope
 
     // The snackbar host state.
-    private lateinit var snackbarHostState: SnackbarHostState
+    private val snackbarHostState = GlobalSchema.snackbarHostState
 
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
         val ctx = LocalContext.current
         scope = rememberCoroutineScope()
-        snackbarHostState = remember { SnackbarHostState() }
 
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ScreenVideoLive.getComposable] Are we full screen?: ${GlobalSchema.ytIsFullscreen.value}. Duration: ${GlobalSchema.ytCurrentSecond.floatValue}")
 

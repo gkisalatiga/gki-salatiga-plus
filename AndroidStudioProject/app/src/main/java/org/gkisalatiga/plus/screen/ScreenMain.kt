@@ -134,7 +134,7 @@ class ScreenMain : ComponentActivity() {
     private lateinit var scope: CoroutineScope
 
     // The snackbar host state.
-    private lateinit var snackbarHostState: SnackbarHostState
+    private val snackbarHostState = GlobalSchema.snackbarHostState
 
     @Composable
     @ExperimentalMaterial3Api
@@ -142,7 +142,6 @@ class ScreenMain : ComponentActivity() {
     public fun getComposable() {
         val ctx = LocalContext.current
         scope = rememberCoroutineScope()
-        snackbarHostState = remember { SnackbarHostState() }
 
         // Initializing the top banner title.
         topBannerTitle = ctx.resources.getString(R.string.app_name_alias)

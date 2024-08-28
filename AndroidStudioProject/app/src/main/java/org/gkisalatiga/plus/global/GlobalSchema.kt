@@ -18,6 +18,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -238,6 +239,11 @@ class GlobalSchema : Application() {
 
         @OptIn(ExperimentalMaterial3Api::class)
         var globalPTRState: PullToRefreshState? = null
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Controls the scaffolding snack bar. */
+
+        val snackbarHostState = SnackbarHostState()
 
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */

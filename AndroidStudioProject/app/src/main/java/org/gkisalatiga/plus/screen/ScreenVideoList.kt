@@ -38,41 +38,109 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
 import org.gkisalatiga.plus.lib.StringFormatter
+import org.gkisalatiga.plus.services.DataUpdater
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class ScreenVideoList : ComponentActivity() {
 
+    // The snackbar host state.
+    private val snackbarHostState = GlobalSchema.snackbarHostState
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
+        val ctx = LocalContext.current
+        val scope = rememberCoroutineScope()
+
+        // The pull-to-refresh indicator states.
+        val isRefreshing = remember { GlobalSchema.isPTRRefreshing }
+        val pullToRefreshState = GlobalSchema.globalPTRState
+        val refreshExecutor = GlobalSchema.PTRExecutor
 
         Scaffold (
-            topBar = { getTopBar() }
-                ) {
+            topBar = { getTopBar() },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            modifier = Modifier.pullToRefresh(isRefreshing.value, pullToRefreshState!!, onRefresh = {
+                refreshExecutor.execute {
+                    // Assumes there is an internet connection.
+                    // (If there isn't, the boolean state change will trigger the snack bar.)
+                    GlobalSchema.isConnectedToInternet.value = true
+
+                    // Attempts to update the data.
+                    isRefreshing.value = true
+                    DataUpdater(ctx).updateData()
+                    TimeUnit.SECONDS.sleep(5)
+                    isRefreshing.value = false
+
+                    // Update/recompose the UI.
+                    GlobalSchema.reloadCurrentScreen.value = !GlobalSchema.reloadCurrentScreen.value
+                }
+            })) {
             Box ( Modifier.padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()) ) {
                 getMainContent()
             }
+
+            // Check whether we are connected to the internet.
+            // Then notify user about this.
+            val snackbarMessageString = stringResource(R.string.not_connected_to_internet)
+            LaunchedEffect(GlobalSchema.isConnectedToInternet.value) {
+                if (!GlobalSchema.isConnectedToInternet.value) scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = snackbarMessageString,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
+
+            // Add pull-to-refresh mechanism for updating the content data.
+            PullToRefreshBox(
+                modifier = Modifier.fillMaxWidth().padding(top = it.calculateTopPadding()),
+                isRefreshing = isRefreshing.value,
+                state = pullToRefreshState,
+                onRefresh = {},
+                content = {},
+                indicator = {
+                    Indicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        isRefreshing = isRefreshing.value,
+                        state = pullToRefreshState
+                    )
+                },
+            )
+
         }
 
         // Ensure that when we are at the first screen upon clicking "back",
