@@ -1,5 +1,14 @@
 # GKI Salatiga+ Changelog
 
+## v0.4.3-beta (26) --- 2024-08-29
+
+- Release Note: General back-end update before advancing to the closed testing phase
+
+- New: Added snack bar for offline notice and bottom sheet dialog for new app update notice
+- New: (Back-End) Added the ability to manually refresh data
+- New: (Back-End) Added internet connectivity checker
+- New: (Back-End) Added new application update detector
+
 ## v0.4.2-beta (25) --- 2024-08-27
 
 - Release Note: General bug fixes and feature update without APK compilation
