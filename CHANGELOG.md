@@ -1,5 +1,9 @@
 # GKI Salatiga+ Changelog
 
+## First RC Release
+
+- Fix: Fixed app update notification gets displayed even when the app is already up-to-date
+
 ## v0.4.3-beta (26) --- 2024-08-29
 
 - Release Note: General back-end update before advancing to the closed testing phase

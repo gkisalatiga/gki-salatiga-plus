@@ -252,7 +252,7 @@ class GlobalSchema : Application() {
 
         @OptIn(ExperimentalMaterial3Api::class)
         var appUpdaterBottomSheetState: SheetState? = null
-        val appUpdaterIsShown = mutableStateOf(true)
+        val appUpdaterIsShown = mutableStateOf(false)
         val newAppVersionCode = mutableIntStateOf(0)
         val newAppVersionName = mutableStateOf("")
         val newAppDownloadURL = mutableStateOf("")
