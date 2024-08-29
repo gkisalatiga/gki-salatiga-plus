@@ -49,6 +49,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,6 +62,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,6 +91,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 
@@ -101,10 +108,17 @@ class ScreenVideoLive : ComponentActivity() {
     // The calculated top bar padding.
     private var calculatedTopPadding: Dp = 0.dp
 
+    // The coroutine scope.
+    private lateinit var scope: CoroutineScope
+
+    // The snackbar host state.
+    private val snackbarHostState = GlobalSchema.snackbarHostState
+
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
         val ctx = LocalContext.current
+        scope = rememberCoroutineScope()
 
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ScreenVideoLive.getComposable] Are we full screen?: ${GlobalSchema.ytIsFullscreen.value}. Duration: ${GlobalSchema.ytCurrentSecond.floatValue}")
 
@@ -123,6 +137,18 @@ class ScreenVideoLive : ComponentActivity() {
             BackHandler {
                 GlobalSchema.pushScreen.value = GlobalSchema.popBackScreen.value
                 GlobalSchema.ytView!!.release()
+            }
+        }
+
+        // Check whether we are connected to the internet.
+        // Then notify user about this.
+        val snackbarMessageString = stringResource(R.string.not_connected_to_internet)
+        LaunchedEffect(GlobalSchema.isConnectedToInternet.value) {
+            if (!GlobalSchema.isConnectedToInternet.value) scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = snackbarMessageString,
+                    duration = SnackbarDuration.Short
+                )
             }
         }
 
@@ -247,6 +273,7 @@ class ScreenVideoLive : ComponentActivity() {
         val ctx = LocalContext.current
         Scaffold (
             topBar = { if (!GlobalSchema.ytIsFullscreen.value) this.getTopBar() },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             /*floatingActionButton = {
                 FloatingActionButton(onClick = {
                     isFullscreen.value = true

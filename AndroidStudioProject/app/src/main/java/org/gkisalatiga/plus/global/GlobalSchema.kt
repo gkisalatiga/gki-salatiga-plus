@@ -14,18 +14,23 @@ package org.gkisalatiga.plus.global
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ClipboardManager
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.Executors
 
 class GlobalSchema : Application() {
 
@@ -39,7 +44,6 @@ class GlobalSchema : Application() {
         const val aboutChangelogURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/CHANGELOG.md"
         const val aboutContactMail = "dev.gkisalatiga@gmail.com"
         const val aboutLicenseFullTextURL = "https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/LICENSE"
-
 
         /* ------------------------------------------------------------------------------------ */
         /* The following schemas are used in Google Drive Gallery viewer
@@ -70,10 +74,11 @@ class GlobalSchema : Application() {
         var absolutePathToJSONMetaData = ""
 
         // The state of the initialization of the JSON metadata.
-        var isJSONMetaDataInitialized = mutableStateOf(false)
+        var isJSONMainDataInitialized = mutableStateOf(false)
 
         // The JSONObject that can be globally accessed by any function and class in the app.
         var globalJSONObject: JSONObject? = null
+        // var globalJSONObject: MutableState<JSONObject?> = mutableStateOf(null)
 
         /* ------------------------------------------------------------------------------------ */
         /* Determines the initialization of gallery JSON file. */
@@ -97,24 +102,6 @@ class GlobalSchema : Application() {
         /* The following parameter determines which zipped static source to look up to in order to update the application's static data.
          * It cannot and should not be changed arbitrarily within the app code. */
 
-        val staticDataSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-static.zip"
-
-        // This is the filename which will save the above ZIP-compressed static source.
-        val staticDataSavedFilename = "gkisplus-static.zip"
-
-        // Stores the absolute path of the downloaded (into internal app storage) ZIP-compressed static data (folder).
-        // var absolutePathToStaticData = ""
-
-        // The state of the initialization of the ZIP-compressed static data.
-        var isStaticDataDownloaded = mutableStateOf(false)
-        var isStaticDataExtracted = mutableStateOf(false)
-
-        // The variable associated with the string values and resource paths.
-        var staticDataTitleArray: ArrayList<String> = ArrayList<String>()
-        var staticDataBannerArray: ArrayList<String> = ArrayList<String>()
-        var staticDataJSONNodeArray: ArrayList<String> = ArrayList<String>()
-        var staticDataIndexHTMLArray: ArrayList<String> = ArrayList<String>()
-
         // The target static data "folder" to display in the static content list.
         var targetStaticFolder: JSONObject? = null
 
@@ -122,21 +109,7 @@ class GlobalSchema : Application() {
         /* The following parameter determines which zipped carousel data should be loaded into the main screen.
          * It cannot and should not be changed arbitrarily within the app code. */
 
-        val carouselBannerSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/gkisplus-carousel.zip"
-        val carouselBannerSavedFilename = "gkisplus-carousel.zip"
-
-        // Stores the absolute path of the downloaded (into internal app storage) ZIP-compressed static data.
-        var absolutePathToCarouselBanner = ""
-
-        // The state of the initialization of the ZIP-compressed carousel banner data (folder).
-        var isCarouselBannerDownloaded = mutableStateOf(false)
-        var isCarouselBannerExtracted = mutableStateOf(false)
-
         // The variable associated with the string values and resource paths.
-        var carouselBannerJSONNodeArray: ArrayList<String> = ArrayList<String>()
-        var carouselBannerBannerArray: ArrayList<String> = ArrayList<String>()
-        var carouselBannerTypeArray: ArrayList<String> = ArrayList<String>()
-        var carouselBannerBaseFolderArray: ArrayList<String> = ArrayList<String>()
         var carouselJSONObject: ArrayList<JSONObject> = ArrayList<JSONObject>()
         var carouselJSONKey: ArrayList<String> = ArrayList<String>()
 
@@ -144,15 +117,6 @@ class GlobalSchema : Application() {
         /* Values and constants used in the "offertory" menu. */
 
         const val offertoryQRISImageSource = "https://raw.githubusercontent.com/gkisalatiga/gkisplus-data/main/images/qris_gkis.png"
-
-        /* ------------------------------------------------------------------------------------ */
-        /* Initializing values that are preloaded during ActivityLauncher initializations. */
-
-        // The list of JSON nodes corresponding to a service section.
-        var servicesNode: ArrayList<String> = ArrayList<String>()
-
-        // The list of services to display, corresponding to the section title string ID.
-        var servicesTitle: ArrayList<String> = ArrayList<String>()
 
         /* ------------------------------------------------------------------------------------ */
         /* Initializing the debugging toggles. */
@@ -165,6 +129,12 @@ class GlobalSchema : Application() {
 
         // Whether to display the debugger's logcat logging.
         const val DEBUG_ENABLE_LOG_CAT = true
+        const val DEBUG_ENABLE_LOG_CAT_CONN_TEST = true
+        const val DEBUG_ENABLE_LOG_CAT_DUMP = true
+        const val DEBUG_ENABLE_LOG_CAT_INIT = true
+        const val DEBUG_ENABLE_LOG_CAT_SPAM = true
+        const val DEBUG_ENABLE_LOG_CAT_TEST = true
+        const val DEBUG_ENABLE_LOG_CAT_UPDATER = true
 
         // Whether to hide the splash screen.
         const val DEBUG_DISABLE_SPLASH_SCREEN = false
@@ -181,15 +151,18 @@ class GlobalSchema : Application() {
          * Changing any of the following parameters would directly and immediately trigger recomposition. */
 
         // Determines where to go when pressing the "back" button after changing screens.
-        var popBackScreen = mutableStateOf("")
-        var popBackDoubleScreen = mutableStateOf("")
-        var popBackFragment = mutableStateOf("")
-        var popBackSubmenu = mutableStateOf("")
+        val popBackScreen = mutableStateOf("")
+        val popBackDoubleScreen = mutableStateOf("")
+        val popBackFragment = mutableStateOf("")
+        val popBackSubmenu = mutableStateOf("")
 
         // Determine the next screen to open upon trigger.
-        var pushScreen = mutableStateOf("")
-        var pushFragment = mutableStateOf("")  // --- not used.
-        var pushSubmenu = mutableStateOf("")  // --- not used.
+        val pushScreen = mutableStateOf("")
+        val pushFragment = mutableStateOf("")  // --- not used.
+        val pushSubmenu = mutableStateOf("")  // --- not used.
+
+        // Determine if we should reload the current screen.
+        val reloadCurrentScreen = mutableStateOf(false)
 
         // Custom submenu global state for the tab "Services".
         var lastServicesSubmenu = mutableStateOf("")
@@ -255,10 +228,36 @@ class GlobalSchema : Application() {
         /* The following variable determines the status of internet connection. */
 
         // The status of internet connection.
-        var isConnectedToInternet: Boolean = false
+        var isConnectedToInternet = mutableStateOf(false)
 
         // Used in the loading of cached data when the app is not connected to the internet.
         var isOfflineCachedDataLoaded: Boolean = false
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Controls the pull-to-refresh (PTR) states and variables. */
+
+        val isPTRRefreshing = mutableStateOf(false)
+        val PTRExecutor = Executors.newSingleThreadExecutor()
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        var globalPTRState: PullToRefreshState? = null
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Controls the scaffolding snack bar. */
+
+        val snackbarHostState = SnackbarHostState()
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Screen main's app updater notice bottom sheet dialog. */
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        var appUpdaterBottomSheetState: SheetState? = null
+        val appUpdaterIsShown = mutableStateOf(true)
+        val newAppVersionCode = mutableIntStateOf(0)
+        val newAppVersionName = mutableStateOf("")
+        val newAppDownloadURL = mutableStateOf("")
+
+        val triggerAppUpdateDialog = mutableStateOf(false)
 
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */

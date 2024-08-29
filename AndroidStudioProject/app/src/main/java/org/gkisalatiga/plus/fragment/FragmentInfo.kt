@@ -148,7 +148,7 @@ class FragmentInfo : ComponentActivity() {
                     if (bannerURL.startsWith("http://")) bannerURL = bannerURL.replaceFirst("http://", "https://")
 
                     // DEBUG.
-                    // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "BannerURL: $bannerURL, Title: $title")
+                    // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "BannerURL: $bannerURL, Title: $title")
 
                     Card(
                         onClick = {

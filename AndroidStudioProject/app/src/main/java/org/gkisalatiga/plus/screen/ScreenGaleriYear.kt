@@ -107,7 +107,7 @@ class ScreenGaleriYear : ComponentActivity() {
         val galleryYearList = galleryNode.getJSONArray(GlobalSchema.targetGalleryYear)
 
         // DEBUG. Always comment out.
-        Log.d("Groaker-Test", "Current object (1): ${galleryYearList}")
+        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "Current object (1): ${galleryYearList}")
 
         // Convert JSONArray to regular list. (JSONArray iterates from 1, not 0.)
         val enumeratedGalleryList: MutableList<JSONObject> =  mutableListOf(JSONObject())
@@ -116,7 +116,7 @@ class ScreenGaleriYear : ComponentActivity() {
             enumeratedGalleryList.add(curNode)
 
             // DEBUG. Always comment out.
-            Log.d("Groaker-Test", "Current object (2): ${curNode}")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "Current object (2): ${curNode}")
         }
 
         // Remove the first item; JSONArrays start at 1.
@@ -132,11 +132,11 @@ class ScreenGaleriYear : ComponentActivity() {
             // Display the main content.
             Column (Modifier.fillMaxSize().padding(20.dp)) {
 
-                Log.d("Groaker-Test", "Current object (3): ${enumeratedGalleryList}")
+                if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "Current object (3): ${enumeratedGalleryList}")
 
                 /* Draw the form selection elements. */
                 enumeratedGalleryList.forEach {
-                    Log.d("Groaker-Test", "Current object (4): ${it}")
+                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "Current object (4): ${it}")
 
                     // Determining the text title.
                     val title = it["title"].toString()

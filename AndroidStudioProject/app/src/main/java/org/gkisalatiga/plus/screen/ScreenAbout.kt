@@ -156,12 +156,12 @@ class ScreenAbout : ComponentActivity() {
                             /*if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
                                 val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
                                 File(baseExtractedData).walk().forEach { f ->
-                                    Log.d("Groaker-Dump", f.absolutePath)
+                                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", f.absolutePath)
                                 }
                             }*/
 
                             /* DEBUG: Dumping the content of the main data's JSON file. */
-                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Dump", "${GlobalSchema.globalJSONObject!!}")
+                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", "${GlobalSchema.globalJSONObject!!}")
 
                             /* DEBUG: Displaying the JSON main data. */
                             // appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"

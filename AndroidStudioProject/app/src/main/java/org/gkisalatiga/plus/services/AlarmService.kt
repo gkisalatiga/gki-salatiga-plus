@@ -17,7 +17,7 @@ class AlarmService {
          * Setting the morning devotion reminder every morning at 5:00 AM.
          */
         fun initSarenAlarm(ctx: Context) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[initSarenAlarm] Setting the alarm ...")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[initSarenAlarm] Setting the alarm ...")
 
             // Set the alarm to start at approximately 5:00 a.m.
             val calendar: Calendar = Calendar.getInstance().apply {
@@ -49,7 +49,7 @@ class AlarmService {
          * Reminder to read the afternoon devotion at approximately 12:00 p.m.
          */
         fun initYKBDailyAlarm(ctx: Context) {
-            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker-Test", "[initYKBDailyAlarm] Setting the alarm ...")
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[initYKBDailyAlarm] Setting the alarm ...")
 
             // Set the alarm to start at approximately 5:00 a.m.
             val calendar: Calendar = Calendar.getInstance().apply {

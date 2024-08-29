@@ -8,7 +8,7 @@
  * or downloaded online.
  */
 
-package org.gkisalatiga.plus.lib.external
+package org.gkisalatiga.plus.lib
 
 import android.content.Context
 import org.gkisalatiga.plus.R
@@ -59,6 +59,15 @@ class AppStatic(private val ctx: Context) {
         return JSONObject(inputAsString).getJSONArray("static")
     }
 
+    public fun getFallbackStaticMetadata(): JSONObject {
+        // Loading the local JSON file.
+        val input: InputStream = ctx.resources.openRawResource(R.raw.fallback_static)
+        val inputAsString: String = input.bufferedReader().use { it.readText() }
+
+        // Return the fallback JSONObject, and then navigate to the "gallery" node.
+        return JSONObject(inputAsString).getJSONObject("meta")
+    }
+
     /**
      * Initializes the gallery data and assign the global variable that handles it.
      */
@@ -85,6 +94,21 @@ class AppStatic(private val ctx: Context) {
             return JSONObject(_parsedJSONString).getJSONArray("static")
         } else {
             return getFallbackStaticData()
+        }
+
+    }
+
+    public fun getStaticMetadata(): JSONObject {
+        // Determines if we have already downloaded the JSON file.
+        val JSONExists = File(GlobalSchema.absolutePathToStaticData).exists()
+
+        // Load the downloaded JSON.
+        // Prevents error-returning when this function is called upon offline.
+        if (GlobalSchema.isStaticDataInitialized.value || JSONExists) {
+            this.loadJSON(GlobalSchema.absolutePathToStaticData)
+            return JSONObject(_parsedJSONString).getJSONObject("meta")
+        } else {
+            return getFallbackStaticMetadata()
         }
 
     }
