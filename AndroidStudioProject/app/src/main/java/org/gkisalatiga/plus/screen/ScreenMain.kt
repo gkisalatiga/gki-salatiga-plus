@@ -19,6 +19,7 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageInfo
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -45,13 +46,16 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PublishedWithChanges
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
@@ -60,18 +64,21 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -81,13 +88,16 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.gkisalatiga.plus.R
@@ -97,6 +107,7 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
+import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.ui.theme.Brown1
 import java.util.concurrent.Executors
@@ -141,6 +152,7 @@ class ScreenMain : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UseOfNonLambdaOffsetOverload")
     public fun getComposable() {
         val ctx = LocalContext.current
+        val uriHandler = LocalUriHandler.current
         scope = rememberCoroutineScope()
 
         // Initializing the top banner title.
@@ -179,6 +191,9 @@ class ScreenMain : ComponentActivity() {
 
                     // Update/recompose the UI.
                     GlobalSchema.reloadCurrentScreen.value = !GlobalSchema.reloadCurrentScreen.value
+
+                    // Lastly, attempt to check for new app update.
+                    ApplicationUpdater(ctx).checkAppUpdate()
                 }
             })
         ) {
@@ -342,6 +357,64 @@ class ScreenMain : ComponentActivity() {
                     )
                 },
             )
+
+            // Obtain the app's essential information.
+            // SOURCE: https://stackoverflow.com/a/6593822
+            val pInfo: PackageInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0)
+            val vName = pInfo.versionName
+            val vCode = pInfo.versionCode
+            // ---
+            // Add notification for new app updates.
+            if (GlobalSchema.appUpdaterIsShown.value) {
+                // The app updater string text.
+                val appUpdateNoticeText = """
+                ## Pembaruan ditemukan!
+                
+                Versi aplikasi yang Anda pakai saat ini adalah **$vName**. Namun sudah tersedia pembaruan aplikasi versi **${GlobalSchema.newAppVersionName.value}**.
+                
+                Perbarui sekarang?
+                """.trimIndent()
+
+                // The bottom sheet dialog.
+                ModalBottomSheet(
+                    onDismissRequest = { GlobalSchema.appUpdaterIsShown.value = false },
+                    sheetState = GlobalSchema.appUpdaterBottomSheetState!!
+                ) {
+                    Column (Modifier.padding(20.dp).fillMaxWidth()) {
+
+                        Icon(Icons.Default.PublishedWithChanges, "", modifier = Modifier.padding(bottom = 25.dp).fillMaxWidth().scale(2.0f))
+
+                        MarkdownText(
+                            modifier = Modifier.padding(2.dp),
+                            markdown = appUpdateNoticeText.trimIndent(),
+                            style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Justify)
+                        )
+
+                        Row (Modifier.padding(vertical = 10.dp)) {
+                            Button(onClick = {
+                                uriHandler.openUri(GlobalSchema.newAppDownloadURL.value)
+                                scope.launch { GlobalSchema.appUpdaterBottomSheetState!!.hide() }.invokeOnCompletion {
+                                    if (!GlobalSchema.appUpdaterBottomSheetState!!.isVisible) {
+                                        GlobalSchema.appUpdaterIsShown.value = false
+                                    }
+                                }
+                            }, modifier = Modifier.weight(3.0f, true).padding(horizontal = 10.dp)) {
+                                Text("Perbarui Sekarang")
+                            }
+                            TextButton(onClick = {
+                                scope.launch { GlobalSchema.appUpdaterBottomSheetState!!.hide() }.invokeOnCompletion {
+                                    if (!GlobalSchema.appUpdaterBottomSheetState!!.isVisible) {
+                                        GlobalSchema.appUpdaterIsShown.value = false
+                                    }
+                                }
+                            }, modifier = Modifier.weight(1.0f, true).padding(horizontal = 10.dp)) {
+                                Text("Nanti")
+                            }
+                        }
+
+                    }  // --- end column.
+                }  // --- end ModalBottomSheet.
+            }  // --- end if.
 
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.

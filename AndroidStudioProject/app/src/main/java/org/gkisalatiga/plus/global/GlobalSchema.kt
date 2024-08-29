@@ -18,10 +18,12 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
@@ -244,6 +246,18 @@ class GlobalSchema : Application() {
         /* Controls the scaffolding snack bar. */
 
         val snackbarHostState = SnackbarHostState()
+
+        /* ------------------------------------------------------------------------------------ */
+        /* Screen main's app updater notice bottom sheet dialog. */
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        var appUpdaterBottomSheetState: SheetState? = null
+        val appUpdaterIsShown = mutableStateOf(true)
+        val newAppVersionCode = mutableIntStateOf(0)
+        val newAppVersionName = mutableStateOf("")
+        val newAppDownloadURL = mutableStateOf("")
+
+        val triggerAppUpdateDialog = mutableStateOf(false)
 
         /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */

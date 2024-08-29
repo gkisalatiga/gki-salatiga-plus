@@ -54,6 +54,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
@@ -105,6 +106,7 @@ import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
 import org.gkisalatiga.plus.services.AlarmReceiver
 import org.gkisalatiga.plus.services.AlarmService
+import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.NotificationService
@@ -159,6 +161,9 @@ class ActivityLauncher : ComponentActivity() {
 
         // Start the connection (online/offline) checker.
         ConnectionChecker(this).execute()
+
+        // Check whether there is a newer application update.
+        ApplicationUpdater(this).checkAppUpdate()
 
         // Configure the behavior of the hidden system bars and configure the immersive mode (hide status bar and navigation bar).
         // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
@@ -254,6 +259,9 @@ class ActivityLauncher : ComponentActivity() {
 
             // Prepare the pull-to-refresh (PTR) state globally.
             GlobalSchema.globalPTRState = rememberPullToRefreshState()
+
+            // The app updater bottom sheet state.
+            GlobalSchema.appUpdaterBottomSheetState = rememberModalBottomSheetState()
 
             // Listen to the request to hide the phone's bars.
             // SOURCE: https://developer.android.com/develop/ui/views/layout/immersive
