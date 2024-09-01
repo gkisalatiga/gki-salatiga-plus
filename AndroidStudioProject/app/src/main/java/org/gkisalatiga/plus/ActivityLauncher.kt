@@ -95,7 +95,6 @@ import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenMedia
-import org.gkisalatiga.plus.screen.ScreenMinistry
 import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
 import org.gkisalatiga.plus.screen.ScreenStaticContentList
@@ -382,7 +381,6 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_MEDIA) { ScreenMedia().getComposable() }
-            composable(NavigationRoutes().SCREEN_MINISTRY) { ScreenMinistry().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
