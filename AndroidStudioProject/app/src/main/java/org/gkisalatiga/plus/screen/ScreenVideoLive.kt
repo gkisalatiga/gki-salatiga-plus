@@ -26,12 +26,16 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,11 +63,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -339,31 +345,11 @@ class ScreenVideoLive : ComponentActivity() {
     @Composable
     private fun getFullscreenPlayer() {
         /* The fullscreen canvas, rotated to landscape configuration. */
-        val localConfig = LocalConfiguration.current
-        Box (Modifier
-            .background(Color.Black)
-            .fillMaxSize()
-            //.wrapContentSize()
-            //.padding(45.dp)
-            // .padding(calculatedTopPadding/2)
+        Column (
+            modifier = Modifier.background(Color.Black).fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    // .sizeIn(maxHeight = localConfig.screenHeightDp.dp)
-                    .fillMaxWidth()
-            ) {
-                LazyColumn {
-                    item { getVideo() }
-                }
-            }
-            /*LazyColumn {
-                item { getVideo() }
-            }*/
-            //Box (Modifier.sizeIn(maxHeight = localConfig.screenHeightDp.dp).fillMaxWidth()) {
-                //getVideo()
-            //}
+            Surface (Modifier.aspectRatio(1.77778f)) { getVideo() }
         }
     }
 
