@@ -213,7 +213,7 @@ class ScreenStaticContentList : ComponentActivity() {
                                     text = title,
                                     fontSize = 22.sp,
                                     color = Color.White,
-                                    modifier = Modifier.padding(start = 20.dp).padding(bottom = 5.dp),
+                                    modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 5.dp),
                                     style = TextStyle(
                                         shadow = Shadow(Color.Black, Offset(3.0f, 3.0f), 8.0f)
                                     )
@@ -224,7 +224,7 @@ class ScreenStaticContentList : ComponentActivity() {
                                         text = subtitle,
                                         fontSize = 16.sp,
                                         color = Color.White,
-                                        modifier = Modifier.padding(start = 20.dp),
+                                        modifier = Modifier.padding(horizontal = 20.dp),
                                         style = TextStyle(
                                             shadow = Shadow(Color.Black, Offset(3.0f, 3.0f), 8.0f)
                                         )
