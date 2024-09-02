@@ -72,13 +72,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.DefaultPlayerUiController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
+import org.gkisalatiga.plus.composable.YouTubeView
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.AppGallery
 import org.gkisalatiga.plus.lib.AppPreferences
-import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -110,8 +114,6 @@ import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 // import org.gkisalatiga.plus.screen.ScreenMain
 
@@ -213,9 +215,9 @@ class ActivityLauncher : ComponentActivity() {
         // java.lang.IllegalStateException: System services not available to Activities before onCreate()
         GlobalSchema.clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
-        // Prepares the global YouTube viewer.
+        // Prepares the global YouTube composable and viewer.
         // Prevents NPE.
-        GlobalSchema.ytView = YouTubePlayerView(this)
+        GlobalSchema.ytComposable = YouTubeView()
 
         // Retrieving the latest JSON metadata.
         initData()
