@@ -21,13 +21,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.runtime.CompositionLocal
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import org.gkisalatiga.plus.composable.YouTubeView
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.Executors
@@ -179,6 +183,9 @@ class GlobalSchema : Application() {
         /* Stores the path to the downloaded private file; used in lib.Downloader. */
         var pathToDownloadedPrivateFile = mutableStateOf("")
 
+        /* The composable YouTube element. */
+        var ytComposable: YouTubeView? = null
+
         /* The global YouTubeViewer element. */
         var ytView: YouTubePlayerView? = null
 
@@ -252,7 +259,7 @@ class GlobalSchema : Application() {
 
         @OptIn(ExperimentalMaterial3Api::class)
         var appUpdaterBottomSheetState: SheetState? = null
-        val appUpdaterIsShown = mutableStateOf(true)
+        val appUpdaterIsShown = mutableStateOf(false)
         val newAppVersionCode = mutableIntStateOf(0)
         val newAppVersionName = mutableStateOf("")
         val newAppDownloadURL = mutableStateOf("")

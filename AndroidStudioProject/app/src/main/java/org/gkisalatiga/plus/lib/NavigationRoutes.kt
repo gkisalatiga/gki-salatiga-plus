@@ -33,7 +33,6 @@ public data class NavigationRoutes (
     val SCREEN_GALERI_VIEW: String = "nav_screen_galleryview",
     val SCREEN_GALERI_YEAR: String = "nav_screen_galleryyear",
     val SCREEN_MEDIA: String = "nav_screen_media",
-    val SCREEN_MINISTRY: String = "nav_screen_bapel",
     val SCREEN_STATIC_CONTENT_LIST: String = "nav_screen_static_content_list",
     val SCREEN_BLANK: String = "nav_screen_blank",
 

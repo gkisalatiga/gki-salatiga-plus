@@ -72,13 +72,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.DefaultPlayerUiController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.delay
+import org.gkisalatiga.plus.composable.YouTubeView
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.AppDatabase
 import org.gkisalatiga.plus.lib.AppGallery
 import org.gkisalatiga.plus.lib.AppPreferences
-import org.gkisalatiga.plus.lib.Downloader
 import org.gkisalatiga.plus.lib.GallerySaver
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -95,7 +99,6 @@ import org.gkisalatiga.plus.screen.ScreenInternalHTML
 import org.gkisalatiga.plus.screen.ScreenLiturgi
 import org.gkisalatiga.plus.screen.ScreenMain
 import org.gkisalatiga.plus.screen.ScreenMedia
-import org.gkisalatiga.plus.screen.ScreenMinistry
 import org.gkisalatiga.plus.screen.ScreenPersembahan
 import org.gkisalatiga.plus.screen.ScreenPosterViewer
 import org.gkisalatiga.plus.screen.ScreenStaticContentList
@@ -111,8 +114,6 @@ import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 // import org.gkisalatiga.plus.screen.ScreenMain
 
@@ -214,9 +215,9 @@ class ActivityLauncher : ComponentActivity() {
         // java.lang.IllegalStateException: System services not available to Activities before onCreate()
         GlobalSchema.clipManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
-        // Prepares the global YouTube viewer.
+        // Prepares the global YouTube composable and viewer.
         // Prevents NPE.
-        GlobalSchema.ytView = YouTubePlayerView(this)
+        GlobalSchema.ytComposable = YouTubeView()
 
         // Retrieving the latest JSON metadata.
         initData()
@@ -382,7 +383,6 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_MEDIA) { ScreenMedia().getComposable() }
-            composable(NavigationRoutes().SCREEN_MINISTRY) { ScreenMinistry().getComposable() }
             composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }

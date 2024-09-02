@@ -11,8 +11,8 @@ android {
         applicationId "org.gkisalatiga.plus"
         minSdk 21
         targetSdk 34
-        versionCode 26
-        versionName "0.4.3-beta"
+        versionCode 27
+        versionName "0.4.4-rc"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
