@@ -53,10 +53,10 @@ class AlarmService {
 
             // Set the alarm to start at approximately 5:00 a.m.
             val calendar: Calendar = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR, 12)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 5)
+                timeInMillis = System.currentTimeMillis() - 60000 // --- subtract by one minute to prevent "setting alarm in the past", which triggers the notif. immediately.
+                set(Calendar.HOUR, 13)
+                set(Calendar.MINUTE, 1)
+                set(Calendar.SECOND, 20)
             }
 
             // Pass the payload
@@ -69,12 +69,19 @@ class AlarmService {
             val alarmIntent: PendingIntent = PendingIntent.getBroadcast(ctx, 0, notifyIntent, PendingIntent.FLAG_MUTABLE)
             val alarmMgr: AlarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-            alarmMgr.setInexactRepeating(
+            alarmMgr.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
                 AlarmManager.INTERVAL_DAY,
                 alarmIntent
             )
+
+            /*alarmMgr.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                AlarmManager.INTERVAL_DAY,
+                alarmIntent
+            )*/
         }
 
     }

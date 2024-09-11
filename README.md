@@ -9,6 +9,13 @@ The application is designed to handle URLs matching `gkisalatiga.org` URI with `
 
 The application specifically use the `https://gkisalatiga.org/plus/deeplink` URI pattern to handle navigations and patterns for internal uses (e.g., notification user-click action). This means we assume the path `/plus/deeplink` should not exist in `gkisalatiga.org`'s actual website root, so that we can handle internal intent deep-linkings.
 
+Currently, the list of registered deeplinks in this app is as follows:
+
+- **`https://gkisalatiga.org/plus/deeplink/saren`:** Opens the "SaRen" video playlist menu
+- **`https://gkisalatiga.org/plus/deeplink/ykb`:** Opens the list of YKB daily devotionals
+
+Any URI with `gkisalatiga.org` host that does not match the above registered deeplink will automatically trigger the WebView and display the link in the app's WebView.
+
 ## To-Do
 
 - [X] Add splash screen at launch

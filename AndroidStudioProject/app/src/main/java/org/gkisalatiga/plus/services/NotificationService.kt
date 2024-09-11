@@ -96,11 +96,12 @@ class NotificationService {
          */
         fun showDebugNotification(ctx: Context) {
             val title = "Notification Debugger"
-            val content = "If this notifiation gets triggered, there is something wrong with the scheduler. (Or, perhaps, you accidentally clicked the \"Easter Egg\"?"
+            val content = "If this notification gets triggered, there is something wrong with the scheduler. (Or, perhaps, you accidentally clicked the \"Easter Egg\"?"
 
             // Prepares the post-user click action handler (i.e., opening an activity).
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink"))
-            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(ctx, ActivityLauncher::class.java)
+            intent.setData(Uri.parse("https://www.gkisalatiga.org"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_MUTABLE)
 
             val builder = NotificationCompat.Builder(ctx, DEBUG_CHANNEL_ID)
                 .setSmallIcon(R.drawable.app_notif_icon)
@@ -125,8 +126,9 @@ class NotificationService {
             val content = "Shalom! Mari bersaat teduh sejenak bersama GKI Salatiga+"
 
             // Prepares the post-user click action handler (i.e., opening an activity).
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink/saren"))
-            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(ctx, ActivityLauncher::class.java)
+            intent.setData(Uri.parse("https://gkisalatiga.org/plus/deeplink/saren"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_MUTABLE)
 
             val builder = NotificationCompat.Builder(ctx, SAREN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.app_notif_icon)
@@ -152,8 +154,9 @@ class NotificationService {
                     "Pulihkan kekuatan dan semangat Anda dengan membaca firman Tuhan di jam rawan ini."
 
             // Prepares the post-user click action handler (i.e., opening an activity).
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink/ykb"))
-            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(ctx, ActivityLauncher::class.java)
+            intent.setData(Uri.parse("https://gkisalatiga.org/plus/deeplink/ykb"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_MUTABLE)
 
             val builder = NotificationCompat.Builder(ctx, YKB_HARIAN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.app_notif_icon)

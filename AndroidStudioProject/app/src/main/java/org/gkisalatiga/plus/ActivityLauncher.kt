@@ -111,8 +111,6 @@ import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.DeepLinkHandler
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-import org.json.JSONArray
-import org.json.JSONObject
 
 // import org.gkisalatiga.plus.screen.ScreenMain
 
@@ -133,11 +131,10 @@ class ActivityLauncher : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
         /* Handles deep-linking. */
         intent?.data?.let {
             if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onNewIntent] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
-            if (it.host == "gkisalatiga.org") {
+            if (it.host == "gkisalatiga.org" || it.host == "www.gkisalatiga.org") {
                 when (it.encodedPath) {
                     "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
                     "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
@@ -298,16 +295,16 @@ class ActivityLauncher : ComponentActivity() {
                         NavHost(navController = splashNavController, startDestination = "init_screen") {
                             composable(
                                 "init_screen",
-                                deepLinks = listOf(navDeepLink {
-                                    // uriPattern = "https://gkisalatiga.org/plus/deeplink/{arg}"
-                                    uriPattern = "https://gkisalatiga.org"
-                                })
+                                deepLinks = listOf(
+                                    navDeepLink { uriPattern = "https://gkisalatiga.org" },
+                                    navDeepLink { uriPattern = "https://www.gkisalatiga.org" }
+                                )
                             ) {
                                 /* Handles deep-linking. */
                                 if (intent?.data != null) {
                                     intent?.data?.let {
                                         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onCreate] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
-                                        if (it.host == "gkisalatiga.org") {
+                                        if (it.host == "gkisalatiga.org" || it.host == "www.gkisalatiga.org") {
                                             when (it.encodedPath) {
                                                 "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
                                                 "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
@@ -317,6 +314,8 @@ class ActivityLauncher : ComponentActivity() {
                                             initMainGraphic()
                                         }
                                     }  // --- end of intent?.data?.let {}
+
+                                /* Nothing matches, start the app from the beginning.*/
                                 } else {
                                     // This isn't a URI action call. Open the app regularly.
                                     GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
@@ -450,6 +449,7 @@ class ActivityLauncher : ComponentActivity() {
 
         // Initializing the alarm services.
         AlarmService.initSarenAlarm(this)
+        AlarmService.initYKBDailyAlarm(this)
     }
 
     /**
