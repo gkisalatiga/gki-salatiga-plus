@@ -3,15 +3,21 @@ package org.gkisalatiga.plus.services
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import okhttp3.internal.notify
+import org.gkisalatiga.plus.ActivityLauncher
 import org.gkisalatiga.plus.R
 import java.util.concurrent.Executors
 
@@ -84,15 +90,23 @@ class NotificationService {
 
         /**
          * Showing the debug notification.
+         *
+         * Also, add navigational actions and deep-linkings when the user clicks on the notifications.
+         * SOURCE: https://composables.com/tutorials/deeplinks
          */
         fun showDebugNotification(ctx: Context) {
             val title = "Notification Debugger"
             val content = "If this notifiation gets triggered, there is something wrong with the scheduler. (Or, perhaps, you accidentally clicked the \"Easter Egg\"?"
 
+            // Prepares the post-user click action handler (i.e., opening an activity).
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
             val builder = NotificationCompat.Builder(ctx, DEBUG_CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.app_notif_icon)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setContentIntent(activity)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))  // --- showing multiline content.
                 .setAutoCancel(true)  // --- remove notification on user tap.
 
@@ -110,10 +124,15 @@ class NotificationService {
             val title = "SaRen Pagi"
             val content = "Shalom! Mari bersaat teduh sejenak bersama GKI Salatiga+"
 
+            // Prepares the post-user click action handler (i.e., opening an activity).
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink/saren"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
             val builder = NotificationCompat.Builder(ctx, SAREN_CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.app_notif_icon)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setContentIntent(activity)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))  // --- showing multiline content.
                 .setAutoCancel(true)  // --- remove notification on user tap.
 
@@ -132,10 +151,15 @@ class NotificationService {
             val content = "Shalom! Sedang penatkah kehidupan Anda? Mari luangkan waktu sebentar untuk membaca renungan YKB. " +
                     "Pulihkan kekuatan dan semangat Anda dengan membaca firman Tuhan di jam rawan ini."
 
+            // Prepares the post-user click action handler (i.e., opening an activity).
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gkisalatiga.org/plus/deeplink/ykb"))
+            val activity = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
             val builder = NotificationCompat.Builder(ctx, YKB_HARIAN_CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.app_notif_icon)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setContentIntent(activity)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))  // --- showing multiline content.
                 .setAutoCancel(true)  // --- remove notification on user tap.
 

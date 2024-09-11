@@ -72,11 +72,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.DefaultPlayerUiController
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import androidx.navigation.navDeepLink
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.composable.YouTubeView
 import org.gkisalatiga.plus.global.GlobalSchema
@@ -112,8 +108,11 @@ import org.gkisalatiga.plus.services.AlarmService
 import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
+import org.gkisalatiga.plus.services.DeepLinkHandler
 import org.gkisalatiga.plus.services.NotificationService
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
+import org.json.JSONArray
+import org.json.JSONObject
 
 // import org.gkisalatiga.plus.screen.ScreenMain
 
@@ -131,6 +130,22 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.isRunningInBackground.value = false
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.onResume] App has been restored to foreground.")
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        /* Handles deep-linking. */
+        intent?.data?.let {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onNewIntent] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
+            if (it.host == "gkisalatiga.org") {
+                when (it.encodedPath) {
+                    "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
+                    "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
+                    else -> if (it.encodedPath != null) DeepLinkHandler.openDomainURL("https://${it.host}${it.encodedPath}")
+                }
+            }
+        }  // --- end of intent?.data?.let {}
+    }  // --- end of onNewIntent.
 
     @SuppressLint("MissingSuperCall", "Recycle")
     override fun onActivityResult(
@@ -274,51 +289,56 @@ class ActivityLauncher : ComponentActivity() {
                 }
             }
 
-            // Set the default locale.
-            // TODO: Remove or debug-and-implement?
-            // SOURCE: https://stackoverflow.com/a/78360465
-            // SOURCE: https://stackoverflow.com/a/75172481
-            // AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-            /*val context = LocalContext.current
-            val resources = context.resources
-            val configuration = resources.configuration
-
-            val newContext = context.createConfigurationContext(configuration.apply {
-                setLocale(Locale.forLanguageTag("in"))
-            })
-            newContext.also { LocalContext.current = it }
-            SideEffect {
-                //AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-            }
-            // LocalConfiguration.current.setLocale(Locale.forLanguageTag("in"))
-            val configuration = LocalConfiguration.current
-            ConfigurationCompat.setLocales(configuration, LocaleListCompat.forLanguageTags("in"))*/
-
             GKISalatigaPlusTheme {
-
                 if (!GlobalSchema.DEBUG_DISABLE_SPLASH_SCREEN) {
                     // Splash screen.
                     // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
                     Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
                         val splashNavController = rememberNavController()
-                        NavHost(navController = splashNavController, startDestination = "splash_screen") {
-                            composable("splash_screen") {
-                                initSplashScreen(splashNavController = splashNavController)
-                            }
-                            composable("main_screen") {
+                        NavHost(navController = splashNavController, startDestination = "init_screen") {
+                            composable(
+                                "init_screen",
+                                deepLinks = listOf(navDeepLink {
+                                    // uriPattern = "https://gkisalatiga.org/plus/deeplink/{arg}"
+                                    uriPattern = "https://gkisalatiga.org"
+                                })
+                            ) {
+                                /* Handles deep-linking. */
+                                if (intent?.data != null) {
+                                    intent?.data?.let {
+                                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onCreate] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
+                                        if (it.host == "gkisalatiga.org") {
+                                            when (it.encodedPath) {
+                                                "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
+                                                "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
+                                                else -> if (it.encodedPath != null) DeepLinkHandler.openDomainURL("https://${it.host}${it.encodedPath}")
+                                            }
+                                            // This activity was called from a URI call. Skip the splash screen.
+                                            initMainGraphic()
+                                        }
+                                    }  // --- end of intent?.data?.let {}
+                                } else {
+                                    // This isn't a URI action call. Open the app regularly.
+                                    GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
+                                    initSplashScreen(splashNavController)
+                                }
+                            }  // --- end of navigation composable.
+
+                            composable ("main_screen") {
+                                // Just display the main graphic directly.
+                                GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
                                 initMainGraphic()
-                            }
-                        }
+                            }  // --- end of navigation composable.
+                        }  // --- end of NavHost.
                     }
                 } else {
                     // Just display the main graphic directly.
+                    GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
                     initMainGraphic()
                 }
-
-            }
-        }
-    }
+            }  // --- end of GKISalatigaPlusTheme.
+        }  // --- end of setContent().
+    }  // --- end of onCreate().
 
     /**
      * This method reads the current saved preference associated with the app
@@ -369,8 +389,11 @@ class ActivityLauncher : ComponentActivity() {
         }
 
         // We use nav. host because it has built-in support for transition effect/animation.
+        // We also use nav. host so that we can handle URI deep-linking,
+        // both from an external URL click and from a notification click.
+        // SOURCE: https://composables.com/tutorials/deeplinks
         val mainNavController = rememberNavController()
-        NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
+        NavHost(navController = mainNavController, startDestination = GlobalSchema.defaultScreen.value) {
             composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
             composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
             composable(NavigationRoutes().SCREEN_ATTRIBUTION) { ScreenAttribution().getComposable() }
@@ -383,7 +406,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_MEDIA) { ScreenMedia().getComposable() }
-            composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
+            composable(NavigationRoutes().SCREEN_YKB) {ScreenYKB().getComposable()}
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
             composable(NavigationRoutes().SCREEN_LITURGI) { ScreenLiturgi().getComposable() }

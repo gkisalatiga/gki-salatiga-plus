@@ -165,6 +165,11 @@ class GlobalSchema : Application() {
         val pushFragment = mutableStateOf("")  // --- not used.
         val pushSubmenu = mutableStateOf("")  // --- not used.
 
+        // The default value of screens and fragments.
+        val defaultScreen = mutableStateOf("")
+        val defaultFragment = mutableStateOf("")  // --- not used.
+        val defaultSubmenu = mutableStateOf("")  // --- not used.
+
         // Determine if we should reload the current screen.
         val reloadCurrentScreen = mutableStateOf(false)
 

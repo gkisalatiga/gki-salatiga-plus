@@ -1,6 +1,14 @@
 # gki-salatiga-plus
 The developmental project of GKI Salatiga's mobile church application
 
+## Documentation
+
+### Deep link URI pattern handling
+
+The application is designed to handle URLs matching `gkisalatiga.org` URI with `https` scheme.
+
+The application specifically use the `https://gkisalatiga.org/plus/deeplink` URI pattern to handle navigations and patterns for internal uses (e.g., notification user-click action). This means we assume the path `/plus/deeplink` should not exist in `gkisalatiga.org`'s actual website root, so that we can handle internal intent deep-linkings.
+
 ## To-Do
 
 - [X] Add splash screen at launch

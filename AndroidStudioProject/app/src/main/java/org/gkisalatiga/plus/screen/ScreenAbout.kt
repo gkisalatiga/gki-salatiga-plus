@@ -68,6 +68,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -78,6 +79,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import okhttp3.internal.toHexString
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
@@ -146,7 +148,9 @@ class ScreenAbout : ComponentActivity() {
                             }
 
                             /* DEBUG: Testing notification trigger. */
-                            // NotificationService.showDebugNotification(ctx)
+                            NotificationService.showDebugNotification(ctx)
+                            NotificationService.showSarenNotification(ctx)
+                            NotificationService.showYKBHarianNotification(ctx)
 
                             /* DEBUG: Testing the alarm receiver. */
                             // AlarmService.test(ctx)
@@ -167,10 +171,13 @@ class ScreenAbout : ComponentActivity() {
                             // appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"
                         }
                     ) {
-                        Image(painterResource(R.mipmap.ic_launcher_foreground), "",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
+                        Box {
+                            Box(Modifier.background(Color(0xff482505), shape = CircleShape).fillMaxSize())
+                            Image(painterResource(R.mipmap.ic_launcher_foreground), "",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
 
