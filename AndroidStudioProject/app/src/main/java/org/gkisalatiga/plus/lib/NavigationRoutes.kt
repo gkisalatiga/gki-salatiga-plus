@@ -15,6 +15,7 @@ public data class NavigationRoutes (
     val SCREEN_ABOUT: String = "nav_screen_about",
     val SCREEN_PROFILE: String = "nav_screen_profile",
     val SCREEN_WEBVIEW: String = "nav_screen_webview",
+    val SCREEN_DEV: String = "nav_screen_developer",
     val SCREEN_INTERNAL_HTML: String = "nav_screen_internalhtml",
     val SCREEN_VIDEO: String = "nav_screen_video",
     val SCREEN_LIVE: String = "nav_screen_live",

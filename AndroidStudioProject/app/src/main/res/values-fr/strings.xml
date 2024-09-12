@@ -14,6 +14,7 @@
     <!-- Constant strings for screen titles. -->
     <string name="screenabout_title">About</string>
     <string name="screenattrib_title">Open Source Libraries</string>
+    <string name="screendev_title">Developer\'s Menu</string>
     <string name="screenprofile_title">Profile</string>
     <string name="screenwebview_title">WebView</string>
     <string name="screenvideo_title">YouTube Videos (Pre-Recorded)</string>
@@ -129,4 +130,13 @@
     <string name="screen_about_license_dismiss">Understand</string>
     <string name="screen_about_license_dismiss_ok">OK</string>
     <string name="screen_about_license_confirm">Open Full Text</string>
+    <string name="screen_persembahan_ok">OK</string>
+
+    <string name="not_connected_to_internet">You are not connected to the internet!</string>
+    <string name="screen_dev_trigger_all_notifs">Trigger All Notifications</string>
+    <string name="screen_dev_quick_action_title">Quick Action</string>
+    <string name="screen_dev_trigger_minutely_work_manager">Trigger Minutely WorkManager</string>
+    <string name="screen_dev_welcome_developer">Welcome in the developer menu!</string>
+    <string name="screen_dev_title">Developer\'s Menu</string>
+    <string name="screen_dev_desc">Welcome back, Trio Developer!\nSam, Jeffrey, dan Joa \uD83D\uDDFF</string>
 </resources>

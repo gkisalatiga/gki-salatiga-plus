@@ -57,6 +57,14 @@
             "link": "https://gist.github.com/NitinPraksash9911/dea21ec4b8ae7df068f8f891187b6d1e"
         },
         {
+            "title": "WorkManager Kotlin Extensions",
+            "license": "Apache License 2.0",
+            "license-url": "https://spdx.org/licenses/Apache-2.0.html",
+            "year": "2024",
+            "author": "The Android Open Source Project",
+            "link": "https://mvnrepository.com/artifact/androidx.work/work-runtime-ktx"
+        },
+        {
             "title": "ZoomableBox",
             "license": "CC BY-SA 4.0",
             "license-url": "https://spdx.org/licenses/CC-BY-SA-4.0.html",

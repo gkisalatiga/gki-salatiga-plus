@@ -124,6 +124,11 @@ dependencies {
     // SOURCE: https://github.com/jeziellago/compose-markdown
     implementation("com.github.jeziellago:compose-markdown:0.5.3")
 
+    // To allow WorkManager to start background services and works, even after device restart.
+    // SOURCE: https://medium.com/@denniskirimi.dk/android-workmanager-37e08c070439
+    // ---
+    implementation ("androidx.work:work-runtime-ktx:2.9.1")
+
     // Enable markdown rendering.
     // SOURCE: https://stackoverflow.com/a/68899070
     // SOURCE: https://github.com/halilozercan/compose-richtext
@@ -134,13 +139,6 @@ dependencies {
     // For displaying icons on tabs?
     // SOURCE: https://stackoverflow.com/q/78398074
     // implementation(platform("androidx.compose:compose-bom"))
-
-    // To allow WorkManager to start background services and works, even after device restart.
-    // SOURCE: https://medium.com/@denniskirimi.dk/android-workmanager-37e08c070439
-    // ---
-    // Don't enable to avoid "targeting S+ version 31 and above" error.
-    // SOURCE: https://stackoverflow.com/a/69152986
-    // implementation ("androidx.work:work-runtime-ktx:2.9.1")
 
     // For displaying notifications.
     // implementation ("com.android.support:support-compat")

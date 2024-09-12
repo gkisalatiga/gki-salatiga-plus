@@ -30,10 +30,8 @@ package org.gkisalatiga.plus
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -72,11 +70,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.DefaultPlayerUiController
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import androidx.navigation.navDeepLink
 import kotlinx.coroutines.delay
 import org.gkisalatiga.plus.composable.YouTubeView
 import org.gkisalatiga.plus.global.GlobalSchema
@@ -90,6 +84,7 @@ import org.gkisalatiga.plus.lib.AppStatic
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenAttribution
+import org.gkisalatiga.plus.screen.ScreenDev
 import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenGaleri
 import org.gkisalatiga.plus.screen.ScreenGaleriList
@@ -107,15 +102,13 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
-import org.gkisalatiga.plus.services.AlarmReceiver
-import org.gkisalatiga.plus.services.AlarmService
 import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
+import org.gkisalatiga.plus.services.DeepLinkHandler
 import org.gkisalatiga.plus.services.NotificationService
+import org.gkisalatiga.plus.services.WorkScheduler
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-
-// import org.gkisalatiga.plus.screen.ScreenMain
 
 @OptIn(ExperimentalMaterial3Api::class)
 class ActivityLauncher : ComponentActivity() {
@@ -131,6 +124,21 @@ class ActivityLauncher : ComponentActivity() {
         GlobalSchema.isRunningInBackground.value = false
         if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) Log.d("Groaker", "[ActivityLauncher.onResume] App has been restored to foreground.")
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        /* Handles deep-linking. */
+        intent?.data?.let {
+            if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onNewIntent] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
+            if (it.host == "gkisalatiga.org" || it.host == "www.gkisalatiga.org") {
+                when (it.encodedPath) {
+                    "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
+                    "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
+                    else -> if (it.encodedPath != null) DeepLinkHandler.openDomainURL("https://${it.host}${it.encodedPath}")
+                }
+            }
+        }  // --- end of intent?.data?.let {}
+    }  // --- end of onNewIntent.
 
     @SuppressLint("MissingSuperCall", "Recycle")
     override fun onActivityResult(
@@ -236,7 +244,7 @@ class ActivityLauncher : ComponentActivity() {
         initNotificationChannel()
 
         // Initializing the scheduled alarms.
-        initScheduledAlarm()
+        initWorkManager()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
@@ -274,51 +282,58 @@ class ActivityLauncher : ComponentActivity() {
                 }
             }
 
-            // Set the default locale.
-            // TODO: Remove or debug-and-implement?
-            // SOURCE: https://stackoverflow.com/a/78360465
-            // SOURCE: https://stackoverflow.com/a/75172481
-            // AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-            /*val context = LocalContext.current
-            val resources = context.resources
-            val configuration = resources.configuration
-
-            val newContext = context.createConfigurationContext(configuration.apply {
-                setLocale(Locale.forLanguageTag("in"))
-            })
-            newContext.also { LocalContext.current = it }
-            SideEffect {
-                //AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("in"))
-            }
-            // LocalConfiguration.current.setLocale(Locale.forLanguageTag("in"))
-            val configuration = LocalConfiguration.current
-            ConfigurationCompat.setLocales(configuration, LocaleListCompat.forLanguageTags("in"))*/
-
             GKISalatigaPlusTheme {
-
                 if (!GlobalSchema.DEBUG_DISABLE_SPLASH_SCREEN) {
                     // Splash screen.
                     // SOURCE: https://medium.com/@fahadhabib01/animated-splash-screens-in-jetpack-compose-navigation-component-4e28f69ad559
                     Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
                         val splashNavController = rememberNavController()
-                        NavHost(navController = splashNavController, startDestination = "splash_screen") {
-                            composable("splash_screen") {
-                                initSplashScreen(splashNavController = splashNavController)
-                            }
-                            composable("main_screen") {
+                        NavHost(navController = splashNavController, startDestination = "init_screen") {
+                            composable(
+                                "init_screen",
+                                deepLinks = listOf(
+                                    navDeepLink { uriPattern = "https://gkisalatiga.org" },
+                                    navDeepLink { uriPattern = "https://www.gkisalatiga.org" }
+                                )
+                            ) {
+                                /* Handles deep-linking. */
+                                if (intent?.data != null) {
+                                    intent?.data?.let {
+                                        if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_TEST) Log.d("Groaker-Test", "[ActivityLauncher.onCreate] Received data: host: ${it.host}, path: ${it.path}, encodedPath: ${it.encodedPath}, pathSegments: ${it.pathSegments}")
+                                        if (it.host == "gkisalatiga.org" || it.host == "www.gkisalatiga.org") {
+                                            when (it.encodedPath) {
+                                                "/plus/deeplink/saren" -> DeepLinkHandler.handleSaRen()
+                                                "/plus/deeplink/ykb" -> DeepLinkHandler.handleYKB()
+                                                else -> if (it.encodedPath != null) DeepLinkHandler.openDomainURL("https://${it.host}${it.encodedPath}")
+                                            }
+                                            // This activity was called from a URI call. Skip the splash screen.
+                                            initMainGraphic()
+                                        }
+                                    }  // --- end of intent?.data?.let {}
+
+                                /* Nothing matches, start the app from the beginning.*/
+                                } else {
+                                    // This isn't a URI action call. Open the app regularly.
+                                    GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
+                                    initSplashScreen(splashNavController)
+                                }
+                            }  // --- end of navigation composable.
+
+                            composable ("main_screen") {
+                                // Just display the main graphic directly.
+                                GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
                                 initMainGraphic()
-                            }
-                        }
+                            }  // --- end of navigation composable.
+                        }  // --- end of NavHost.
                     }
                 } else {
                     // Just display the main graphic directly.
+                    GlobalSchema.defaultScreen.value = NavigationRoutes().SCREEN_MAIN
                     initMainGraphic()
                 }
-
-            }
-        }
-    }
+            }  // --- end of GKISalatigaPlusTheme.
+        }  // --- end of setContent().
+    }  // --- end of onCreate().
 
     /**
      * This method reads the current saved preference associated with the app
@@ -369,13 +384,17 @@ class ActivityLauncher : ComponentActivity() {
         }
 
         // We use nav. host because it has built-in support for transition effect/animation.
+        // We also use nav. host so that we can handle URI deep-linking,
+        // both from an external URL click and from a notification click.
+        // SOURCE: https://composables.com/tutorials/deeplinks
         val mainNavController = rememberNavController()
-        NavHost(navController = mainNavController, startDestination = NavigationRoutes().SCREEN_MAIN) {
+        NavHost(navController = mainNavController, startDestination = GlobalSchema.defaultScreen.value) {
             composable(NavigationRoutes().SCREEN_MAIN) { ScreenMain().getComposable() }
             composable(NavigationRoutes().SCREEN_ABOUT) { ScreenAbout().getComposable() }
             composable(NavigationRoutes().SCREEN_ATTRIBUTION) { ScreenAttribution().getComposable() }
             composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
             composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
+            composable(NavigationRoutes().SCREEN_DEV) { ScreenDev().getComposable() }
             composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
             composable(NavigationRoutes().SCREEN_PERSEMBAHAN) { ScreenPersembahan().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI) { ScreenGaleri().getComposable() }
@@ -383,7 +402,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_GALERI_VIEW) { ScreenGaleriView().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI_YEAR) { ScreenGaleriYear().getComposable() }
             composable(NavigationRoutes().SCREEN_MEDIA) { ScreenMedia().getComposable() }
-            composable(NavigationRoutes().SCREEN_YKB) { ScreenYKB().getComposable() }
+            composable(NavigationRoutes().SCREEN_YKB) {ScreenYKB().getComposable()}
             composable(NavigationRoutes().SCREEN_VIDEO_LIST) { ScreenVideoList().getComposable() }
             composable(NavigationRoutes().SCREEN_WARTA) { ScreenWarta().getComposable() }
             composable(NavigationRoutes().SCREEN_LITURGI) { ScreenLiturgi().getComposable() }
@@ -412,21 +431,12 @@ class ActivityLauncher : ComponentActivity() {
     }
 
     /**
-     * Initializing the "alarms" of GKI Salatiga+ app,
+     * Initializing the WorkManager,
      * which will trigger notifications and stuffs.
      */
-    private fun initScheduledAlarm() {
-        // Enables on-boot trigger of alarm, overriding manifest values.
-        // SOURCE: https://developer.android.com/develop/background-work/services/alarms/schedule#boot
-        val receiver = ComponentName(this, AlarmReceiver::class.java)
-        this.packageManager.setComponentEnabledSetting(
-            receiver,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
-
-        // Initializing the alarm services.
-        AlarmService.initSarenAlarm(this)
+    private fun initWorkManager() {
+        WorkScheduler.scheduleSarenReminder(this)
+        WorkScheduler.scheduleYKBReminder(this)
     }
 
     /**
