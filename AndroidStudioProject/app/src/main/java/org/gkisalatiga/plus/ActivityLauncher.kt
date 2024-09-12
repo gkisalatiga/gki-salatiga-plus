@@ -30,10 +30,8 @@ package org.gkisalatiga.plus
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -103,16 +101,13 @@ import org.gkisalatiga.plus.screen.ScreenVideoLive
 import org.gkisalatiga.plus.screen.ScreenWarta
 import org.gkisalatiga.plus.screen.ScreenWebView
 import org.gkisalatiga.plus.screen.ScreenYKB
-import org.gkisalatiga.plus.services.AlarmReceiver
-import org.gkisalatiga.plus.services.AlarmService
 import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.ConnectionChecker
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.services.DeepLinkHandler
 import org.gkisalatiga.plus.services.NotificationService
+import org.gkisalatiga.plus.services.WorkScheduler
 import org.gkisalatiga.plus.ui.theme.GKISalatigaPlusTheme
-
-// import org.gkisalatiga.plus.screen.ScreenMain
 
 @OptIn(ExperimentalMaterial3Api::class)
 class ActivityLauncher : ComponentActivity() {
@@ -248,7 +243,7 @@ class ActivityLauncher : ComponentActivity() {
         initNotificationChannel()
 
         // Initializing the scheduled alarms.
-        initScheduledAlarm()
+        initWorkManager()
 
         // Initiate the Jetpack Compose composition.
         // This is the entry point of every composable, similar to "main()" function in Java.
@@ -434,22 +429,11 @@ class ActivityLauncher : ComponentActivity() {
     }
 
     /**
-     * Initializing the "alarms" of GKI Salatiga+ app,
+     * Initializing the WorkManager,
      * which will trigger notifications and stuffs.
      */
-    private fun initScheduledAlarm() {
-        // Enables on-boot trigger of alarm, overriding manifest values.
-        // SOURCE: https://developer.android.com/develop/background-work/services/alarms/schedule#boot
-        val receiver = ComponentName(this, AlarmReceiver::class.java)
-        this.packageManager.setComponentEnabledSetting(
-            receiver,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
-
-        // Initializing the alarm services.
-        AlarmService.initSarenAlarm(this)
-        AlarmService.initYKBDailyAlarm(this)
+    private fun initWorkManager() {
+        WorkScheduler.scheduleYKBReminder(this)
     }
 
     /**

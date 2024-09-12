@@ -21,10 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.runtime.CompositionLocal
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -133,12 +129,14 @@ class GlobalSchema : Application() {
 
         // Whether to display the debugger's logcat logging.
         const val DEBUG_ENABLE_LOG_CAT = true
+        const val DEBUG_ENABLE_LOG_CAT_BOOT = true
         const val DEBUG_ENABLE_LOG_CAT_CONN_TEST = true
         const val DEBUG_ENABLE_LOG_CAT_DUMP = true
         const val DEBUG_ENABLE_LOG_CAT_INIT = true
         const val DEBUG_ENABLE_LOG_CAT_SPAM = true
         const val DEBUG_ENABLE_LOG_CAT_TEST = true
         const val DEBUG_ENABLE_LOG_CAT_UPDATER = true
+        const val DEBUG_ENABLE_LOG_CAT_WORKER = true
 
         // Whether to hide the splash screen.
         const val DEBUG_DISABLE_SPLASH_SCREEN = false
