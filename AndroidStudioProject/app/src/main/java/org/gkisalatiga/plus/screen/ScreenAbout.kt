@@ -10,7 +10,6 @@
 package org.gkisalatiga.plus.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
@@ -30,7 +29,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -57,7 +55,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -68,7 +65,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -77,14 +73,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import dev.jeziellago.compose.markdowntext.MarkdownText
-import okhttp3.internal.toHexString
 import org.gkisalatiga.plus.R
 import org.gkisalatiga.plus.global.GlobalSchema
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.services.NotificationService
-import java.io.File
 import java.io.InputStream
 
 
@@ -102,12 +94,16 @@ class ScreenAbout : ComponentActivity() {
     // The description of the application.
     private var appMainDescription = mutableStateOf("")
 
+    // Determines the time and number-of-clicks for opening the EasterEgg.
+    private var easterEggFirstClick = 0.toLong()
+    private var easterEggCurrentClicks = 0
+    private val easterEggMinClicks = 10
+    private val easterEggTimeout = 2000.toLong()
+
     @Composable
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     public fun getComposable() {
         val ctx = LocalContext.current
-
-        Log.d("Groaker", "Last selected fragment of main screen: ${GlobalSchema.lastMainScreenPagerPage.value}")
 
         // Obtain the app's essential information.
         // SOURCE: https://stackoverflow.com/a/6593822
@@ -137,6 +133,7 @@ class ScreenAbout : ComponentActivity() {
                     .fillMaxSize()
                     .verticalScroll(scrollState)) {
                 /* Show app logo, name, and version. */
+                val welcomeDevText = stringResource(R.string.screen_dev_welcome_developer)
                 Box (Modifier.padding(vertical = 15.dp).padding(top = 10.dp)) {
                     Surface (
                         shape = CircleShape,
@@ -144,31 +141,26 @@ class ScreenAbout : ComponentActivity() {
                         onClick = {
                             /* You know what this is. */
                             if (GlobalSchema.DEBUG_ENABLE_EASTER_EGG) {
-                                Toast.makeText(ctx, "\uD83D\uDC23", Toast.LENGTH_SHORT).show()
-                            }
-
-                            /* DEBUG: Testing notification trigger. */
-                            NotificationService.showDebugNotification(ctx)
-                            NotificationService.showSarenNotification(ctx)
-                            NotificationService.showYKBHarianNotification(ctx)
-
-                            /* DEBUG: Testing the alarm receiver. */
-                            // AlarmService.test(ctx)
-
-                            /* DEBUG: Enlisting the archive folder content recursively. */
-                            // SOURCE: https://www.baeldung.com/kotlin/list-files-recursively
-                            /*if (GlobalSchema.DEBUG_ENABLE_LOG_CAT) {
-                                val baseExtractedData = ctx.getDir("Archive", Context.MODE_PRIVATE).absolutePath
-                                File(baseExtractedData).walk().forEach { f ->
-                                    if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", f.absolutePath)
+                                // Ensures that the user (developer) has to click N-times before opening the dev menu.
+                                if (easterEggFirstClick + easterEggTimeout > System.currentTimeMillis()) {
+                                    /* Opens the easter egg. */
+                                    if (easterEggCurrentClicks >= easterEggMinClicks) {
+                                        easterEggCurrentClicks = 0
+                                        GlobalSchema.pushScreen.value = NavigationRoutes().SCREEN_DEV
+                                        Toast.makeText(ctx, welcomeDevText, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        easterEggCurrentClicks += 1
+                                    }
+                                } else {
+                                    easterEggCurrentClicks = 0
                                 }
-                            }*/
 
-                            /* DEBUG: Dumping the content of the main data's JSON file. */
-                            // if (GlobalSchema.DEBUG_ENABLE_LOG_CAT_DUMP) Log.d("Groaker-Dump", "${GlobalSchema.globalJSONObject!!}")
-
-                            /* DEBUG: Displaying the JSON main data. */
-                            // appMainDescription.value = "${GlobalSchema.globalJSONObject!!}"
+                                // Detecting the first time this button was clicked.
+                                if (easterEggCurrentClicks == 0) {
+                                    Toast.makeText(ctx, "\uD83D\uDC23", Toast.LENGTH_SHORT).show()
+                                    easterEggFirstClick = System.currentTimeMillis()
+                                }
+                            }
                         }
                     ) {
                         Box {

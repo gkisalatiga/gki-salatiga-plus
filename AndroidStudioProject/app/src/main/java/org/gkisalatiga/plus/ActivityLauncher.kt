@@ -84,6 +84,7 @@ import org.gkisalatiga.plus.lib.AppStatic
 import org.gkisalatiga.plus.screen.ScreenAbout
 import org.gkisalatiga.plus.screen.ScreenAgenda
 import org.gkisalatiga.plus.screen.ScreenAttribution
+import org.gkisalatiga.plus.screen.ScreenDev
 import org.gkisalatiga.plus.screen.ScreenForms
 import org.gkisalatiga.plus.screen.ScreenGaleri
 import org.gkisalatiga.plus.screen.ScreenGaleriList
@@ -393,6 +394,7 @@ class ActivityLauncher : ComponentActivity() {
             composable(NavigationRoutes().SCREEN_ATTRIBUTION) { ScreenAttribution().getComposable() }
             composable(NavigationRoutes().SCREEN_LIVE) { ScreenVideoLive().getComposable() }
             composable(NavigationRoutes().SCREEN_FORMS) { ScreenForms().getComposable() }
+            composable(NavigationRoutes().SCREEN_DEV) { ScreenDev().getComposable() }
             composable(NavigationRoutes().SCREEN_AGENDA) { ScreenAgenda().getComposable() }
             composable(NavigationRoutes().SCREEN_PERSEMBAHAN) { ScreenPersembahan().getComposable() }
             composable(NavigationRoutes().SCREEN_GALERI) { ScreenGaleri().getComposable() }

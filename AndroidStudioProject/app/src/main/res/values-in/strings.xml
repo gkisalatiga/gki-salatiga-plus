@@ -14,6 +14,7 @@
     <!-- Constant strings for screen titles. -->
     <string name="screenabout_title">Tentang</string>
     <string name="screenattrib_title">Perpustakaan Sumber Terbuka</string>
+    <string name="screendev_title">Menu Pengembang</string>
     <string name="screenprofile_title">Profil</string>
     <string name="screenwebview_title">Tampilan Web</string>
     <string name="screenvideo_title">Video YouTube (Rekaman Sebelumnya)</string>
@@ -130,4 +131,12 @@
     <string name="screen_about_license_dismiss_ok">OK</string>
     <string name="screen_about_license_confirm">Buka Teks Utuh</string>
     <string name="screen_persembahan_ok">OK</string>
+
+    <string name="not_connected_to_internet">Anda tidak terhubung ke internet!</string>
+    <string name="screen_dev_trigger_all_notifs">Picu Semua Notifikasi</string>
+    <string name="screen_dev_quick_action_title">Aksi Cepat</string>
+    <string name="screen_dev_trigger_minutely_work_manager">Picu WorkManager Menitan</string>
+    <string name="screen_dev_welcome_developer">Selamat datang di menu pengembang!</string>
+    <string name="screen_dev_title">Menu Pengembang</string>
+    <string name="screen_dev_desc">Selamat datang, Trio Developer!\nSam, Jeffrey, dan Joa \uD83D\uDDFF</string>
 </resources>
