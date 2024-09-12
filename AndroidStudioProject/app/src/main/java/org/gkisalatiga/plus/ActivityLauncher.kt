@@ -433,6 +433,7 @@ class ActivityLauncher : ComponentActivity() {
      * which will trigger notifications and stuffs.
      */
     private fun initWorkManager() {
+        WorkScheduler.scheduleSarenReminder(this)
         WorkScheduler.scheduleYKBReminder(this)
     }
 
