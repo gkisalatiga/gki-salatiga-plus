@@ -258,18 +258,6 @@ class GlobalSchema : Application() {
         val snackbarHostState = SnackbarHostState()
 
         /* ------------------------------------------------------------------------------------ */
-        /* Screen main's app updater notice bottom sheet dialog. */
-
-        @OptIn(ExperimentalMaterial3Api::class)
-        var appUpdaterBottomSheetState: SheetState? = null
-        val appUpdaterIsShown = mutableStateOf(false)
-        val newAppVersionCode = mutableIntStateOf(0)
-        val newAppVersionName = mutableStateOf("")
-        val newAppDownloadURL = mutableStateOf("")
-
-        val triggerAppUpdateDialog = mutableStateOf(false)
-
-        /* ------------------------------------------------------------------------------------ */
         /* The following variables are related to the app's activity and back-end functionalities. */
 
         // The status of internet connection.

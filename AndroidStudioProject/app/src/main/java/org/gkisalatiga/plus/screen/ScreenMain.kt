@@ -107,10 +107,8 @@ import org.gkisalatiga.plus.fragment.FragmentServices
 import org.gkisalatiga.plus.global.GlobalSchema
 
 import org.gkisalatiga.plus.lib.NavigationRoutes
-import org.gkisalatiga.plus.services.ApplicationUpdater
 import org.gkisalatiga.plus.services.DataUpdater
 import org.gkisalatiga.plus.ui.theme.Brown1
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ScreenMain : ComponentActivity() {
@@ -191,9 +189,6 @@ class ScreenMain : ComponentActivity() {
 
                     // Update/recompose the UI.
                     GlobalSchema.reloadCurrentScreen.value = !GlobalSchema.reloadCurrentScreen.value
-
-                    // Lastly, attempt to check for new app update.
-                    ApplicationUpdater(ctx).checkAppUpdate()
                 }
             })
         ) {
@@ -357,64 +352,6 @@ class ScreenMain : ComponentActivity() {
                     )
                 },
             )
-
-            // Obtain the app's essential information.
-            // SOURCE: https://stackoverflow.com/a/6593822
-            val pInfo: PackageInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0)
-            val vName = pInfo.versionName
-            val vCode = pInfo.versionCode
-            // ---
-            // Add notification for new app updates.
-            if (GlobalSchema.appUpdaterIsShown.value) {
-                // The app updater string text.
-                val appUpdateNoticeText = """
-                ## Pembaruan ditemukan!
-                
-                Versi aplikasi yang Anda pakai saat ini adalah **$vName**. Namun sudah tersedia pembaruan aplikasi versi **${GlobalSchema.newAppVersionName.value}**.
-                
-                Perbarui sekarang?
-                """.trimIndent()
-
-                // The bottom sheet dialog.
-                ModalBottomSheet(
-                    onDismissRequest = { GlobalSchema.appUpdaterIsShown.value = false },
-                    sheetState = GlobalSchema.appUpdaterBottomSheetState!!
-                ) {
-                    Column (Modifier.padding(20.dp).fillMaxWidth()) {
-
-                        Icon(Icons.Default.PublishedWithChanges, "", modifier = Modifier.padding(bottom = 25.dp).fillMaxWidth().scale(2.0f))
-
-                        MarkdownText(
-                            modifier = Modifier.padding(2.dp),
-                            markdown = appUpdateNoticeText.trimIndent(),
-                            style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Justify)
-                        )
-
-                        Row (Modifier.padding(vertical = 10.dp)) {
-                            Button(onClick = {
-                                uriHandler.openUri(GlobalSchema.newAppDownloadURL.value)
-                                scope.launch { GlobalSchema.appUpdaterBottomSheetState!!.hide() }.invokeOnCompletion {
-                                    if (!GlobalSchema.appUpdaterBottomSheetState!!.isVisible) {
-                                        GlobalSchema.appUpdaterIsShown.value = false
-                                    }
-                                }
-                            }, modifier = Modifier.weight(3.0f, true).padding(horizontal = 10.dp)) {
-                                Text("Perbarui Sekarang")
-                            }
-                            TextButton(onClick = {
-                                scope.launch { GlobalSchema.appUpdaterBottomSheetState!!.hide() }.invokeOnCompletion {
-                                    if (!GlobalSchema.appUpdaterBottomSheetState!!.isVisible) {
-                                        GlobalSchema.appUpdaterIsShown.value = false
-                                    }
-                                }
-                            }, modifier = Modifier.weight(1.0f, true).padding(horizontal = 10.dp)) {
-                                Text("Nanti")
-                            }
-                        }
-
-                    }  // --- end column.
-                }  // --- end ModalBottomSheet.
-            }  // --- end if.
 
             // Ensure that when we are at the first screen upon clicking "back",
             // the app is exited instead of continuing to navigate back to the previous screens.

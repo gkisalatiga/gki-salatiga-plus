@@ -4,17 +4,21 @@
 
 ### English
 
+- New: (Back-End) Added WebView URI handler for `gkisalatiga.org` and `www.gkisalatiga.org`
 - New: (Back-End) Added the developer menu
 - Improved: Changed the logo to reflect the "new look" of GKI Salatiga
 - Fix: Fixed notification cannot be removed and does not call any action upon click
 - Fix: Now notifications show up at an exact time of the day; fixed random notification appearance
+- Fallback: Removed `ApplicationUpdater` because it was deemed to cause the Google Play suspension
 
 ### Indonesian
 
+- Baru: (Back-End) Penambahan pengelola URI `gkisalatiga.org` dan `www.gkisalatiga.org`
 - Baru: (Back-End) Penambahan menu pengembang
 - Improvisasi: Perubahan logo untuk merefleksikan GKI Salatiga yang lebih terkini
 - Perbaikan: Memperbaiki notifikasi tidak hilang dan tidak memunculkan apa-apa ketika diklik
 - Perbaikan: Memperbaiki notifikasi muncul pada waktu yang random
+- Kemunduran: Menghapus `ApplicationUpdater` karena diduga menyebabkan suspensi Google Play
 
 ## v0.4.4-rc 2024.09.02 (27)
 
