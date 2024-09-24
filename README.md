@@ -52,6 +52,6 @@ In the most recent update, GKI Salatiga+ activates the following scheduled notif
 
 ### Open source materials used in the WebView
 
-- Framasoft, Framasoft (C) 2024 (CC BY-SA 4.0) [Link](https://framasoft.org)
+- Framacarte, Framasoft (C) 2024 (CC BY-SA 4.0) [Link](https://framacarte.org/abc/en/)
 - OpenStreetMap, OpenStreetMap Foundation (OSMF) (C) 2024 (ODbL 1.0) [Link](https://www.openstreetmap.org)
 - Plus Jakarta Sans, Tokotype (C) 2020 (OFL 1.1) [Link](https://fonts.google.com/specimen/Plus+Jakarta+Sans?query=plus+jakarta+sans)
