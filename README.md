@@ -55,3 +55,11 @@ In the most recent update, GKI Salatiga+ activates the following scheduled notif
 - Framacarte, Framasoft (C) 2024 (CC BY-SA 4.0) [Link](https://framacarte.org/abc/en/)
 - OpenStreetMap, OpenStreetMap Foundation (OSMF) (C) 2024 (ODbL 1.0) [Link](https://www.openstreetmap.org)
 - Plus Jakarta Sans, Tokotype (C) 2020 (OFL 1.1) [Link](https://fonts.google.com/specimen/Plus+Jakarta+Sans?query=plus+jakarta+sans)
+
+## Privacy Policy
+
+The latest privacy policy document of GKI Salatiga+ can be read in this [GitHub repository file](https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/PRIVACY_POLICY.md). However, this **README** file has summarized the privacy policy as follows:
+
+- GKI Salatiga+ is open source
+- GKI Salatiga+ collect personally identifiable data, such as (but not limited to): email, name, age, gender, address, date of birth, and profile photo
+- GKI Salatiga+ does not use any third-party tracking service

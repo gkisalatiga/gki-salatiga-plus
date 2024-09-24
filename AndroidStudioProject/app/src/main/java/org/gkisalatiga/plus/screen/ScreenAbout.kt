@@ -14,7 +14,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -239,7 +238,7 @@ class ScreenAbout : ComponentActivity() {
                 modifier = Modifier.fillMaxWidth().padding(0.dp).height(50.dp),
                 onClick = {
                     // Prepare the text from raw resource.
-                    val input: InputStream = ctx.resources.openRawResource(R.raw.app_privacy_policy_en)
+                    val input: InputStream = ctx.resources.openRawResource(R.raw.app_privacy_policy)
                     val inputAsString: String = input.bufferedReader().use { it.readText() }
 
                     // Displaying the text.
