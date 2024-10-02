@@ -61,5 +61,5 @@ In the most recent update, GKI Salatiga+ activates the following scheduled notif
 The latest privacy policy document of GKI Salatiga+ can be read in this [GitHub repository file](https://github.com/gkisalatiga/gki-salatiga-plus/blob/main/PRIVACY_POLICY.md). However, this **README** file has summarized the privacy policy as follows:
 
 - GKI Salatiga+ is open source
-- GKI Salatiga+ collect personally identifiable data, such as (but not limited to): email, name, age, gender, address, date of birth, and profile photo
+- GKI Salatiga+ collect personally identifiable data, such as (but not limited to): email, name, age, gender, address, date of birth, profile photo, location, and phone number
 - GKI Salatiga+ does not use any third-party tracking service
