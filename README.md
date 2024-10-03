@@ -1,6 +1,8 @@
 # gki-salatiga-plus
 The developmental project of GKI Salatiga's mobile church application
 
+This repository is now a public archive as of October 3rd, 2024. The active development of this app has been migrated to [gkisalatiga-foss](https://github.com/gkisalatiga/gkisalatiga-foss) so that distributions through F-Droid can be supported.
+<!--
 ## Documentation
 
 ### Deep link URI pattern handling
@@ -55,3 +57,4 @@ In the most recent update, GKI Salatiga+ activates the following scheduled notif
 - Framasoft, Framasoft (C) 2024 (CC BY-SA 4.0) [Link](https://framasoft.org)
 - OpenStreetMap, OpenStreetMap Foundation (OSMF) (C) 2024 (ODbL 1.0) [Link](https://www.openstreetmap.org)
 - Plus Jakarta Sans, Tokotype (C) 2020 (OFL 1.1) [Link](https://fonts.google.com/specimen/Plus+Jakarta+Sans?query=plus+jakarta+sans)
+-->
